@@ -1,7 +1,11 @@
+import 'package:call_0953_manager/scenario/main/account_manage_screen.dart';
+import 'package:call_0953_manager/scenario/main/mileage_manage_screen.dart';
+import 'package:call_0953_manager/scenario/main/user_manage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../style/style.dart';
+import 'faq_manage_screen.dart';
 
 final bottomNavProvider = StateProvider<int>((ref) => 0);
 
@@ -20,7 +24,12 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     final currentPage = ref.watch(bottomNavProvider);
-    final List<dynamic> screen = [];
+    final List<dynamic> screen = [
+      const UserManageScreen(),
+      const MileageManageScreen(),
+      const AccountManageScreen(),
+      const FAQManageScreen(),
+    ];
 
     return Scaffold(
       body: SafeArea(child: screen.elementAt(currentPage)),
