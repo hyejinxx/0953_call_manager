@@ -5,14 +5,13 @@ class FAQManageScreen extends ConsumerStatefulWidget {
   const FAQManageScreen({Key? key}) : super(key: key);
 
   @override
-  _FAQManageScreenState createState() => _FAQManageScreenState();
+  FAQManageScreenState createState() => FAQManageScreenState();
 }
 
-class _FAQManageScreenState extends ConsumerState<FAQManageScreen> {
-
+class FAQManageScreenState extends ConsumerState<FAQManageScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final pageProvider = StateProvider<int>((ref) => 0);
-  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -20,10 +19,10 @@ class _FAQManageScreenState extends ConsumerState<FAQManageScreen> {
       ref.read(pageProvider.notifier).state =
           _pageController.page?.round() ?? 0;
     });
-    
+
     super.initState();
   }
-  
+
   final page = [
     const FAQPage(),
     const AnnouncementPage(),
@@ -32,24 +31,23 @@ class _FAQManageScreenState extends ConsumerState<FAQManageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FAQ 관리'),
-      ),
-      body: Column(
-        children: [
-          const TabBar(tabs: [
-            Tab(text: 'FAQ'),
-            Tab(text: '공지사항'),
-          ]),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              children: page,
+        appBar: AppBar(
+          title: const Text('FAQ 관리'),
+        ),
+        body: Column(
+          children: [
+            const TabBar(tabs: [
+              Tab(text: 'FAQ'),
+              Tab(text: '공지사항'),
+            ]),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                children: page,
+              ),
             ),
-          ),
-        ],
-      )
-    );
+          ],
+        ));
   }
 }
 
@@ -80,4 +78,3 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     return const Placeholder();
   }
 }
-
