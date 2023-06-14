@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "411765918979",
+    "project_id": "project-568166903627460027",
+    "storage_bucket": "project-568166903627460027.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411765918979:android:43f7cb03dd5912904f6d36",
+        "android_client_info": {
+          "package_name": "com.call_0953.call_0953_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmdhOJUkE31Z76w7HyvDvoOrByyAwHqTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411765918979-d18p3jggveck304398ic21ohm6dad4q8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.call0953Manager.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
