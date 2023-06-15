@@ -18,17 +18,16 @@ class MileageService {
         amount: 1000,
         date: call.date!);
     saveMileage(mileage);
-    if(call.bonusMileage != null || call.bonusMileage != 0){
+    if (call.bonusMileage != null || call.bonusMileage != 0) {
       final Mileage bonusMileage = Mileage(
           name: call.name,
           call: call.call,
           type: 'bonus',
-          amount: call.bonusMileage??1000,
+          amount: call.bonusMileage ?? 1000,
           date: call.date ?? DateFormat('MM/dd').format(DateTime.now()));
       saveMileage(bonusMileage);
     }
   }
-
 
   Future<void> saveMileage(Mileage mileage) async {
     try {
@@ -40,17 +39,19 @@ class MileageService {
           .doc(mileage.date)
           .set(mileage.toJson());
       // 유저 마일리지 업데이트
-      // await firestore
-      //     .collection('user')
-      //     .doc(mileage.call)
-      //     .get()
-      //     .then((value) async {
-      //   int updatedMileage = value.data()!['mileage'] + mileage.amount;
-      //   firestore
-      //       .collection('user')
-      //       .doc(mileage.call)
-      //       .update({'mileage': updatedMileage});
-      // });
+      await firestore
+          .collection('user')
+          .doc(mileage.call)
+          .get()
+          .then((value) async {
+        if (value.data() != null) {
+          int updatedMileage = value.data()!['mileage'] + mileage.amount;
+          await firestore
+              .collection('user')
+              .doc(mileage.call)
+              .update({'mileage': updatedMileage});
+        }
+      });
       // 관리자용 마일리지 기록 저장
       await database
           .ref()

@@ -5,7 +5,6 @@ import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart';
 
 import '../model/call.dart';
 
@@ -19,11 +18,16 @@ class CallService{
       if(file == null) return;
       var bytes = file.readAsBytesSync();
       var excel = Excel.decodeBytes(bytes);
+      bool a = true;
 
       for (var table in excel.tables.keys) {
         for (var row in excel.tables[table]!.rows) {
+          if(a){
+            a = false;
+            continue;
+          }
           final data = row.map((e) => e?.value);
-          final call = Call(orderNumber: '', name: data.elementAt(3).toString(), call: data.elementAt(2).toString().replaceAll('-', ''), price: 3000, date: data.elementAt(5).toString().replaceAll('/', '-'), time: data.elementAt(6).toString());
+          final call = Call(orderNumber: '', name: data.elementAt(3).toString(), call: data.elementAt(6).toString().replaceAll('-', ''), price: int.parse(data.elementAt(11).toString()), date: data.elementAt(9).toString().replaceAll('/', '-'), time: data.elementAt(10).toString(), startAddress: data.elementAt(7).toString(), endAddress: data.elementAt(8).toString(), bonusMileage: 1000);
           saveCall(call);
         }
       }
