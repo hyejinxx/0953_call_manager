@@ -1,5 +1,6 @@
 import 'package:call_0953_manager/scenario/main/account_manage_screen.dart';
 import 'package:call_0953_manager/scenario/main/mileage_manage_screen.dart';
+import 'package:call_0953_manager/scenario/main/update_call.dart';
 import 'package:call_0953_manager/scenario/main/user_manage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +10,6 @@ import 'faq_manage_screen.dart';
 
 final bottomNavProvider = StateProvider<int>((ref) => 0);
 
-
 class BottomNavigation extends ConsumerStatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
 
@@ -18,9 +18,6 @@ class BottomNavigation extends ConsumerStatefulWidget {
 }
 
 class BottomNavigationState extends ConsumerState<BottomNavigation> {
-
-
-
   @override
   Widget build(BuildContext context) {
     final currentPage = ref.watch(bottomNavProvider);
@@ -29,6 +26,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
       const MileageManageScreen(),
       const AccountManageScreen(),
       const FAQManageScreen(),
+      const UpdateCallScreen(),
     ];
 
     return Scaffold(
@@ -55,7 +53,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
                 activeIcon: Icon(
                   Icons.class_rounded,
                   color: Palette.bottomSelectedColor,
-                  // 
+                  //
                 ),
                 label: '마일리지'),
             BottomNavigationBarItem(
@@ -78,7 +76,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
                   color: Palette.bottomSelectedColor,
                 ),
                 label: '공지사항'),
-                BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.chat,
                   color: Palette.bottomUnselectedColor,
@@ -87,7 +85,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
                   Icons.chat,
                   color: Palette.bottomSelectedColor,
                 ),
-                label: 'Match'),
+                label: '콜 저장'),
           ],
           currentIndex: currentPage,
           selectedItemColor: Palette.bottomSelectedColor,
