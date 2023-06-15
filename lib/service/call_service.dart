@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:call_0953_manager/service/file_picker_service.dart';
+import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -22,8 +23,7 @@ class CallService{
       for (var table in excel.tables.keys) {
         for (var row in excel.tables[table]!.rows) {
           final data = row.map((e) => e?.value);
-          final call = Call(orderNumber: '', name:  data.elementAt(3).toString(), call: data.elementAt(2).toString(), price: 3000);
-          print(call);
+          final call = Call(orderNumber: '', name: data.elementAt(3).toString(), call: data.elementAt(2).toString().replaceAll('-', ''), price: 3000, date: data.elementAt(5).toString().replaceAll('/', '-'), time: data.elementAt(6).toString());
           saveCall(call);
         }
       }
@@ -38,8 +38,9 @@ class CallService{
       print('saving');
       // await firestore.collection('call').doc(DateFormat('MM-dd').format(DateTime.now())).collection('${call.time}-${call.call}').doc(call.call).set(call.toJson());
      await database.ref().child('call').child(
-        DateFormat('MM-dd').format(DateTime.now())).child('${call.time}-${call.call}').set(call.toJson()).timeout(Duration(seconds: 10), onTimeout: () => throw Exception('timeout'));
+        call.date!).child('${call.time}-${call.call}').set(call.toJson()).timeout(Duration(seconds: 10), onTimeout: () => throw Exception('timeout'));
       print('saved');
+      MileageService().callToMileage(call);
     } catch (e) {
       print('error');
       throw Exception("saveCall: $e");
