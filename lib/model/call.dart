@@ -40,4 +40,18 @@ class Call {
       bonusMileage: json['bonusMileage'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'orderNumber': orderNumber,
+    'name': name,
+    'call': call,
+    'startAddress': startAddress,
+    'endAddress': endAddress,
+    'price': price,
+    'company': company,
+    'date': date,
+    'time': time,
+    'mileage': mileage,
+    'bonusMileage': bonusMileage,
+  };
 }

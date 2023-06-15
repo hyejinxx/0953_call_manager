@@ -8,7 +8,7 @@
 PRODUCT_NAME = call_0953_manager
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.call0953Manager
+PRODUCT_BUNDLE_IDENTIFIER = com.call0953.call0953Manager;
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.

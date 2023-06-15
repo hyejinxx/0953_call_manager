@@ -49,15 +49,17 @@ class DefaultFirebaseOptions {
     messagingSenderId: '411765918979',
     projectId: 'project-568166903627460027',
     authDomain: 'project-568166903627460027.firebaseapp.com',
+    databaseURL: 'https://project-568166903627460027-default-rtdb.firebaseio.com',
     storageBucket: 'project-568166903627460027.appspot.com',
     measurementId: 'G-1FVQWQH683',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBmdhOJUkE31Z76w7HyvDvoOrByyAwHqTU',
-    appId: '1:411765918979:android:43f7cb03dd5912904f6d36',
+    appId: '1:411765918979:android:c01c894d335cf9294f6d36',
     messagingSenderId: '411765918979',
     projectId: 'project-568166903627460027',
+    databaseURL: 'https://project-568166903627460027-default-rtdb.firebaseio.com',
     storageBucket: 'project-568166903627460027.appspot.com',
   );
 
@@ -66,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:411765918979:ios:f533349d6087ea3e4f6d36',
     messagingSenderId: '411765918979',
     projectId: 'project-568166903627460027',
+    databaseURL: 'https://project-568166903627460027-default-rtdb.firebaseio.com',
     storageBucket: 'project-568166903627460027.appspot.com',
     iosClientId: '411765918979-ohkllb345ptito2410q11ii5mc50nibe.apps.googleusercontent.com',
     iosBundleId: 'com.call0953.call0953Manager',
@@ -73,9 +76,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyC2lV7aucruQRXepCYtMjnRB-qAE3hdCMQ',
-    appId: '1:411765918979:ios:3dc1e44681cca81f4f6d36',
+    appId: '1:411765918979:ios:64d2c0d0362b90394f6d36',
     messagingSenderId: '411765918979',
     projectId: 'project-568166903627460027',
+    databaseURL: 'https://project-568166903627460027-default-rtdb.firebaseio.com',
     storageBucket: 'project-568166903627460027.appspot.com',
     iosClientId: '411765918979-d18p3jggveck304398ic21ohm6dad4q8.apps.googleusercontent.com',
     iosBundleId: 'com.example.call0953Manager.RunnerTests',

@@ -1,10 +1,83 @@
 {
   "project_info": {
     "project_number": "411765918979",
+    "firebase_url": "https://project-568166903627460027-default-rtdb.firebaseio.com",
     "project_id": "project-568166903627460027",
     "storage_bucket": "project-568166903627460027.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411765918979:android:c01c894d335cf9294f6d36",
+        "android_client_info": {
+          "package_name": "com.call0953.call0953Manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmdhOJUkE31Z76w7HyvDvoOrByyAwHqTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411765918979-1uei2m41ciqd787c5o2klsk68pqktimu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.call0953.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411765918979:android:3c27460a8680d7d74f6d36",
+        "android_client_info": {
+          "package_name": "com.call_0953.call_0953"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmdhOJUkE31Z76w7HyvDvoOrByyAwHqTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411765918979-1uei2m41ciqd787c5o2klsk68pqktimu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.call0953.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:411765918979:android:43f7cb03dd5912904f6d36",
@@ -31,10 +104,10 @@
               "client_type": 3
             },
             {
-              "client_id": "411765918979-d18p3jggveck304398ic21ohm6dad4q8.apps.googleusercontent.com",
+              "client_id": "411765918979-1uei2m41ciqd787c5o2klsk68pqktimu.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.call0953Manager.RunnerTests"
+                "bundle_id": "com.example.call0953.RunnerTests"
               }
             }
           ]

@@ -4,12 +4,11 @@ class User {
   final String name;
   final String call;
   final String password;
-  final String? destination1;
-  final String? destination2;
+  final String? destination;
   final String createdAt;
   final String? store;
-  final String? city;
-  final String? storecall;
+  final String? storeCall;
+  final String? storeAddress;
   final int mileage;
   final String? recommendUser;
   final String? memo;
@@ -18,12 +17,11 @@ class User {
     required this.name,
     required this.call,
     required this.password,
-    this.destination1,
-    this.destination2,
+    this.destination,
     required this.createdAt,
     this.store,
-    this.city,
-    this.storecall,
+    this.storeCall,
+    this.storeAddress,
     required this.mileage,
     this.recommendUser,
     this.memo,
@@ -34,12 +32,11 @@ class User {
       name: json['name'],
       call: json['call'],
       password: json['password'],
-      destination1: json['destination1'],
-      destination2: json['destination2'],
+      destination: json['destination'],
       createdAt: json['createdAt'],
       store: json['store'],
-      city: json['city'],
-      storecall: json['storecall'],
+      storeCall: json['storeCall'],
+      storeAddress: json['storeAddress'],
       mileage: json['mileage'],
       recommendUser: json['recommendUser'],
       memo: json['memo'],
@@ -52,12 +49,11 @@ class User {
       name: data['name'],
       call: data['call'],
       password: data['password'],
-      destination1: data['destination1'],
-      destination2: data['destination2'],
+      destination: data['destination'],
       createdAt: data['createdAt'],
       store: data['store'],
-      city: data['city'],
-      storecall: data['storecall'],
+      storeCall: data['storeCall'],
+      storeAddress: data['storeAddress'],
       mileage: data['mileage'],
       recommendUser: data['recommendUser'],
       memo: data['memo'],
@@ -68,12 +64,11 @@ class User {
     'name': name,
     'call': call,
     'password': password,
-    'destination1': destination1,
-    'destination2': destination2,
+    'destination': destination,
     'createdAt': createdAt,
     'store': store,
-    'city': city,
-    'storecall': storecall,
+    'storeCall': storeCall,
+    'storeAddress': storeAddress,
     'mileage': mileage,
     'recommendUser': recommendUser,
     'memo': memo,
