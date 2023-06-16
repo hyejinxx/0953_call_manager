@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+
 class Call {
   final String orderNumber;
   final String name;
@@ -6,8 +8,8 @@ class Call {
   final String? endAddress;
   final int price;
   final String? company;
-  final String? date;
-  final String? time;
+  final String date;
+  final String time;
   final int? mileage;
   final int? bonusMileage;
 
@@ -19,8 +21,8 @@ class Call {
     this.endAddress,
     required this.price,
     this.company,
-    this.date,
-    this.time,
+    required this.date,
+    required this.time,
     this.mileage,
     this.bonusMileage,
   });
@@ -38,6 +40,22 @@ class Call {
       time: json['time'],
       mileage: json['mileage'],
       bonusMileage: json['bonusMileage'],
+    );
+  }
+
+  factory Call.fromDB(db){
+    return Call(
+      orderNumber: db['orderNumber'],
+      name: db['name'],
+      call: db['call'],
+      startAddress: db['startAddress'],
+      endAddress: db['endAddress'],
+      price: db['price'],
+      company: db['company'],
+      date: db['date'],
+      time: db['time'],
+      mileage: db['mileage'],
+      bonusMileage: db['bonusMileage'],
     );
   }
 
