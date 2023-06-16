@@ -10,25 +10,6 @@ class MileageService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseDatabase database = FirebaseDatabase.instance;
 
-  Future<void> callToMileage(Call call) async {
-    final Mileage mileage = Mileage(
-        name: call.name,
-        call: call.call,
-        type: 'call',
-        amount: 1000,
-        date: call.date!);
-    saveMileage(mileage);
-    if (call.bonusMileage != null || call.bonusMileage != 0) {
-      final Mileage bonusMileage = Mileage(
-          name: call.name,
-          call: call.call,
-          type: 'bonus',
-          amount: call.bonusMileage ?? 1000,
-          date: call.date ?? DateFormat('MM/dd').format(DateTime.now()));
-      saveMileage(bonusMileage);
-    }
-  }
-
   Future<void> saveMileage(Mileage mileage) async {
     try {
       // 유저 마일리지 기록 저장
@@ -36,7 +17,7 @@ class MileageService {
           .collection('user')
           .doc(mileage.call)
           .collection('mileage')
-          .doc(mileage.date)
+          .doc(mileage.orderNumber + mileage.type)
           .set(mileage.toJson());
       // 유저 마일리지 업데이트
       await firestore
@@ -56,9 +37,17 @@ class MileageService {
       await database
           .ref()
           .child('mileage')
-          .child(mileage.date)
-          .child(mileage.call)
+          .child(mileage.orderNumber + mileage.type)
           .set(mileage.toJson());
+
+      final year = DateFormat('yyyy').format(DateTime.now());
+
+      firestore
+          .collection('mileage')
+          .doc(year + mileage.date.substring(0, 2))
+          .collection(mileage.date.substring(3, 5))
+          .doc(mileage.orderNumber + mileage.type)
+          .set({'mileage': mileage.orderNumber + mileage.type});
     } catch (e) {
       throw Exception("saveMileage: $e");
     }
@@ -83,18 +72,49 @@ class MileageService {
     }
   }
 
-  Future<List<Mileage>> getMileageRecordAll(
-    String? date,
-  ) async {
+  Future<List<Mileage>> getMileageForDate(String? date) async {
+    List<String> mileageIdList = [];
     List<Mileage> mileageList = [];
-    // if(date != null){
-    //   mileageList = database.ref().child('mileage').get()
-    //
-    //
-    // }else{
-    //   mileageList = database.ref().child('mileage').child(
-    //       date!).get().then((value) => value.docs.forEach((element) {
-    // }
-    return mileageList;
+    try {
+      await firestore
+          .collection('mileage')
+          .doc('202302')
+          .collection('25')
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          mileageIdList.add(element.data()['mileage']);
+        }
+      });
+      await Future.wait(mileageIdList.map((element) async {
+        await database
+            .ref()
+            .child('mileage')
+            .child(element)
+            .get()
+            .then((value) {
+          mileageList.add(Mileage.fromDB(value.value));
+        });
+      }));
+      return mileageList;
+    } catch (e) {
+      throw Exception("getMileageRecord: $e");
+    }
+  }
+  Future<List<Mileage>> getAllMileage() async {
+    List<Mileage> mileageList = [];
+    try {
+      await database.ref().child('mileage').get().then((value) {
+        print(value.value);
+        if(value.value == null) return;
+        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          mileageList.add(Mileage.fromDB(value));
+        });
+      });
+      return mileageList;
+    } catch (e) {
+      throw Exception("getMileageRecord: $e");
+    }
   }
 }

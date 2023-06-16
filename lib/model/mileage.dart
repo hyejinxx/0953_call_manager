@@ -1,4 +1,5 @@
 class Mileage {
+  final String orderNumber;
   final String name;
   final String call;
   final String type;
@@ -6,6 +7,7 @@ class Mileage {
   final String date;
 
   Mileage({
+    required this.orderNumber,
     required this.name,
     required this.call,
     required this.type,
@@ -15,15 +17,28 @@ class Mileage {
 
   factory Mileage.fromJson(Map<String, dynamic> json) {
     return Mileage(
+      orderNumber: json['orderNumber'],
       name: json['name'],
       call: json['call'],
       type: json['type'],
-      amount: json['amount'],
+      amount: int.parse(json['amount'].toDouble()),
       date: json['date'],
     );
   }
 
+  factory Mileage.fromDB(db){
+    return Mileage(
+      orderNumber: db['orderNumber'],
+      name: db['name'],
+      call: db['call'],
+      type: db['type'],
+      amount: db['amount'],
+      date: db['date'],
+    );
+  }
+
   Map<String, dynamic> toJson() => {
+    'orderNumber': orderNumber,
     'name': name,
     'call': call,
     'type': type,
@@ -31,3 +46,4 @@ class Mileage {
     'date': date,
   };
 }
+

@@ -1,4 +1,5 @@
 import 'package:call_0953_manager/scenario/main/bottom_nav.dart';
+import 'package:call_0953_manager/scenario/start/update_call_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        home: BottomNavigation());
+        home: UpdateCallScreen());
   }
 }
