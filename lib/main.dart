@@ -1,4 +1,4 @@
-import 'package:call_0953_manager/scenario/main/bottom_nav.dart';
+import 'package:call_0953_manager/scenario/start/splash_screen.dart';
 import 'package:call_0953_manager/scenario/start/update_call_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

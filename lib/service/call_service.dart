@@ -87,7 +87,7 @@ class CallService {
         call: call.call,
         type: 'call',
         amount: 1000,
-        date: call.date!);
+        date: call.date);
     MileageService().saveMileage(mileage);
     if (call.bonusMileage != null && call.bonusMileage != 0) {
       final Mileage bonusMileage = Mileage(
