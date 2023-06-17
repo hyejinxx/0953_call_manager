@@ -21,7 +21,7 @@ class Mileage {
       name: json['name'],
       call: json['call'],
       type: json['type'],
-      amount: int.parse(json['amount'].toDouble()),
+      amount: json['amount'],
       date: json['date'],
     );
   }

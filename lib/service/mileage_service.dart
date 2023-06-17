@@ -53,21 +53,21 @@ class MileageService {
     }
   }
 
-  Future<List<Mileage>> getMileageRecordUser() async {
+  Future<List<Mileage>> getMileageRecordUser(String userCall) async {
     List<Mileage> mileageList = [];
-    final sharedPreferences = await SharedPreferences.getInstance();
     try {
-      final user = sharedPreferences.getString('call');
       await firestore
           .collection('user')
-          .doc(user)
+          .doc(userCall)
           .collection('mileage')
           .get()
           .then((value) => value.docs.forEach((element) {
                 mileageList.add(Mileage.fromJson(element.data()));
               }));
+      print(mileageList.length);
       return mileageList;
     } catch (e) {
+     print(e);
       throw Exception("getMileageRecord: error");
     }
   }
