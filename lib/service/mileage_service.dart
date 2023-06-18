@@ -1,9 +1,7 @@
+import 'package:call_0953_manager/model/withdraw.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../model/call.dart';
 import '../model/mileage.dart';
 
 class MileageService {
@@ -40,16 +38,75 @@ class MileageService {
           .child(mileage.orderNumber + mileage.type)
           .set(mileage.toJson());
 
-      final year = DateFormat('yyyy').format(DateTime.now());
-
-      firestore
+      await firestore
           .collection('mileage')
-          .doc(year + mileage.date.substring(0, 2))
-          .collection(mileage.date.substring(3, 5))
+          .doc(mileage.date.substring(0, 7))
+          .collection(mileage.date.substring(8, 10))
           .doc(mileage.orderNumber + mileage.type)
           .set({'mileage': mileage.orderNumber + mileage.type});
     } catch (e) {
       throw Exception("saveMileage: $e");
+    }
+  }
+
+  // 마일리지 출금 완료 처리
+  Future<void> updateWithdraw(Withdraw withdraw, String status) async {
+    try {
+      if (status == "출금완료") {
+        final mileage = Mileage(
+            orderNumber: withdraw.createdAt + withdraw.userCall,
+            name: '',
+            call: withdraw.userCall,
+            type: '출금',
+            amount: withdraw.amount,
+            date: withdraw.createdAt);
+        // 유저 마일리지 기록 저장 -> 출금
+        await firestore
+            .collection('user')
+            .doc(mileage.call)
+            .collection('mileage')
+            .doc(mileage.orderNumber + mileage.type)
+            .set(mileage.toJson());
+        // 유저 마일리지 업데이트
+        await firestore
+            .collection('user')
+            .doc(mileage.call)
+            .get()
+            .then((value) async {
+          if (value.data() != null) {
+            int updatedMileage = value.data()!['mileage'] - mileage.amount;
+            await firestore
+                .collection('user')
+                .doc(mileage.call)
+                .update({'mileage': updatedMileage});
+          }
+        });
+      }
+      // 관리자용 출금 기록 저장
+      await database
+          .ref()
+          .child('withdraw')
+          .child(withdraw.createdAt + withdraw.userCall)
+          .update({'status': status});
+    } catch (e) {
+      throw Exception("saveWithdraw: $e");
+    }
+  }
+
+  Future<List<Withdraw>> getWithdraw() async {
+    List<Withdraw> withdrawList = [];
+    try {
+      await database.ref().child('withdraw').get().then((value) {
+        if (value.value == null) return;
+        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          withdrawList.add(Withdraw.fromDB(value));
+        });
+      });
+      return withdrawList;
+    } catch (e) {
+      print(e);
+      throw Exception("getWithdraw: $e");
     }
   }
 
@@ -67,7 +124,7 @@ class MileageService {
       print(mileageList.length);
       return mileageList;
     } catch (e) {
-     print(e);
+      print(e);
       throw Exception("getMileageRecord: error");
     }
   }
@@ -101,12 +158,13 @@ class MileageService {
       throw Exception("getMileageRecord: $e");
     }
   }
+
   Future<List<Mileage>> getAllMileage() async {
     List<Mileage> mileageList = [];
     try {
       await database.ref().child('mileage').get().then((value) {
         print(value.value);
-        if(value.value == null) return;
+        if (value.value == null) return;
         final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           mileageList.add(Mileage.fromDB(value));

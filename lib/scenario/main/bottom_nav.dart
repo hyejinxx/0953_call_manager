@@ -1,6 +1,6 @@
-import 'package:call_0953_manager/scenario/main/mileage/account_manage_screen.dart';
 import 'package:call_0953_manager/scenario/main/call/call_manage_screen.dart';
 import 'package:call_0953_manager/scenario/main/mileage/mileage_manage_screen.dart';
+import 'package:call_0953_manager/scenario/main/withdraw/withdraw_manage_screen.dart';
 import 'package:call_0953_manager/scenario/start/update_call_screen.dart';
 import 'package:call_0953_manager/scenario/main/user/user_manage_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
     final List<dynamic> screen = [
       const UserManageScreen(),
       const MileageManageScreen(),
-      const AccountManageScreen(),
+      const WithdrawManageScreen(),
       const CallManageScreen(),
       const FAQManageScreen(),
     ];
