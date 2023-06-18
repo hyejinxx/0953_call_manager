@@ -1,87 +1,174 @@
 import 'package:call_0953_manager/service/mileage_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class MileageManageScreen extends StatefulWidget {
+import '../../../model/mileage.dart';
+
+final firstDate =
+    StateProvider((ref) => DateTime.now().subtract(const Duration(days: 365)));
+final lastDate = StateProvider((ref) => DateTime.now());
+
+class MileageManageScreen extends ConsumerStatefulWidget {
   const MileageManageScreen({super.key});
 
   @override
-  State<MileageManageScreen> createState() => _MileageManageScreenState();
+  _MileageManageScreenState createState() => _MileageManageScreenState();
 }
 
-class _MileageManageScreenState extends State<MileageManageScreen> {
+class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
   bool isAll = true;
 
   @override
   Widget build(BuildContext context) {
+    final startDate = ref.watch(firstDate);
+    final endDate = ref.watch(lastDate);
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: Column(children: [
-        CheckboxListTile(
-          title: InkWell(
-            onTap: () {
-              setState(() {
-                isAll = !isAll;
-              });
-            },
-            child: const Text('모든 마일리지 보기'),
-          ),
-          value: isAll,
-          onChanged: (value) {
-            setState(() {
-              isAll = value!;
-            });
-          },
-        ),
-        if (!isAll) ...[
-          Row(
-            children: [
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: '검색할 유저의 번호를 입력하세요',
-                    ),
-                    obscureText: false,
-                  ),
-                ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ExpansionTile(
+          title: Text('기간 선택'),
+          children: [
+            CheckboxListTile(
+              title: InkWell(
+                onTap: () {
+                  setState(() {
+                    isAll = !isAll;
+                  });
+                },
+                child: const Text('모든 마일리지 보기'),
               ),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                  color: Colors.black)
+              value: isAll,
+              onChanged: (value) {
+                setState(() {
+                  isAll = value!;
+                });
+              },
+            ),
+            if (!isAll) ...[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('시작 날짜 : ${startDate.toString().substring(0, 10)}',
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black)),
+                        ElevatedButton(
+                            onPressed: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime.now().subtract(
+                                          const Duration(days: 365 * 3)),
+                                      lastDate: DateTime.now())
+                                  .then((value) {
+                                if (value != null) {
+                                  ref.read(firstDate.notifier).state = value;
+                                }
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.yellow,
+                            ),
+                            child: const Text('날짜선택',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black))),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('끝 날짜 : ${endDate.toString().substring(0, 10)}',
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black)),
+                        ElevatedButton(
+                            onPressed: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime.now()
+                                          .subtract(const Duration(days: 365)),
+                                      lastDate: DateTime.now())
+                                  .then((value) {
+                                if (value != null) {
+                                  ref.read(lastDate.notifier).state = value;
+                                }
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.yellow,
+                            ),
+                            child: const Text('날짜선택',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black))),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
-          ),
-        ],
-        Expanded(child:
-        FutureBuilder(
+          ],
+        ),
+        const Divider(),
+        Expanded(
+            child: FutureBuilder(
           future: MileageService().getAllMileage(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              print(snapshot.data);
-               snapshot.data!.sort((a, b) => b.date.compareTo(a.date));
+            if (snapshot.hasData && snapshot.data != null) {
+              snapshot.data!.sort((a, b) => b.date.compareTo(a.date));
+              List<Mileage> result = isAll
+                  ? snapshot.data!
+                  : snapshot.data!
+                      .where((element) =>
+                          DateFormat('yyyy-MM-dd')
+                              .parse(element.date)
+                              .add(const Duration(days: 1))
+                              .isAfter(startDate) &&
+                          DateFormat('yyyy-MM-dd')
+                              .parse(element.date)
+                              .subtract(const Duration(days: 1))
+                              .isBefore(endDate))
+                      .toList();
               return ListView.builder(
-                itemCount: snapshot.data?.length,
+                itemCount: result.length,
                 itemBuilder: (context, index) {
                   return ExpansionTile(
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(snapshot.data![index].name),
-                        Text('${snapshot.data![index].amount}원')
+                        Text(result[index].name),
+                        Text('${result[index].amount}원')
                       ],
                     ),
-                    subtitle: Text(snapshot.data![index].date
-                        .toString()
-                        .replaceAll('-', '/')),
+                    subtitle: Text(
+                        result[index].date),
                     expandedAlignment: Alignment.topLeft,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 20, bottom: 10),
                         child: Text(
-                            '전화번호 : ${snapshot.data![index].call}\n닉네임 : ${snapshot.data![index].name}\n적립금 : ${snapshot.data![index].amount.toString()}\n적립 종류: ${snapshot.data![index].type}',
+                            '전화번호 : ${result[index].call}\n닉네임 : ${result[index].name}\n적립금 : ${result[index].amount.toString()}\n적립 종류: ${result[index].type}',
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
