@@ -37,7 +37,7 @@ class CallService {
               name: data.elementAt(3).toString(),
               call: data.elementAt(6).toString().replaceAll('-', ''),
               price: int.parse(data.elementAt(11).toString()),
-              date: data.elementAt(9).toString().replaceAll('/', '-'),
+              date: DateFormat('yyyy-').format(DateTime.now()) + data.elementAt(9).toString().replaceAll('/', '-'),
               time: data.elementAt(10).toString(),
               startAddress: data.elementAt(7).toString(),
               endAddress: data.elementAt(8).toString(),
@@ -67,8 +67,8 @@ class CallService {
       final year = DateFormat('yyyy').format(DateTime.now());
       firestore
           .collection('call')
-          .doc(year + call.date.substring(0, 2))
-          .collection(call.date.substring(3, 5))
+          .doc(call.date.substring(0, 7))
+          .collection(call.date.substring(8, 10))
           .doc(call.orderNumber)
           .set({'call': call.orderNumber});
 
@@ -85,7 +85,7 @@ class CallService {
         orderNumber: call.orderNumber,
         name: call.name,
         call: call.call,
-        type: 'call',
+        type: '콜',
         amount: 1000,
         date: call.date);
     MileageService().saveMileage(mileage);
@@ -94,7 +94,7 @@ class CallService {
           orderNumber: call.orderNumber,
           name: call.name,
           call: call.call,
-          type: 'bonus',
+          type: '추가 마일리지',
           amount: call.bonusMileage!,
           date: call.date);
       MileageService().saveMileage(bonusMileage);

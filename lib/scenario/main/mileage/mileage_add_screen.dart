@@ -81,7 +81,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                   backgroundColor: MaterialStateProperty.all(
                       const Color.fromRGBO(249, 224, 0, 1.0)),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (phoneTextController.text.isEmpty) {
                     showSnackBar('전화번호를 입력해주세요.');
                     return;
@@ -97,9 +97,14 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                               phoneTextController.text,
                       name: widget.name ?? '',
                       call: phoneTextController.text,
-                      type: 'bonus',
+                      type: '추가 마일리지',
                       amount: int.parse(amountTextController.text),
-                      date: DateFormat('MM-dd').format(DateTime.now())));
+                      date: DateFormat('yyyy-MM-dd').format(DateTime.now()))).then((value) {
+                        showSnackBar('적립되었습니다.');
+                        Navigator.pop(context);
+
+                  });
+
                 },
                 child: const Text('적립', style: TextStyle(color: Colors.black)),
               ),
