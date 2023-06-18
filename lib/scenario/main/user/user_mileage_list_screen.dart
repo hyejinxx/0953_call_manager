@@ -5,25 +5,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/mileage.dart';
 import '../../../service/mileage_service.dart';
+import '../../../service/user_service.dart';
 
 class UserMileageRecordScreen extends ConsumerStatefulWidget {
   const UserMileageRecordScreen({Key? key, required this.user})
       : super(key: key);
 
-  final User user;
+  final String user;
 
   @override
   UserMileageRecordScreenState createState() => UserMileageRecordScreenState();
 }
 
 class UserMileageRecordScreenState
-    extends ConsumerState<UserMileageRecordScreen> {
+    extends ConsumerState<UserMileageRecordScreen>
+    with TickerProviderStateMixin {
   late FutureProvider<List<Mileage>> mileageProvider;
+  late FutureProvider<User?> userProvider;
+  late TabController tabController;
 
   @override
   void initState() {
     mileageProvider = FutureProvider<List<Mileage>>(
-        (ref) => MileageService().getMileageRecordUser(widget.user.call));
+        (ref) => MileageService().getMileageRecordUser(widget.user));
+
+    userProvider =
+        FutureProvider<User?>((ref) => UserService().getUser(widget.user));
+    tabController = TabController(length: 2, vsync: this);
 
     super.initState();
   }
@@ -37,9 +45,10 @@ class UserMileageRecordScreenState
   @override
   Widget build(BuildContext context) {
     final mileage = ref.watch(mileageProvider);
+    final user = ref.watch(userProvider);
     return Scaffold(
         appBar: AppBar(
-            title: Text('${widget.user.name}의 마일리지 기록',
+            title: Text('${widget.user} 의 마일리지 기록',
                 style: const TextStyle(color: Colors.black),
                 textAlign: TextAlign.center),
             backgroundColor: Colors.transparent,
@@ -60,47 +69,78 @@ class UserMileageRecordScreenState
               },
             )),
         body: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Padding(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              TabBar(
+                controller: tabController,
+                indicatorColor: Colors.yellow,
+                tabs: const [
+                  Tab(text: '입금 내역'),
+                  Tab(text: '출금 내역'),
+                ],
+                labelColor: Colors.black,
+              ),
+              Expanded(
+                  child: TabBarView(
+                controller: tabController,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: mileage.when(
-                          data: (data) =>
-                              data.map((e) => _buildMileageItem(e)).toList(),
-                          error: (error, stackTrace) {
-                            return const [Text('- 원')];
-                          },
-                          loading: () {
-                            return const [Text('- 원')];
-                          }),
-                    )),
-                Positioned(
-                  bottom: 0,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MileageAddScreen(
-                                    call: widget.user.call,
-                                    name: widget.user.name,
-                                  )));
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      color: Colors.yellow,
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(20),
-                      child: const Text('마일리지 추가하기'),
+                      children: mileage.when(data: (data) {
+                        final list = data
+                            .where((element) => element.type != "출금")
+                            .toList();
+                        return list.map((e) => _buildMileageItem(e)).toList();
+                      }, error: (error, stackTrace) {
+                        return const [Text('기록을 불러오는 중 오류가 발생했습니다.')];
+                      }, loading: () {
+                        return const [Text('기록을 불러오는 중...')];
+                      }),
                     ),
                   ),
-                )
-              ],
-            )));
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: mileage.when(data: (data) {
+                        final list = data
+                            .where((element) => element.type == "출금")
+                            .toList();
+                        return list.map((e) => _buildMileageItem(e)).toList();
+                      }, error: (error, stackTrace) {
+                        return const [Text('기록을 불러오는 중 오류가 발생했습니다.')];
+                      }, loading: () {
+                        return const [Text('기록을 불러오는 중...')];
+                      }),
+                    ),
+                  ),
+                ],
+              )),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MileageAddScreen(
+                                call: widget.user,
+                                name: user.value?.name,
+                              )));
+                },
+                child: Container(
+                  height: 70,
+                  alignment: Alignment.center,
+                  color: Colors.yellow,
+                  width: MediaQuery.of(context).size.width,
+                  child: const Text('마일리지 적립'),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 
   Widget _buildMileageItem(Mileage mileage) => Container(
@@ -109,20 +149,23 @@ class UserMileageRecordScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              mileage.date.toString(),
+              mileage.date.toString().substring(0, 10),
               style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+            if (mileage.type == '출금')
+              Text(
+                '출금 금액 : ${mileage.amount}',
+                style: const TextStyle(fontSize: 18),
+              )
+            else
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(
-                  '적립금 : ${mileage.amount}',
+                  '적립 금액 : ${mileage.amount}',
                   style: const TextStyle(fontSize: 18),
                 ),
-                Text('적립 타입 : ${mileage.type}', style: const TextStyle(fontSize: 18))
-              ],
-            ),
+                Text(mileage.type, style: const TextStyle(fontSize: 15))
+              ]),
             const Divider()
           ],
         ),

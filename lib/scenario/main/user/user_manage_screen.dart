@@ -87,7 +87,7 @@ class _UserManageScreenState extends State<UserManageScreen> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 UserMileageRecordScreen(
-                                                    user: userList[index]),
+                                                    user: userList[index].call),
                                           ));
                                     },
                                     child: Container(

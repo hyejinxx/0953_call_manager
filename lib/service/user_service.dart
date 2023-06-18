@@ -17,4 +17,16 @@ class UserService {
       throw Exception("getMileageRecord: $e");
     }
   }
+  Future<User?> getUser(String userCall) async {
+    User? user;
+    try {
+      await firestore.collection('user').doc(userCall).get().then((value) {
+        if(!value.exists && value.data() != null) throw Exception("User not found");
+        user = User.fromJson(value.data()!);
+      });
+      return user;
+    } catch (e) {
+      throw Exception("getUser: $e");
+    }
+  }
 }
