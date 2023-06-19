@@ -168,7 +168,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                             padding:
                                 const EdgeInsets.only(left: 20, bottom: 10),
                             child: Text(
-                                '전화번호 : ${result[index].call}\n닉네임 : ${result[index].name}\n대리 금액 : ${result[index].price.toString()}\n적립금: ${result[index].mileage}',
+                                '전화번호: ${result[index].call}\n닉네임: ${result[index].name}\n대리 요금: ${result[index].price.toString()}\n적립금: ${result[index].mileage}\n추가 적립금: ${result[index].bonusMileage}',
                                 style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
