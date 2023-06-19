@@ -27,8 +27,7 @@ class User {
     this.memo,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory User.fromJson(Map<String, dynamic> json) => User(
       name: json['name'],
       call: json['call'],
       password: json['password'],
@@ -41,7 +40,7 @@ class User {
       recommendUser: json['recommendUser'],
       memo: json['memo'],
     );
-  }
+
 
   factory User.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Map<String, dynamic> data = snapshot.data()!;
