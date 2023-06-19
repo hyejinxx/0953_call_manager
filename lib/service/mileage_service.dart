@@ -52,32 +52,25 @@ class MileageService {
   // 마일리지 출금 완료 처리
   Future<void> updateWithdraw(Withdraw withdraw, String status) async {
     try {
+      // 유저 마일리지 기록 저장 -> 출금
+      await firestore
+          .collection('user')
+          .doc(withdraw.userCall)
+          .collection('mileage')
+          .doc(withdraw.createdAt + withdraw.userCall)
+          .update({'type': status});
       if (status == "출금완료") {
-        final mileage = Mileage(
-            orderNumber: withdraw.createdAt + withdraw.userCall,
-            name: '',
-            call: withdraw.userCall,
-            type: '출금',
-            amount: withdraw.amount,
-            date: withdraw.createdAt);
-        // 유저 마일리지 기록 저장 -> 출금
-        await firestore
-            .collection('user')
-            .doc(mileage.call)
-            .collection('mileage')
-            .doc(mileage.orderNumber + mileage.type)
-            .set(mileage.toJson());
         // 유저 마일리지 업데이트
         await firestore
             .collection('user')
-            .doc(mileage.call)
+            .doc(withdraw.userCall)
             .get()
             .then((value) async {
           if (value.data() != null) {
-            int updatedMileage = value.data()!['mileage'] - mileage.amount;
+            int updatedMileage = value.data()!['mileage'] - withdraw.amount;
             await firestore
                 .collection('user')
-                .doc(mileage.call)
+                .doc(withdraw.userCall)
                 .update({'mileage': updatedMileage});
           }
         });

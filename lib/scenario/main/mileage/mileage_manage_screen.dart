@@ -157,7 +157,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(result[index].name),
+                        Text(result[index].call),
                         Text('${result[index].amount}원')
                       ],
                     ),
@@ -168,7 +168,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 20, bottom: 10),
                         child: Text(
-                            '전화번호 : ${result[index].call}\n닉네임 : ${result[index].name}\n적립금 : ${result[index].amount.toString()}\n적립 종류: ${result[index].type}',
+                            '전화번호 : ${result[index].call}이름 : ${result[index].name}\n적립금 : ${result[index].amount.toString()}\n적립 종류: ${result[index].type}',
                             style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
