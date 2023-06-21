@@ -215,7 +215,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
 
   void editUser() async {
     UserService().editUser({
-      'id': widget.user.call,
+      'call': widget.user.call,
       'password': widget.user.password,
       'name': _nameController.text,
       'destination': _destinationController.text == ''
