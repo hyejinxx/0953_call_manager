@@ -78,24 +78,28 @@ class MileageService {
         });
       }
       // 관리자용 출금 기록 저장
-      withdraw = Withdraw(
-          name: withdraw.name,
-          createdAt: withdraw.createdAt,
-          account: withdraw.account,
-          bank: withdraw.bank,
-          userCall: withdraw.userCall,
-          amount: withdraw.amount,
-          status: status);
-      final a = await http.post(Uri.parse(withdrawUrl),
-          body: {withdraw.createdAt + withdraw.userCall: jsonEncode( Withdraw(
-              name: withdraw.name,
-              createdAt: withdraw.createdAt,
-              account: withdraw.account,
-              bank: withdraw.bank,
-              userCall: withdraw.userCall,
-              amount: withdraw.amount,
-              status: status))});
-      print(a.body);
+      await firestore
+          .collection('withdraw')
+          .document(withdraw.createdAt + withdraw.userCall)
+          .update({'status': status});
+      // withdraw = Withdraw(
+      //     name: withdraw.name,
+      //     createdAt: withdraw.createdAt,
+      //     account: withdraw.account,
+      //     bank: withdraw.bank,
+      //     userCall: withdraw.userCall,
+      //     amount: withdraw.amount,
+      //     status: status);
+      // final a = await http.post(Uri.parse(withdrawUrl),
+      //     body: {withdraw.createdAt + withdraw.userCall: jsonEncode( Withdraw(
+      //         name: withdraw.name,
+      //         createdAt: withdraw.createdAt,
+      //         account: withdraw.account,
+      //         bank: withdraw.bank,
+      //         userCall: withdraw.userCall,
+      //         amount: withdraw.amount,
+      //         status: status))});
+      // print(a.body);
     } catch (e) {
       throw Exception("saveWithdraw: $e");
     }
@@ -111,6 +115,15 @@ class MileageService {
           withdrawList.add(Withdraw.fromDB(value));
         });
       });
+      await Future.wait(withdrawList.map((e) async {
+        await firestore
+            .collection('withdraw')
+            .document(e.createdAt + e.userCall)
+            .get()
+            .then((value) {
+              e.status = value.map['status'];
+        });
+      }));
       return withdrawList;
     } catch (e) {
       print(e);
