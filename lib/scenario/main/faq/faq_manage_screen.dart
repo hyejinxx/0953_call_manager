@@ -1,3 +1,4 @@
+import 'package:call_0953_manager/scenario/main/faq/new_ann_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,44 +22,37 @@ class FAQManageScreenState extends ConsumerState<FAQManageScreen>
   final tab = [
     const AnnouncementPage(),
     const FAQPage(),
-
   ];
 
   @override
   Widget build(BuildContext context) {
     return Column(
-          children: [
-             TabBar(
-              controller: _tabController,
-                tabs: [
-                  Container(
-                    height: 80,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      '공지사항',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 80,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'FAQ',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-            ]),
-        Expanded(child:
-           TabBarView(
-             controller: _tabController,
-               children: tab)
-        )
-          ],
-        );
+      children: [
+        TabBar(controller: _tabController, tabs: [
+          Container(
+            height: 80,
+            alignment: Alignment.center,
+            child: const Text(
+              '공지사항',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+          Container(
+            height: 80,
+            alignment: Alignment.center,
+            child: const Text(
+              'FAQ',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ]),
+        Expanded(child: TabBarView(controller: _tabController, children: tab))
+      ],
+    );
   }
 }
 
@@ -88,8 +82,21 @@ class AnnouncementPage extends StatefulWidget {
 class _AnnouncementPageState extends State<AnnouncementPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('공지사항'),
+    return Column(
+      children: [
+        InkWell(
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) => const NewAnnoScreen());
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text('새 글 작성'),
+            ))
+      ],
     );
   }
 }
