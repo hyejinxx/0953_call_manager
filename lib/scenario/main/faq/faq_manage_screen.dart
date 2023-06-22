@@ -78,8 +78,8 @@ class _FAQPageState extends State<FAQPage> {
                     ? ListView.builder(
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text(snapshot.data![index].question),
-                            trailing: Text(snapshot.data![index].answer),
+                            title: Row(children: [const Icon(Icons.arrow_right, size: 20, color: Colors.black),Text(snapshot.data![index].question)]),
+                            subtitle: Text(snapshot.data![index].answer),
                           );
                         },
                         itemCount: snapshot.data!.length,
@@ -91,10 +91,12 @@ class _FAQPageState extends State<FAQPage> {
         ),
         InkWell(
             onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  useSafeArea: true,
-                  builder: (context) => const NewFaQScreen());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const NewFaQScreen()
+                  ));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),
@@ -128,7 +130,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                     ? ListView.builder(
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(snapshot.data![index].title),
+                      title: Row(children: [const Icon(Icons.arrow_right, size: 20, color: Colors.black),Text(snapshot.data![index].title)]),
                       subtitle: Text(snapshot.data![index].content),
                     );
                   },
@@ -141,10 +143,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
         ),
         InkWell(
             onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  useSafeArea: true,
-                  builder: (context) => const NewAnnoScreen());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const NewAnnoScreen()
+                  ));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),

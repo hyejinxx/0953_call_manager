@@ -15,15 +15,25 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text('FAQ 작성', style: TextStyle(color: Colors.black)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: Colors.white,
+        ), body: Column(
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           child: TextField(
-              controller: answerTextController,
+              controller: questionTextController,
               keyboardType: TextInputType.multiline,
               maxLines: null,
               maxLength: 300,
@@ -47,10 +57,12 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                 ),
               )),
         ),
+        Expanded(child:
         Container(
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey[200]),
           child: TextField(
               controller: answerTextController,
               keyboardType: TextInputType.multiline,
@@ -62,8 +74,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
               decoration: InputDecoration(
                 focusedBorder:
                     const UnderlineInputBorder(borderSide: BorderSide.none),
-                filled: true,
-                fillColor: Colors.grey[200],
+
                 contentPadding: const EdgeInsets.all(16),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide.none,
@@ -75,10 +86,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                   fontSize: 14.0,
                 ),
               )),
-        ),
-        SizedBox(
-          height: 20,
-        ),
+        )),
         InkWell(
             onTap: () {
               if (questionTextController.text.isEmpty ||
@@ -116,6 +124,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
               }
             },
             child: Container(
+              margin: const EdgeInsets.only(top: 10),
               color: Colors.yellow.withOpacity(0.7),
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,

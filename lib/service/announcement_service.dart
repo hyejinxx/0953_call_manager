@@ -12,8 +12,10 @@ class AnnouncementService{
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
       firestore.collection('announcement').document(announcement.createdAt).set(announcement.toJson());
+      print('saveAnnouncement: success');
     } catch (e) {
-      throw Exception("saveAnnouncement: error");
+      print('saveAnnouncement: $e');
+      throw Exception("saveAnnouncement: $e");
     }
   }
 
@@ -27,15 +29,18 @@ class AnnouncementService{
       });
       return announcement;
     } catch (e) {
-      throw Exception("getAnnouncement: error");
+      print('getAnnouncement: $e');
+      throw Exception("getAnnouncement: $e");
     }
   }
 
   Future<void> saveFAQ(FAQ faq) async {
     try {
       firestore.collection('faq').document('faq').set(faq.toJson());
+      print('saveFAQ: success');
     } catch (e) {
-      throw Exception("saveFAQ: error");
+      print('saveFAQ: $e');
+      throw Exception("saveFAQ: $e");
     }
   }
 
@@ -47,8 +52,10 @@ class AnnouncementService{
           faq.add(FAQ.fromJson(i.map));
         });
       });
+      print('getFAQ: success');
       return faq;
     } catch (e) {
+      print('getFAQ: $e');
       throw Exception("getFAQ: error");
     }
   }

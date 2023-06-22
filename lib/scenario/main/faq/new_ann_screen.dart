@@ -27,16 +27,23 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   @override
   Widget build(BuildContext context) {
     final img = ref.watch(imagePickerProvider);
-    return SizedBox(
-        height: MediaQuery.of(context).size.height - 20,
-        child: SingleChildScrollView(
-            child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text('공지사항 작성', style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.white,
+      ),
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Column(
-              children: [
                 Row(
                   children: [
                     Container(
@@ -44,6 +51,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                       height: 80,
                       padding: const EdgeInsets.all(10),
                       child: TextField(
+                        controller: titleTextController,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey[200],
@@ -55,11 +63,12 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                     imageBox(img)
                   ],
                 ),
+                Expanded(child:
                 Container(
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 10),
                   decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                      BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey[200]),
                   child: TextField(
                       controller: contentController,
                       keyboardType: TextInputType.multiline,
@@ -71,8 +80,6 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                       decoration: InputDecoration(
                         focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide.none),
-                        filled: true,
-                        fillColor: Colors.grey[200],
                         contentPadding: const EdgeInsets.all(16),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -84,15 +91,10 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           fontSize: 14.0,
                         ),
                       )),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-            InkWell(
-                onTap: () {
-                  if (titleTextController.text.isEmpty ||
+                )),
+
+            GestureDetector(
+onTap: (){                if (titleTextController.text.isEmpty ||
                       contentController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('제목과 내용을 입력해주세요')));
@@ -119,6 +121,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                   });
                 },
                 child: Container(
+                  margin: const EdgeInsets.only(top: 10),
                   color: Colors.yellow.withOpacity(0.7),
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.center,
@@ -130,7 +133,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           fontSize: 16.0)),
                 ))
           ],
-        )));
+        ));
   }
 
   Widget imageBox(File? img) {
