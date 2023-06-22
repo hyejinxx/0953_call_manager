@@ -2,9 +2,9 @@ import 'package:call_0953_manager/service/file_picker_service.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:call_0953_manager/util/calculateMileage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firedart/firedart.dart';
 import 'package:intl/intl.dart';
 import '../model/call.dart';
 import '../model/mileage.dart';
@@ -12,7 +12,7 @@ import '../model/user.dart';
 
 class CallService {
   FirebaseDatabase database = FirebaseDatabase.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Firestore firestore = Firestore.instance;
 
   Future<bool> excelToCall() async {
     try {
@@ -112,9 +112,9 @@ class CallService {
       // 날짜별로 콜 기록 저장
       firestore
           .collection('call')
-          .doc(call.date.substring(0, 7))
+          .document(call.date.substring(0, 7))
           .collection(call.date.substring(8, 10))
-          .doc(call.orderNumber)
+          .document(call.orderNumber)
           .set({'call': call.orderNumber});
 
       saveMileage(call);
@@ -152,12 +152,12 @@ class CallService {
     try {
       await firestore
           .collection('call')
-          .doc('202302')
+          .document('202302')
           .collection('25')
           .get()
           .then((value) {
-        for (var element in value.docs) {
-          callNumberList.add(element.data()['call']);
+        for (var element in value) {
+          callNumberList.add(element.map['call']);
         }
       });
       await Future.wait(callNumberList.map((element) async {

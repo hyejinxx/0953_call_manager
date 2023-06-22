@@ -1,11 +1,11 @@
 import 'package:call_0953_manager/model/withdraw.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firedart/firedart.dart';
 
 import '../model/mileage.dart';
 
 class MileageService {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Firestore firestore = Firestore.instance;
   FirebaseDatabase database = FirebaseDatabase.instance;
 
   Future<void> saveMileage(Mileage mileage) async {
@@ -13,21 +13,21 @@ class MileageService {
       // 유저 마일리지 기록 저장
       await firestore
           .collection('user')
-          .doc(mileage.call)
+          .document(mileage.call)
           .collection('mileage')
-          .doc(mileage.orderNumber + mileage.type)
+          .document(mileage.orderNumber + mileage.type)
           .set(mileage.toJson());
       // 유저 마일리지 업데이트
       await firestore
           .collection('user')
-          .doc(mileage.call)
+          .document(mileage.call)
           .get()
           .then((value) async {
-        if (value.data() != null) {
-          int updatedMileage = value.data()!['mileage'] + mileage.amount;
+        if (value.map != null) {
+          int updatedMileage = value.map['mileage'] + mileage.amount;
           await firestore
               .collection('user')
-              .doc(mileage.call)
+              .document(mileage.call)
               .update({'mileage': updatedMileage});
         }
       });
@@ -40,9 +40,9 @@ class MileageService {
 
       await firestore
           .collection('mileage')
-          .doc(mileage.date.substring(0, 7))
+          .document(mileage.date.substring(0, 7))
           .collection(mileage.date.substring(8, 10))
-          .doc(mileage.orderNumber + mileage.type)
+          .document(mileage.orderNumber + mileage.type)
           .set({'mileage': mileage.orderNumber + mileage.type});
     } catch (e) {
       throw Exception("saveMileage: $e");
@@ -55,22 +55,22 @@ class MileageService {
       // 유저 마일리지 기록 저장 -> 출금
       await firestore
           .collection('user')
-          .doc(withdraw.userCall)
+          .document(withdraw.userCall)
           .collection('mileage')
-          .doc(withdraw.createdAt + withdraw.userCall)
+          .document(withdraw.createdAt + withdraw.userCall)
           .update({'type': status});
       if (status == "출금완료") {
         // 유저 마일리지 업데이트
         await firestore
             .collection('user')
-            .doc(withdraw.userCall)
+            .document(withdraw.userCall)
             .get()
             .then((value) async {
-          if (value.data() != null) {
-            int updatedMileage = value.data()!['mileage'] - withdraw.amount;
+          if (value != null) {
+            int updatedMileage = value.map['mileage'] - withdraw.amount;
             await firestore
                 .collection('user')
-                .doc(withdraw.userCall)
+                .document(withdraw.userCall)
                 .update({'mileage': updatedMileage});
           }
         });
@@ -108,11 +108,11 @@ class MileageService {
     try {
       await firestore
           .collection('user')
-          .doc(userCall)
+          .document(userCall)
           .collection('mileage')
           .get()
-          .then((value) => value.docs.forEach((element) {
-                mileageList.add(Mileage.fromJson(element.data()));
+          .then((value) => value.forEach((element) {
+                mileageList.add(Mileage.fromJson(element.map));
               }));
       print(mileageList.length);
       return mileageList;
@@ -128,12 +128,12 @@ class MileageService {
     try {
       await firestore
           .collection('mileage')
-          .doc('202302')
+          .document('202302')
           .collection('25')
           .get()
           .then((value) {
-        for (var element in value.docs) {
-          mileageIdList.add(element.data()['mileage']);
+        for (var element in value) {
+          mileageIdList.add(element.map['mileage']);
         }
       });
       await Future.wait(mileageIdList.map((element) async {
