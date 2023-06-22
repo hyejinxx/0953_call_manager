@@ -103,15 +103,16 @@ class CallService {
   Future<void> saveCall(Call call) async {
     try {
       print('saving');
-      await http.post(Uri.parse(url), body: {call.orderNumber: call.toJson()});
+      final a = await http.post(Uri.parse(url), body: jsonEncode(call));
+      final callNum = jsonDecode(a.body)['name'];
 
       // 날짜별로 콜 기록 저장
       firestore
           .collection('call')
           .document(call.date.substring(0, 7))
           .collection(call.date.substring(8, 10))
-          .document(call.orderNumber)
-          .set({'call': call.orderNumber});
+          .document(callNum)
+          .set({'call': callNum});
 
       saveMileage(call);
       print('saved');
@@ -158,6 +159,7 @@ class CallService {
       });
       await Future.wait(callNumberList.map((element) async {
         final result = await http.get(Uri.parse(url));
+        if(jsonDecode(result.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(result.body) as Map<String, dynamic>;
         callList.add(Call.fromJson(data[element]));
@@ -172,6 +174,8 @@ class CallService {
     List<Call> callList = [];
     try {
       await http.get(Uri.parse(url)).then((value) {
+        print(value.body);
+        if(jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
