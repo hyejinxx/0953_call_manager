@@ -36,7 +36,7 @@ class AnnouncementService{
 
   Future<void> saveFAQ(FAQ faq) async {
     try {
-      firestore.collection('faq').document('faq').set(faq.toJson());
+      firestore.collection('faq').document(faq.createdAt).set(faq.toJson());
       print('saveFAQ: success');
     } catch (e) {
       print('saveFAQ: $e');

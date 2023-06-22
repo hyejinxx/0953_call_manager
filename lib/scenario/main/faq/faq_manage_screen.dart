@@ -75,14 +75,14 @@ class _FAQPageState extends State<FAQPage> {
               future: AnnouncementService().getFAQ(),
               builder: (context, snapshot) {
                 return snapshot.hasData
-                    ? ListView.builder(
+                    ? ListView.separated(
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Container(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 7),
                                 child: Text(
-                                    'Q${index + 1}. ${snapshot.data![index].question}')),
+                                    'Q${index + 1}. ${snapshot.data![index].question}', style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600,))),
                             trailing: IconButton(
                               icon: const Icon(Icons.edit, size: 20),
                               onPressed: () {
@@ -98,10 +98,10 @@ class _FAQPageState extends State<FAQPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child:
-                                    Text('A. ${snapshot.data![index].answer}')),
+                                    Text('A. ${snapshot.data![index].answer}', style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
                           );
                         },
-                        itemCount: snapshot.data!.length,
+                        itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
                       )
                     : const Center(
                         child: CircularProgressIndicator(),
@@ -113,7 +113,7 @@ class _FAQPageState extends State<FAQPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const NewFaQScreen()));
+                      builder: (context) => NewFaQScreen()));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),
@@ -144,7 +144,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
               future: AnnouncementService().getAnnouncement(),
               builder: (context, snapshot) {
                 return snapshot.hasData
-                    ? ListView.builder(
+                    ? ListView.separated(
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Container(
@@ -153,8 +153,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                 child: Row(children: [
                                   const Icon(Icons.arrow_right,
                                       size: 20, color: Colors.black),
-                                  Text(snapshot.data![index].title)
-                                ])),
+                                  Text(snapshot.data![index].title, style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600,)
+                                  )])),
                             trailing: IconButton(
                               icon: const Icon(Icons.edit, size: 20),
                               onPressed: () {
@@ -169,10 +169,10 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                             subtitle: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(snapshot.data![index].content)),
+                                child: Text(snapshot.data![index].content, style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
                           );
                         },
-                        itemCount: snapshot.data!.length,
+                        itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
                       )
                     : const Center(
                         child: CircularProgressIndicator(),
@@ -184,7 +184,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const NewAnnoScreen()));
+                      builder: (context) => NewAnnoScreen()));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),
