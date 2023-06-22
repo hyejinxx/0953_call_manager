@@ -3,16 +3,17 @@ import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:call_0953_manager/util/calculateMileage.dart';
 import 'package:excel/excel.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firedart/firedart.dart';
 import 'package:intl/intl.dart';
 import '../model/call.dart';
 import '../model/mileage.dart';
 import '../model/user.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class CallService {
-  FirebaseDatabase database = FirebaseDatabase.instance;
   Firestore firestore = Firestore.instance;
+  final url = 'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
 
   Future<bool> excelToCall() async {
     try {
@@ -102,13 +103,8 @@ class CallService {
   Future<void> saveCall(Call call) async {
     try {
       print('saving');
-      await database
-          .ref()
-          .child('call')
-          .child(call.orderNumber)
-          .set(call.toJson())
-          .timeout(Duration(seconds: 10),
-              onTimeout: () => throw Exception('timeout'));
+      await http.post(Uri.parse(url), body: {call.orderNumber: call.toJson()});
+
       // 날짜별로 콜 기록 저장
       firestore
           .collection('call')
@@ -161,9 +157,10 @@ class CallService {
         }
       });
       await Future.wait(callNumberList.map((element) async {
-        await database.ref().child('call').child(element).get().then((value) {
-          callList.add(Call.fromDB(value.value));
-        });
+        final result = await http.get(Uri.parse(url));
+        final Map<String, dynamic> data =
+            json.decode(result.body) as Map<String, dynamic>;
+        callList.add(Call.fromJson(data[element]));
       }));
       return callList;
     } catch (e) {
@@ -174,12 +171,11 @@ class CallService {
   Future<List<Call>> getAllCall() async {
     List<Call> callList = [];
     try {
-      await database.ref().child('call').get().then((value) {
-        print(value.value);
-        if (value.value == null) return;
-        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+      await http.get(Uri.parse(url)).then((value) {
+        final Map<String, dynamic> data =
+            json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
-          callList.add(Call.fromDB(value));
+          callList.add(Call.fromJson(value));
         });
       });
       return callList;

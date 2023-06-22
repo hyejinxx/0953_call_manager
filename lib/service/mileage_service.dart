@@ -1,12 +1,15 @@
 import 'package:call_0953_manager/model/withdraw.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firedart/firedart.dart';
+import 'package:http/http.dart' as http;
 
 import '../model/mileage.dart';
 
 class MileageService {
   Firestore firestore = Firestore.instance;
-  FirebaseDatabase database = FirebaseDatabase.instance;
+  final mileageUrl =
+      'https://project-568166903627460027-default-rtdb.firebaseio.com/mileage.json';
+  final withdrawUrl =
+      'https://project-568166903627460027-default-rtdb.firebaseio.com/mileage.json';
 
   Future<void> saveMileage(Mileage mileage) async {
     try {
@@ -32,11 +35,8 @@ class MileageService {
         }
       });
       // 관리자용 마일리지 기록 저장
-      await database
-          .ref()
-          .child('mileage')
-          .child(mileage.orderNumber + mileage.type)
-          .set(mileage.toJson());
+      await http.post(Uri.parse(mileageUrl),
+          body: {mileage.orderNumber + mileage.type: mileage.toJson()});
 
       await firestore
           .collection('mileage')
@@ -76,11 +76,16 @@ class MileageService {
         });
       }
       // 관리자용 출금 기록 저장
-      await database
-          .ref()
-          .child('withdraw')
-          .child(withdraw.createdAt + withdraw.userCall)
-          .update({'status': status});
+      withdraw = Withdraw(
+          name: withdraw.name,
+          createdAt: withdraw.createdAt,
+          account: withdraw.account,
+          bank: withdraw.bank,
+          userCall: withdraw.userCall,
+          amount: withdraw.amount,
+          status: status);
+      await http.post(Uri.parse(withdrawUrl),
+          body: {withdraw.createdAt + withdraw.userCall: withdraw.toJson()});
     } catch (e) {
       throw Exception("saveWithdraw: $e");
     }
@@ -89,9 +94,9 @@ class MileageService {
   Future<List<Withdraw>> getWithdraw() async {
     List<Withdraw> withdrawList = [];
     try {
-      await database.ref().child('withdraw').get().then((value) {
-        if (value.value == null) return;
-        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+      await http.get(Uri.parse(withdrawUrl)).then((value) {
+        if (value.body == null) return;
+        final Map<dynamic, dynamic> data = value.body as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           withdrawList.add(Withdraw.fromDB(value));
         });
@@ -136,16 +141,14 @@ class MileageService {
           mileageIdList.add(element.map['mileage']);
         }
       });
-      await Future.wait(mileageIdList.map((element) async {
-        await database
-            .ref()
-            .child('mileage')
-            .child(element)
-            .get()
-            .then((value) {
-          mileageList.add(Mileage.fromDB(value.value));
+      await http.get(Uri.parse(mileageUrl)).then((value) {
+        if (value.body == null) return;
+        final Map<dynamic, dynamic> data = value.body as Map<dynamic, dynamic>;
+        data.forEach((key, value) {
+          mileageIdList.add(key);
+          mileageList.add(Mileage.fromDB(value));
         });
-      }));
+      });
       return mileageList;
     } catch (e) {
       throw Exception("getMileageRecord: $e");
@@ -155,10 +158,9 @@ class MileageService {
   Future<List<Mileage>> getAllMileage() async {
     List<Mileage> mileageList = [];
     try {
-      await database.ref().child('mileage').get().then((value) {
-        print(value.value);
-        if (value.value == null) return;
-        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+      await http.get(Uri.parse(mileageUrl)).then((value) {
+        if (value.body == null) return;
+        final Map<dynamic, dynamic> data = value.body as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           mileageList.add(Mileage.fromDB(value));
         });
