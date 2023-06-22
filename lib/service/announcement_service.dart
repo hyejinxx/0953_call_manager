@@ -11,7 +11,7 @@ class AnnouncementService{
 
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
-      firestore.collection('announcement').document('announcement').set({'announcement': announcement});
+      firestore.collection('announcement').document(announcement.createdAt).set(announcement.toJson());
     } catch (e) {
       throw Exception("saveAnnouncement: error");
     }
@@ -19,11 +19,13 @@ class AnnouncementService{
 
   Future<List<Announcement>> getAnnouncement() async {
     try {
-      Announcement announcement;
-      await firestore.collection('announcement').document('announcement').get().then((value) {
-        announcement = Announcement.fromJson(value.map['announcement']);
+      List<Announcement> announcement = [];
+      await firestore.collection('announcement').get().then((value) {
+        value.forEach((i) {
+          announcement.add(Announcement.fromJson(i.map));
+        });
       });
-      return [];
+      return announcement;
     } catch (e) {
       throw Exception("getAnnouncement: error");
     }
@@ -31,7 +33,7 @@ class AnnouncementService{
 
   Future<void> saveFAQ(FAQ faq) async {
     try {
-      firestore.collection('faq').document('faq').set({'faq': faq});
+      firestore.collection('faq').document('faq').set(faq.toJson());
     } catch (e) {
       throw Exception("saveFAQ: error");
     }
@@ -39,11 +41,13 @@ class AnnouncementService{
 
   Future<List<FAQ>> getFAQ() async {
     try {
-      FAQ faq;
-      await firestore.collection('faq').document('faq').get().then((value) {
-        faq = FAQ.fromJson(value.map['faq']);
+      List<FAQ> faq = [];
+      await firestore.collection('faq').get().then((value) {
+        value.forEach((i) {
+          faq.add(FAQ.fromJson(i.map));
+        });
       });
-      return [];
+      return faq;
     } catch (e) {
       throw Exception("getFAQ: error");
     }

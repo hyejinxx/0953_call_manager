@@ -1,5 +1,6 @@
 import 'package:call_0953_manager/scenario/main/faq/new_ann_screen.dart';
 import 'package:call_0953_manager/scenario/main/faq/new_faq_screen.dart';
+import 'package:call_0953_manager/service/announcement_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,6 +70,25 @@ class _FAQPageState extends State<FAQPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Expanded(
+          child: FutureBuilder(
+              future: AnnouncementService().getFAQ(),
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? ListView.builder(
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(snapshot.data![index].question),
+                            trailing: Text(snapshot.data![index].answer),
+                          );
+                        },
+                        itemCount: snapshot.data!.length,
+                      )
+                    : const Center(
+                        child: CircularProgressIndicator(),
+                      );
+              }),
+        ),
         InkWell(
             onTap: () {
               showModalBottomSheet(
@@ -100,6 +120,25 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Expanded(
+          child: FutureBuilder(
+              future: AnnouncementService().getAnnouncement(),
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? ListView.builder(
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(snapshot.data![index].title),
+                      subtitle: Text(snapshot.data![index].content),
+                    );
+                  },
+                  itemCount: snapshot.data!.length,
+                )
+                    : const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }),
+        ),
         InkWell(
             onTap: () {
               showModalBottomSheet(

@@ -82,24 +82,6 @@ class MileageService {
           .collection('withdraw')
           .document(withdraw.createdAt + withdraw.userCall)
           .update({'status': status});
-      // withdraw = Withdraw(
-      //     name: withdraw.name,
-      //     createdAt: withdraw.createdAt,
-      //     account: withdraw.account,
-      //     bank: withdraw.bank,
-      //     userCall: withdraw.userCall,
-      //     amount: withdraw.amount,
-      //     status: status);
-      // final a = await http.post(Uri.parse(withdrawUrl),
-      //     body: {withdraw.createdAt + withdraw.userCall: jsonEncode( Withdraw(
-      //         name: withdraw.name,
-      //         createdAt: withdraw.createdAt,
-      //         account: withdraw.account,
-      //         bank: withdraw.bank,
-      //         userCall: withdraw.userCall,
-      //         amount: withdraw.amount,
-      //         status: status))});
-      // print(a.body);
     } catch (e) {
       throw Exception("saveWithdraw: $e");
     }
