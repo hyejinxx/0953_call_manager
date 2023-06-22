@@ -78,8 +78,27 @@ class _FAQPageState extends State<FAQPage> {
                     ? ListView.builder(
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Row(children: [const Icon(Icons.arrow_right, size: 20, color: Colors.black),Text(snapshot.data![index].question)]),
-                            subtitle: Text(snapshot.data![index].answer),
+                            title: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 7),
+                                child: Text(
+                                    'Q${index + 1}. ${snapshot.data![index].question}')),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit, size: 20),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewFaQScreen(
+                                              faq: snapshot.data![index],
+                                            )));
+                              },
+                            ),
+                            subtitle: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child:
+                                    Text('A. ${snapshot.data![index].answer}')),
                           );
                         },
                         itemCount: snapshot.data!.length,
@@ -94,16 +113,14 @@ class _FAQPageState extends State<FAQPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const NewFaQScreen()
-                  ));
+                      builder: (context) => const NewFaQScreen()));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text('새 FaQ 작성'),
+              child: const Text('새 FaQ 작성'),
             ))
       ],
     );
@@ -128,17 +145,38 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
               builder: (context, snapshot) {
                 return snapshot.hasData
                     ? ListView.builder(
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Row(children: [const Icon(Icons.arrow_right, size: 20, color: Colors.black),Text(snapshot.data![index].title)]),
-                      subtitle: Text(snapshot.data![index].content),
-                    );
-                  },
-                  itemCount: snapshot.data!.length,
-                )
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 7),
+                                child: Row(children: [
+                                  const Icon(Icons.arrow_right,
+                                      size: 20, color: Colors.black),
+                                  Text(snapshot.data![index].title)
+                                ])),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit, size: 20),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewAnnoScreen(
+                                          ann: snapshot.data![index],
+                                        )));
+                              },
+                            ),
+                            subtitle: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(snapshot.data![index].content)),
+                          );
+                        },
+                        itemCount: snapshot.data!.length,
+                      )
                     : const Center(
-                  child: CircularProgressIndicator(),
-                );
+                        child: CircularProgressIndicator(),
+                      );
               }),
         ),
         InkWell(
@@ -146,16 +184,14 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const NewAnnoScreen()
-                  ));
+                      builder: (context) => const NewAnnoScreen()));
             },
             child: Container(
               color: Colors.yellow.withOpacity(0.7),
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text('새 공지 작성'),
+              child: const Text('새 공지 작성'),
             ))
       ],
     );

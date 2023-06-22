@@ -14,8 +14,9 @@ final imagePickerProvider = StateNotifierProvider<ImageState, File?>((ref) {
 });
 
 class NewAnnoScreen extends ConsumerStatefulWidget {
-  const NewAnnoScreen({super.key});
+   NewAnnoScreen({super.key, this.ann});
 
+  Announcement? ann;
   @override
   _NewAnnoScreenState createState() => _NewAnnoScreenState();
 }
@@ -23,6 +24,15 @@ class NewAnnoScreen extends ConsumerStatefulWidget {
 class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   final titleTextController = TextEditingController();
   final contentController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.ann != null) {
+      titleTextController.text = widget.ann!.title;
+      contentController.text = widget.ann!.content;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +113,12 @@ onTap: (){                if (titleTextController.text.isEmpty ||
                   final announcement = Announcement(
                       title: titleTextController.text,
                       content: contentController.text,
-                      createdAt: DateTime.now().toString(),
-                      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                      createdAt: widget.ann == null
+                          ? DateTime.now().toString()
+                          : widget.ann!.createdAt,
+                      date: widget.ann == null
+                          ? DateFormat('yyyy-MM-dd').format(DateTime.now())
+                          : widget.ann!.date,
                       image: null);
                   AnnouncementService()
                       .saveAnnouncement(announcement)
