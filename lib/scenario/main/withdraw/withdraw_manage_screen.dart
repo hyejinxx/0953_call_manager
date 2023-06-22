@@ -139,6 +139,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                       result[index].status = '출금완료';
                                     });
                                   }, child: const Text('출금 완료')),
+                                  const SizedBox(height: 10,),
                                   ElevatedButton(onPressed: (){
                                     MileageService().updateWithdraw(result[index], '출금거절');
                                     setState(() {

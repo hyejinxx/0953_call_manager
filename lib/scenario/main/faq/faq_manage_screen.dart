@@ -1,4 +1,5 @@
 import 'package:call_0953_manager/scenario/main/faq/new_ann_screen.dart';
+import 'package:call_0953_manager/scenario/main/faq/new_faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,8 +67,23 @@ class FAQPage extends StatefulWidget {
 class _FAQPageState extends State<FAQPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('FAQ'),
+    return Column(
+      children: [
+        InkWell(
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  useSafeArea: true,
+                  builder: (context) => const NewFaQScreen());
+            },
+            child: Container(
+              color: Colors.yellow.withOpacity(0.7),
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text('새 FaQ 작성'),
+            ))
+      ],
     );
   }
 }
@@ -88,13 +104,15 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             onTap: () {
               showModalBottomSheet(
                   context: context,
+                  useSafeArea: true,
                   builder: (context) => const NewAnnoScreen());
             },
             child: Container(
+              color: Colors.yellow.withOpacity(0.7),
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text('새 글 작성'),
+              child: Text('새 공지 작성'),
             ))
       ],
     );
