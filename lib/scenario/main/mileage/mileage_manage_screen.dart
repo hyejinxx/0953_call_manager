@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../model/mileage.dart';
 
@@ -130,7 +131,6 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
             ],
           ],
         ),
-        const Divider(),
         Expanded(
             child: FutureBuilder(
           future: MileageService().getAllMileage(),
@@ -150,34 +150,54 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                               .subtract(const Duration(days: 1))
                               .isBefore(endDate))
                       .toList();
-              return ListView.builder(
-                itemCount: result.length,
-                itemBuilder: (context, index) {
-                  return ExpansionTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(result[index].call),
-                        Text('${result[index].amount}원')
-                      ],
-                    ),
-                    subtitle: Text(
-                        result[index].date),
-                    expandedAlignment: Alignment.topLeft,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, bottom: 10),
-                        child: Text(
-                            '전화번호 : ${result[index].call}\n이름 : ${result[index].name}\n적립금 : ${result[index].amount.toString()}\n적립 종류: ${result[index].type}',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                height: 1.5)),
-                      )
-                    ],
-                  );
-                },
-              );
+              return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/5, source: MileageDataSource(mileageData: snapshot.data!), columns: <GridColumn>[
+                GridColumn(
+                    columnName: 'call',
+                    label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '전화번호',
+                          overflow: TextOverflow.ellipsis,
+                        ))),
+                GridColumn(
+                    columnName: 'name',
+                    label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '이름',
+                          overflow: TextOverflow.ellipsis,
+                        ))),
+                GridColumn(
+                    columnName: 'amount',
+                    label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '적립',
+                          overflow: TextOverflow.ellipsis,
+                        ))),
+                GridColumn(
+                    columnName: 'type',
+                    label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '적립 타입',
+                          overflow: TextOverflow.ellipsis,
+                        ))),
+                GridColumn(
+                    columnName: 'date',
+                    label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          '일자',
+                          overflow: TextOverflow.ellipsis,
+                        ))),
+
+              ]);
             } else {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -189,3 +209,38 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
     );
   }
 }
+
+class MileageDataSource extends DataGridSource {
+
+  /// Creates the employee data source class with required details.
+  MileageDataSource({required List<Mileage> mileageData}) {
+    _mileageData = mileageData
+        .map<DataGridRow>((e) => DataGridRow(cells: [
+      DataGridCell<String>(columnName: 'call', value: e.call),
+      DataGridCell<String>(columnName: 'name', value: e.name),
+      DataGridCell<int>(columnName: 'amount', value: e.amount),
+      DataGridCell<String>(columnName: 'type', value: e.type),
+      DataGridCell<String>(
+          columnName: 'date', value: '${e.date} ${e.date}'),
+    ]))
+        .toList();
+  }
+
+  List<DataGridRow> _mileageData = [];
+
+  @override
+  List<DataGridRow> get rows => _mileageData;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(e.value.toString()),
+          );
+        }).toList());
+  }
+}
+

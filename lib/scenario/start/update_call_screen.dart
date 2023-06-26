@@ -3,6 +3,8 @@ import 'package:call_0953_manager/service/call_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+enum SaveState { init, saving, success, fail }
+
 class UpdateCallScreen extends StatefulWidget {
   const UpdateCallScreen({Key? key}) : super(key: key);
 
@@ -11,6 +13,9 @@ class UpdateCallScreen extends StatefulWidget {
 }
 
 class _UpdateCallScreenState extends State<UpdateCallScreen> {
+
+  SaveState _saveState = SaveState.init;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +23,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
         body: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Center(
-                child: Column(
+                child: Stack(children: [Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Center(
@@ -30,13 +35,22 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                 ),
                 InkWell(
                   onTap: () async {
+                    setState(() {
+                      _saveState = SaveState.saving;
+                    });
                     final result = await CallService().excelToCall();
                     if (result) {
+                      setState(() {
+                        _saveState = SaveState.success;
+                      });
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('콜 저장이 완료되었습니다.'),
                         duration: Duration(seconds: 1),
                       ));
                     } else {
+                      setState(() {
+                        _saveState = SaveState.fail;
+                      });
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('콜 저장에 실패하였습니다.'),
                         duration: Duration(seconds: 1),
@@ -66,6 +80,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
+
                 ),
                 const SizedBox(
                   height: 20,
@@ -103,6 +118,15 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                   ),
                 ),
               ],
-            ))));
+            ), if (_saveState == SaveState.saving)
+    const Positioned(
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    child: Center(
+    child: SizedBox(width: 70, height: 70, child: CircularProgressIndicator(backgroundColor: Colors.amber, strokeWidth: 7,)),
+    ),
+    ),  ]))));
   }
 }

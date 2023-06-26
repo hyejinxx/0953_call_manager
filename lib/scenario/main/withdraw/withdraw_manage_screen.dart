@@ -1,4 +1,5 @@
 import 'package:call_0953_manager/model/withdraw.dart';
+import 'package:call_0953_manager/scenario/main/withdraw/withdraw_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -95,7 +96,83 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                   return false;
                 }
               }).toList();
-              return ListView.builder(
+              return
+                SfDataGrid(
+                  onCellTap: (value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WithdrawScreen(
+                              withdraw:result[value.rowColumnIndex.rowIndex-1],
+                            )));
+                  },
+                    defaultColumnWidth: MediaQuery.of(context).size.width/7, source: WithdrawSource(withdraw: result), columns: <GridColumn>[
+                  GridColumn(
+                      columnName: 'call',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '전화번호',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'name',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '예금주',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'amount',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '요청금액',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'bank',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '은행',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'account',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '계좌번호',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'date',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '요청일',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+
+                  GridColumn(
+                      columnName: 'status',
+                      label: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '출금상태',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                ]);
+              ListView.builder(
                 itemCount: result.length,
                 itemBuilder: (context, index) {
                   return ExpansionTile(
@@ -212,17 +289,21 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
   }
 }
 
+
 class WithdrawSource extends DataGridSource {
   /// Creates the employee data source class with required details.
   WithdrawSource({required List<Withdraw> withdraw}) {
     _withdraw = withdraw
         .map<DataGridRow>((e) => DataGridRow(cells: [
       DataGridCell<String>(columnName: 'call', value: e.userCall),
-      DataGridCell<String>(columnName: 'account', value: e.account),
+      DataGridCell<String>(columnName: 'name', value: e.name),
       DataGridCell<int>(columnName: 'amount', value: e.amount),
+      DataGridCell<String>(columnName: 'bank', value: e.bank),
       DataGridCell<String>(
-          columnName: 'bank', value: e.bank ?? ''),
-      DataGridCell<String>(columnName: 'store', value: e.status!),
+          columnName: 'account', value: e.account),
+      DataGridCell<String>(
+            columnName: 'date', value: e.createdAt),
+      DataGridCell<String>(columnName: 'status', value: e.status!),
     ]))
         .toList();
   }

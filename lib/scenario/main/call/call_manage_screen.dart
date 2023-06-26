@@ -118,7 +118,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,9 +156,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                   ],
                 ),
               ],
-            ],
-          ),
-          const Divider(),
+            ],),
           Expanded(
             child: FutureBuilder(
               future: isUser
@@ -180,9 +178,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                   .subtract(const Duration(days: 1))
                                   .isBefore(endDate))
                           .toList();
-                  return Stack(
-                    children: [
-                      SfDataGrid(source: CallDataSource(callData: snapshot.data!), columns: <GridColumn>[
+                  return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/6, source: CallDataSource(callData: snapshot.data!), columns: <GridColumn>[
                         GridColumn(
                             columnName: 'call',
                             label: Container(
@@ -237,37 +233,8 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                   '대리 금액',
                                   overflow: TextOverflow.ellipsis,
                                 ))),
-                      ]),
-                      // ListView.builder(
-                      //   itemCount: result.length,
-                      //   itemBuilder: (context, index) {
-                      //     return ExpansionTile(
-                      //       title: Row(
-                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //         children: [
-                      //           Text(result[index].call),
-                      //           Text('${result[index].price}원')
-                      //         ],
-                      //       ),
-                      //       subtitle: Text(
-                      //           result[index].date.replaceAll('-', '/') +
-                      //               result[index].time),
-                      //       expandedAlignment: Alignment.topLeft,
-                      //       children: [
-                      //         Padding(
-                      //           padding:
-                      //               const EdgeInsets.only(left: 20, bottom: 10),
-                      //           child: Text(
-                      //               '전화번호: ${result[index].call}\n닉네임: ${result[index].name}\n대리 요금: ${result[index].price.toString()}\n적립금: ${result[index].mileage}\n추가 적립금: ${result[index].bonusMileage}',
-                      //               style: const TextStyle(
-                      //                   fontSize: 16,
-                      //                   fontWeight: FontWeight.w500,
-                      //                   height: 1.5)),
-                      //         )
-                      //       ],
-                      //     );
-                      //   },
-                      // ),
+                      ]);
+
                       Positioned(
                         bottom: 0,
                         left: 0,
@@ -282,9 +249,8 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                               color: Colors.white,
                               child: const Text('비회원 대리 기록 삭제하기'),
                             )),
-                      )
-                    ],
-                  );
+
+                      );
                 } else {
                   return const Center(
                     child: Text('데이터가 없습니다.'),

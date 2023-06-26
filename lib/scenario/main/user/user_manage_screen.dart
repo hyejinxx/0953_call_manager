@@ -58,6 +58,14 @@ class _UserManageScreenState extends State<UserManageScreen> {
                   return SfDataGrid(
                       source: UserDataSource(userData: snapshot.data!),
                       columnWidthMode: ColumnWidthMode.fill,
+                      onCellTap: (value) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserMileageRecordScreen(
+                                        user:userList[value.rowColumnIndex.rowIndex-1].call,
+                                      )));
+                      },
                       columns: <GridColumn>[
                         GridColumn(
                             columnName: 'call',
