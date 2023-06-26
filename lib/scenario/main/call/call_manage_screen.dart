@@ -178,7 +178,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                   .subtract(const Duration(days: 1))
                                   .isBefore(endDate))
                           .toList();
-                  return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/6, source: CallDataSource(callData: snapshot.data!), columns: <GridColumn>[
+                  return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/6, source: CallDataSource(callData: result), columns: <GridColumn>[
                         GridColumn(
                             columnName: 'call',
                             label: Container(

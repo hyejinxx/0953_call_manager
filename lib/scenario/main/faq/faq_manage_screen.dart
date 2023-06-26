@@ -98,7 +98,7 @@ class _FAQPageState extends State<FAQPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child:
-                                    Text('A. ${snapshot.data![index].answer}', style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
+                                    Text('A. ${snapshot.data![index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}', style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
                           );
                         },
                         itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:call_0953_manager/model/withdraw.dart';
 import 'package:firedart/firedart.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../model/mileage.dart';
 
@@ -74,6 +75,17 @@ class MileageService {
                 .collection('user')
                 .document(withdraw.userCall)
                 .update({'mileage': updatedMileage});
+
+            saveMileage(Mileage(
+                orderNumber:
+                DateTime.now().millisecondsSinceEpoch.toString() +
+                   withdraw.userCall,
+                name: withdraw.name ?? '',
+                call: withdraw.userCall,
+                type: '출금 수수료',
+                amount: -500,
+                date: DateFormat('yyyy-MM-dd').format(DateTime.now())));
+
           }
         });
       }
