@@ -3,6 +3,7 @@ import 'package:call_0953_manager/service/call_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CallManageScreen extends ConsumerStatefulWidget {
   const CallManageScreen({super.key});
@@ -181,37 +182,92 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                           .toList();
                   return Stack(
                     children: [
-                      ListView.builder(
-                        itemCount: result.length,
-                        itemBuilder: (context, index) {
-                          return ExpansionTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(result[index].call),
-                                Text('${result[index].price}원')
-                              ],
-                            ),
-                            subtitle: Text(result[index]
-                                .date
-                                .toString()
-                                .replaceAll('-', '/')),
-                            expandedAlignment: Alignment.topLeft,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, bottom: 10),
-                                child: Text(
-                                    '전화번호: ${result[index].call}\n닉네임: ${result[index].name}\n대리 요금: ${result[index].price.toString()}\n적립금: ${result[index].mileage}\n추가 적립금: ${result[index].bonusMileage}',
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.5)),
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                      SfDataGrid(source: CallDataSource(callData: snapshot.data!), columns: <GridColumn>[
+                        GridColumn(
+                            columnName: 'call',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '전화번호',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'name',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '이름',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'mileage',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '적립',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'bonusMileage',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '이벤트 적립',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'date',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '일자',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'price',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '대리 금액',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                      ]),
+                      // ListView.builder(
+                      //   itemCount: result.length,
+                      //   itemBuilder: (context, index) {
+                      //     return ExpansionTile(
+                      //       title: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Text(result[index].call),
+                      //           Text('${result[index].price}원')
+                      //         ],
+                      //       ),
+                      //       subtitle: Text(
+                      //           result[index].date.replaceAll('-', '/') +
+                      //               result[index].time),
+                      //       expandedAlignment: Alignment.topLeft,
+                      //       children: [
+                      //         Padding(
+                      //           padding:
+                      //               const EdgeInsets.only(left: 20, bottom: 10),
+                      //           child: Text(
+                      //               '전화번호: ${result[index].call}\n닉네임: ${result[index].name}\n대리 요금: ${result[index].price.toString()}\n적립금: ${result[index].mileage}\n추가 적립금: ${result[index].bonusMileage}',
+                      //               style: const TextStyle(
+                      //                   fontSize: 16,
+                      //                   fontWeight: FontWeight.w500,
+                      //                   height: 1.5)),
+                      //         )
+                      //       ],
+                      //     );
+                      //   },
+                      // ),
                       Positioned(
                         bottom: 0,
                         left: 0,
@@ -224,7 +280,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                               height: 50,
                               width: double.infinity,
                               color: Colors.white,
-                              child: Text('비회원 대리 기록 삭제하기'),
+                              child: const Text('비회원 대리 기록 삭제하기'),
                             )),
                       )
                     ],
@@ -240,3 +296,37 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
         ]));
   }
 }
+class CallDataSource extends DataGridSource {
+  /// Creates the employee data source class with required details.
+  CallDataSource({required List<Call> callData}) {
+    _callData = callData
+        .map<DataGridRow>((e) => DataGridRow(cells: [
+      DataGridCell<String>(columnName: 'call', value: e.call),
+      DataGridCell<String>(columnName: 'name', value: e.name),
+      DataGridCell<int>(columnName: 'mileage', value: e.mileage),
+      DataGridCell<int>(columnName: 'bonusMileage', value: e.bonusMileage),
+      DataGridCell<String>(
+          columnName: 'date', value: '${e.date} ${e.time}'),
+      DataGridCell<int>(columnName: 'price', value: e.price),
+    ]))
+        .toList();
+  }
+
+  List<DataGridRow> _callData = [];
+
+  @override
+  List<DataGridRow> get rows => _callData;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(e.value.toString()),
+          );
+        }).toList());
+  }
+}
+

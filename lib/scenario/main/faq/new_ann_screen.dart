@@ -70,7 +70,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                         ),
                       ),
                     ),
-                    imageBox(img)
+                    // imageBox(img)
                   ],
                 ),
                 Expanded(child:

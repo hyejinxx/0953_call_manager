@@ -1,6 +1,7 @@
 import 'package:call_0953_manager/model/withdraw.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../service/mileage_service.dart';
 import '../user/user_mileage_list_screen.dart';
@@ -21,6 +22,8 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
 
   WithdrawStatus isAll = WithdrawStatus.all;
 
+  final _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -28,10 +31,10 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
       height: MediaQuery.of(context).size.height,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ExpansionTile(
-          title: Text('출금 상태 선택'),
+          title: const Text('출금 상태 선택'),
           children: [
             RadioListTile(
-              title: Text("전체"),
+              title: const Text("전체"),
               value: WithdrawStatus.all,
               groupValue: isAll,
               onChanged: (WithdrawStatus? value) {
@@ -41,7 +44,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
               },
             ),
             RadioListTile(
-              title: Text("출금 요청"),
+              title: const Text("출금 요청"),
               value: WithdrawStatus.waiting,
               groupValue: isAll,
               onChanged: (WithdrawStatus? value) {
@@ -51,7 +54,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
               },
             ),
             RadioListTile(
-              title: Text("출금 완료"),
+              title: const Text("출금 완료"),
               value: WithdrawStatus.completed,
               groupValue: isAll,
               onChanged: (WithdrawStatus? value) {
@@ -61,7 +64,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
               },
             ),
             RadioListTile(
-              title: Text("출금 거절"),
+              title: const Text("출금 거절"),
               value: WithdrawStatus.rejected,
               groupValue: isAll,
               onChanged: (WithdrawStatus? value) {
@@ -87,7 +90,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                 } else if (isAll == WithdrawStatus.completed) {
                   return element.status == '출금완료';
                 } else if (isAll == WithdrawStatus.rejected) {
-                  return element.status == '출금거절';
+                  return element.status!.contains('출금거절');
                 } else {
                   return false;
                 }
@@ -130,48 +133,67 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                       height: 1.5)),
                               if(result[index].status == '요청대기')...[
                                 Column(children: [
-                                  ElevatedButton(onPressed: (){
-                                    MileageService().updateWithdraw(result[index], '출금완료');
-                                    setState(() {
-                                      result[index].status = '출금완료';
-                                    });
-                                    setState(() {
-                                      result[index].status = '출금완료';
-                                    });
+                                  ElevatedButton(onPressed: ()async{
+                                    final re = await showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('출금 완료'),
+                                      content: const Text('출금을 완료하시겠습니까?'),
+                                      actions: [
+                                        TextButton(onPressed: (){
+                                          Navigator.pop(context, true);
+                                        }, child: const Text('확인')),
+                                        TextButton(onPressed: (){
+                                          Navigator.pop(context, false);
+                                        }, child: const Text('취소')),
+                                      ],
+                                    ));
+                                    if(re == true){
+                                      MileageService().updateWithdraw(result[index], '출금완료');
+                                      setState(() {
+                                        result[index].status = '출금완료';
+                                      });
+                                      setState(() {
+                                      });
+                                    }
                                   }, child: const Text('출금 완료')),
                                   const SizedBox(height: 10,),
-                                  ElevatedButton(onPressed: (){
-                                    MileageService().updateWithdraw(result[index], '출금거절');
-                                    setState(() {
-                                      result[index].status = '출금거절';
-                                    });
-                                    setState(() {
-                                      result[index].status = '출금거절';
-                                    });
-
+                                  ElevatedButton(onPressed: ()async{
+                                    final re = await showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('출금 거절'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text('출금을 거절하시겠습니까?'),
+                                          const SizedBox(height: 10,),
+                                          TextField(
+                                            controller: _controller,
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              labelText: '거절 사유',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(onPressed: (){
+                                          Navigator.pop(context, true);
+                                        }, child: const Text('확인')),
+                                        TextButton(onPressed: (){
+                                          Navigator.pop(context, false);
+                                        }, child: const Text('취소')),
+                                      ],
+                                    ));
+                                    if(re){
+                                      MileageService().updateWithdraw(result[index], '출금거절${_controller.text}');
+                                      setState(() {
+                                        result[index].status = '출금거절';
+                                      });
+                                      setState(() {
+                                        result[index].status = '출금거절';
+                                      });
+                                    }
                                   }, child: const Text('출금 거절')),
                                 ],),
                               ]
-
-                              // InkWell(
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //         context,
-                              //         MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               UserMileageRecordScreen(
-                              //                   user: result[index].userCall),
-                              //         ));
-                              //   },
-                              //   child: Container(
-                              //     padding: const EdgeInsets.symmetric(
-                              //         horizontal: 8, vertical: 4),
-                              //     decoration: BoxDecoration(
-                              //         borderRadius: BorderRadius.circular(4),
-                              //         border: Border.all(color: Colors.black)),
-                              //     child: const Text('마일리지 내역'),
-                              //   ),
-                              // )
                             ],
                           ))
                     ],
@@ -187,5 +209,38 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
         ))
       ]),
     );
+  }
+}
+
+class WithdrawSource extends DataGridSource {
+  /// Creates the employee data source class with required details.
+  WithdrawSource({required List<Withdraw> withdraw}) {
+    _withdraw = withdraw
+        .map<DataGridRow>((e) => DataGridRow(cells: [
+      DataGridCell<String>(columnName: 'call', value: e.userCall),
+      DataGridCell<String>(columnName: 'account', value: e.account),
+      DataGridCell<int>(columnName: 'amount', value: e.amount),
+      DataGridCell<String>(
+          columnName: 'bank', value: e.bank ?? ''),
+      DataGridCell<String>(columnName: 'store', value: e.status!),
+    ]))
+        .toList();
+  }
+
+  List<DataGridRow> _withdraw = [];
+
+  @override
+  List<DataGridRow> get rows => _withdraw;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(e.value.toString()),
+          );
+        }).toList());
   }
 }
