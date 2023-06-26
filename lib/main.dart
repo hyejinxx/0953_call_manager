@@ -1,6 +1,4 @@
-import 'package:call_0953_manager/firebase_options.dart';
 import 'package:call_0953_manager/scenario/start/update_call_screen.dart';
-//import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';

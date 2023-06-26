@@ -13,7 +13,10 @@ import 'package:http/http.dart' as http;
 
 class CallService {
   Firestore firestore = Firestore.instance;
-  final url = 'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
+  final url =
+      'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
+  final urlNotUser =
+      'https://project-568166903627460027-default-rtdb.firebaseio.com/notUser.json';
 
   Future<bool> excelToCall() async {
     try {
@@ -64,35 +67,36 @@ class CallService {
           }
           final data = row.map((e) => e?.value);
 
-          User? user = await UserService().getUser(
-              data.elementAt(callIndex).toString().replaceAll('-', ''));
-          if (user != null) {
-            print('user: ${user.name}');
-            final orderNumber =
-                '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
-                    .replaceAll('/', '');
-            final bonusMileage = await calMileage(
-                data.elementAt(cardIndex).toString().contains('결제완료'
-                    '')
-                    ? '카드'
-                    : '현금',
+          final orderNumber =
+              '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
+                  .replaceAll('/', '');
+          final bonusMileage = await calMileage(
+              data.elementAt(cardIndex).toString().contains('결제완료'
+                      '')
+                  ? '카드'
+                  : '현금',
               int.parse(data.elementAt(priceIndex).toString()));
 
-            final call = Call(
-                orderNumber: orderNumber,
-                name: data.elementAt(nameIndex).toString(),
-                call: data.elementAt(callIndex).toString().replaceAll('-', ''),
-                price: int.parse(data.elementAt(priceIndex).toString()),
-                date: DateFormat('yyyy-').format(DateTime.now()) +
-                    data.elementAt(dateIndex).toString().replaceAll('/', '-'),
-                time: data.elementAt(timeIndex).toString(),
-                startAddress: data.elementAt(startAddressIndex).toString(),
-                endAddress: data.elementAt(endAddressIndex).toString(),
-                mileage: 1000,
-                bonusMileage: bonusMileage);
-            print(call);
+          final call = Call(
+              orderNumber: orderNumber,
+              name: data.elementAt(nameIndex).toString(),
+              call: data.elementAt(callIndex).toString().replaceAll('-', ''),
+              price: int.parse(data.elementAt(priceIndex).toString()),
+              date: DateFormat('yyyy-').format(DateTime.now()) +
+                  data.elementAt(dateIndex).toString().replaceAll('/', '-'),
+              time: data.elementAt(timeIndex).toString(),
+              startAddress: data.elementAt(startAddressIndex).toString(),
+              endAddress: data.elementAt(endAddressIndex).toString(),
+              mileage: 1000,
+              bonusMileage: bonusMileage);
+
+          User? user = await UserService().getUser(
+              data.elementAt(callIndex).toString().replaceAll('-', ''));
+          print(call);
+          if (user != null) {
+            print('user: ${user.name}');
             await saveCall(call);
-          }
+          } else {}
         }
       }));
       return true;
@@ -100,6 +104,8 @@ class CallService {
       throw Exception(e.toString());
     }
   }
+
+
 
   Future<void> saveCall(Call call) async {
     try {
@@ -160,7 +166,7 @@ class CallService {
       });
       await Future.wait(callNumberList.map((element) async {
         final result = await http.get(Uri.parse(url));
-        if(jsonDecode(result.body) == null) return;
+        if (jsonDecode(result.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(result.body) as Map<String, dynamic>;
         callList.add(Call.fromJson(data[element]));
@@ -176,7 +182,7 @@ class CallService {
     try {
       await http.get(Uri.parse(url)).then((value) {
         print(value.body);
-        if(jsonDecode(value.body) == null) return;
+        if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
@@ -186,6 +192,54 @@ class CallService {
       return callList;
     } catch (e) {
       throw Exception("getCallRecord: $e");
+    }
+  }
+
+  Future<void> saveCallNotUser(Call call) async {
+    try {
+      print('saving');
+      final a = await http.post(Uri.parse(urlNotUser), body: jsonEncode(call));
+      final callNum = jsonDecode(a.body)['name'];
+
+      // // 날짜별로 콜 기록 저장
+      // firestore
+      //     .collection('callNotUser')
+      //     .document(call.date.substring(0, 7))
+      //     .collection(call.date.substring(8, 10))
+      //     .document(callNum)
+      //     .set({'call': callNum});
+
+      print('saved');
+    } catch (e) {
+      print('error');
+      throw Exception("saveCall: $e");
+    }
+  }
+
+  Future<List<Call>> getAllCallNotUser() async {
+    List<Call> callList = [];
+    try {
+      await http.get(Uri.parse(urlNotUser)).then((value) {
+        print(value.body);
+        if (jsonDecode(value.body) == null) return;
+        final Map<String, dynamic> data =
+        json.decode(value.body) as Map<String, dynamic>;
+        data.forEach((key, value) {
+          callList.add(Call.fromJson(value));
+        });
+      });
+      return callList;
+    } catch (e) {
+      throw Exception("getCallRecord: $e");
+    }
+  }
+
+  Future<void> deleteAllCallNotUser() async {
+    try {
+      await http.delete(Uri.parse(urlNotUser)).then((value) {
+      });
+    } catch (e) {
+      throw Exception("deleteAllCallNotUser: $e");
     }
   }
 }
