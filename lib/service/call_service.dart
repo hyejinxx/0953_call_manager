@@ -72,7 +72,8 @@ class CallService {
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
             final bonusMileage = await calMileage(
-                data.elementAt(cardIndex).toString().contains('카드')
+                data.elementAt(cardIndex).toString().contains('결제완료'
+                    '')
                     ? '카드'
                     : '현금',
               int.parse(data.elementAt(priceIndex).toString()));
@@ -130,16 +131,16 @@ class CallService {
         type: '콜',
         amount: 1000,
         date: call.date);
-    MileageService().saveMileage(mileage);
+    await MileageService().saveMileage(mileage);
     if (call.bonusMileage != null && call.bonusMileage != 0) {
       final Mileage bonusMileage = Mileage(
           orderNumber: call.orderNumber,
           name: call.name,
           call: call.call,
-          type: '추가 마일리지',
+          type: '이벤트 마일리지',
           amount: call.bonusMileage!,
           date: call.date);
-      MileageService().saveMileage(bonusMileage);
+      await MileageService().saveMileage(bonusMileage);
     }
   }
 
