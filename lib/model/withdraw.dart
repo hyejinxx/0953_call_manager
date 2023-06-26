@@ -4,7 +4,7 @@ class Withdraw {
   final String bank;
   final String account;
   final String name;
-  String status;
+  String? status;
   final String createdAt;
 
   Withdraw({
@@ -13,7 +13,7 @@ class Withdraw {
     required this.bank,
     required this.account,
     required this.name,
-    required this.status,
+    this.status,
     required this.createdAt,
   });
 
@@ -31,21 +31,21 @@ class Withdraw {
 
   factory Withdraw.fromDB(db) => Withdraw(
     userCall: db['userCall'],
-        amount: db['amount'],
-        bank: db['bank'],
-        account: db['account'],
-        name: db['name'],
-        status: db['status'],
-        createdAt: db['createdAt'],
-      );
+    amount: db['amount'],
+    bank: db['bank'],
+    account: db['account'],
+    name: db['name'],
+    status: db['status'],
+    createdAt: db['createdAt'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'userCall': userCall,
-        'amount': amount,
-        'bank': bank,
-        'account': account,
-        'name': name,
-        'status': status,
-        'createdAt': createdAt,
-      };
+    'userCall': userCall,
+    'amount': amount,
+    'bank': bank,
+    'account': account,
+    'name': name,
+    'status': status,
+    'createdAt': createdAt,
+  };
 }

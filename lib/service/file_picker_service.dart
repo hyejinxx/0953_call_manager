@@ -10,4 +10,11 @@ class FilePickerService{
     if(filePickerResult == null) return null;
     return File(filePickerResult.files.first.path!);
   }
+  Future<File?> pickImageFile() async {
+    final image = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if(image == null) return null;
+    return File(image.files.first.path!);
+  }
 }

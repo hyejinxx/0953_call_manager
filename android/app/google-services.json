@@ -113,6 +113,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411765918979:android:77e8d55c930dbe984f6d36",
+        "android_client_info": {
+          "package_name": "com.example.call_0953_windows"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411765918979-jgk3gh91sunc76q1k091isok4j029dhu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmdhOJUkE31Z76w7HyvDvoOrByyAwHqTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411765918979-3kkrhrqgaaqk9pilnhlj3ioj8ml5lkja.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411765918979-1uei2m41ciqd787c5o2klsk68pqktimu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.call0953.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

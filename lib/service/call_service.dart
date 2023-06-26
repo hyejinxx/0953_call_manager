@@ -2,17 +2,18 @@ import 'package:call_0953_manager/service/file_picker_service.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:call_0953_manager/util/calculateMileage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firedart/firedart.dart';
 import 'package:intl/intl.dart';
 import '../model/call.dart';
 import '../model/mileage.dart';
 import '../model/user.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class CallService {
-  FirebaseDatabase database = FirebaseDatabase.instance;
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Firestore firestore = Firestore.instance;
+  final url = 'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
 
   Future<bool> excelToCall() async {
     try {
@@ -71,7 +72,8 @@ class CallService {
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
             final bonusMileage = await calMileage(
-                data.elementAt(cardIndex).toString().contains('카드')
+                data.elementAt(cardIndex).toString().contains('결제완료'
+                    '')
                     ? '카드'
                     : '현금',
               int.parse(data.elementAt(priceIndex).toString()));
@@ -102,20 +104,16 @@ class CallService {
   Future<void> saveCall(Call call) async {
     try {
       print('saving');
-      await database
-          .ref()
-          .child('call')
-          .child(call.orderNumber)
-          .set(call.toJson())
-          .timeout(Duration(seconds: 10),
-              onTimeout: () => throw Exception('timeout'));
+      final a = await http.post(Uri.parse(url), body: jsonEncode(call));
+      final callNum = jsonDecode(a.body)['name'];
+
       // 날짜별로 콜 기록 저장
       firestore
           .collection('call')
-          .doc(call.date.substring(0, 7))
+          .document(call.date.substring(0, 7))
           .collection(call.date.substring(8, 10))
-          .doc(call.orderNumber)
-          .set({'call': call.orderNumber});
+          .document(callNum)
+          .set({'call': callNum});
 
       saveMileage(call);
       print('saved');
@@ -133,16 +131,16 @@ class CallService {
         type: '콜',
         amount: 1000,
         date: call.date);
-    MileageService().saveMileage(mileage);
+    await MileageService().saveMileage(mileage);
     if (call.bonusMileage != null && call.bonusMileage != 0) {
       final Mileage bonusMileage = Mileage(
           orderNumber: call.orderNumber,
           name: call.name,
           call: call.call,
-          type: '추가 마일리지',
+          type: '이벤트 마일리지',
           amount: call.bonusMileage!,
           date: call.date);
-      MileageService().saveMileage(bonusMileage);
+      await MileageService().saveMileage(bonusMileage);
     }
   }
 
@@ -152,18 +150,20 @@ class CallService {
     try {
       await firestore
           .collection('call')
-          .doc('202302')
+          .document('202302')
           .collection('25')
           .get()
           .then((value) {
-        for (var element in value.docs) {
-          callNumberList.add(element.data()['call']);
+        for (var element in value) {
+          callNumberList.add(element.map['call']);
         }
       });
       await Future.wait(callNumberList.map((element) async {
-        await database.ref().child('call').child(element).get().then((value) {
-          callList.add(Call.fromDB(value.value));
-        });
+        final result = await http.get(Uri.parse(url));
+        if(jsonDecode(result.body) == null) return;
+        final Map<String, dynamic> data =
+            json.decode(result.body) as Map<String, dynamic>;
+        callList.add(Call.fromJson(data[element]));
       }));
       return callList;
     } catch (e) {
@@ -174,12 +174,13 @@ class CallService {
   Future<List<Call>> getAllCall() async {
     List<Call> callList = [];
     try {
-      await database.ref().child('call').get().then((value) {
-        print(value.value);
-        if (value.value == null) return;
-        final Map<dynamic, dynamic> data = value.value as Map<dynamic, dynamic>;
+      await http.get(Uri.parse(url)).then((value) {
+        print(value.body);
+        if(jsonDecode(value.body) == null) return;
+        final Map<String, dynamic> data =
+            json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
-          callList.add(Call.fromDB(value));
+          callList.add(Call.fromJson(value));
         });
       });
       return callList;
