@@ -9,8 +9,8 @@ class Call {
   final String? company;
   final String date;
   final String time;
-  final int? mileage;
-  final int? bonusMileage;
+  int? mileage;
+  int? bonusMileage;
 
   Call({
     required this.orderNumber,

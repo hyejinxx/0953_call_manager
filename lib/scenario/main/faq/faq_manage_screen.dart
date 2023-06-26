@@ -169,7 +169,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                             subtitle: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(snapshot.data![index].content, style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
+                                child: Text(snapshot.data![index].content.replaceAll('\\n', '\n').replaceAll('\\', ''), style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
                           );
                         },
                         itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },

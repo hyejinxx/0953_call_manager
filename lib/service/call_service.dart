@@ -67,21 +67,24 @@ class CallService {
           }
           final data = row.map((e) => e?.value);
 
-          final orderNumber =
-              '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
-                  .replaceAll('/', '');
-          final bonusMileage = await calMileage(
-              data.elementAt(cardIndex).toString().contains('결제완료'
-                      '')
-                  ? '카드'
-                  : '현금',
-              int.parse(data.elementAt(priceIndex).toString()));
+          try {
+            final orderNumber =
+            '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data
+                .elementAt(callIndex)}'
+                .replaceAll('/', '');
+            final bonusMileage = await calMileage(
+                data.elementAt(cardIndex).toString().contains('결제완료'
+                    '')
+                    ? '카드'
+                    : '현금',
+                int.parse(
+                    data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
-          final call = Call(
+          Call call = Call(
               orderNumber: orderNumber,
               name: data.elementAt(nameIndex).toString(),
               call: data.elementAt(callIndex).toString().replaceAll('-', ''),
-              price: int.parse(data.elementAt(priceIndex).toString()),
+              price: int.parse(data.elementAt(priceIndex).toString().replaceAll(',', '')),
               date: DateFormat('yyyy-').format(DateTime.now()) +
                   data.elementAt(dateIndex).toString().replaceAll('/', '-'),
               time: data.elementAt(timeIndex).toString(),
@@ -96,7 +99,17 @@ class CallService {
           if (user != null) {
             print('user: ${user.name}');
             await saveCall(call);
-          } else {}
+          } else {
+            print('not user');
+            call.mileage = 0;
+            call.bonusMileage = 0;
+
+            await saveCallNotUser(call);
+          }
+          } catch (e) {
+            print(e);
+            continue;
+          }
         }
       }));
       return true;

@@ -76,7 +76,6 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
             ),
           ],
         ),
-        const Divider(),
         Expanded(
             child: FutureBuilder(
           future: MileageService().getWithdraw(),

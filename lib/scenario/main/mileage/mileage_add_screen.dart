@@ -38,6 +38,12 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(0),
             child: Container(

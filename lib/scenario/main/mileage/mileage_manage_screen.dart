@@ -55,9 +55,10 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('시작 날짜 : ${startDate.toString().substring(0, 10)}',
@@ -91,9 +92,10 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('끝 날짜 : ${endDate.toString().substring(0, 10)}',
@@ -150,7 +152,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                               .subtract(const Duration(days: 1))
                               .isBefore(endDate))
                       .toList();
-              return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/5, source: MileageDataSource(mileageData: snapshot.data!), columns: <GridColumn>[
+              return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/5, source: MileageDataSource(mileageData: result), columns: <GridColumn>[
                 GridColumn(
                     columnName: 'call',
                     label: Container(

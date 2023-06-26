@@ -77,20 +77,17 @@ class UserMileageRecordScreenState
               ),
               actions: [
                 // 회원 정보 수정 아이콘
-                IconButton(
+                 IconButton(
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => UserEditScreen(user: user)));
                   },
-                  icon: IconButton(
-                    icon: const Icon(Icons.edit),
+                  icon: Padding(padding: EdgeInsets.only(right: 20), child: Icon(Icons.edit,
                     color: Colors.black,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
+                  )),
+
                 ),
               ],
             ),

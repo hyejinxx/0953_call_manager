@@ -56,7 +56,7 @@ class _UserManageScreenState extends State<UserManageScreen> {
                   );
                 } else {
                   return SfDataGrid(
-                      source: UserDataSource(userData: snapshot.data!),
+                      source: UserDataSource(userData: userList),
                       columnWidthMode: ColumnWidthMode.fill,
                       onCellTap: (value) {
                           Navigator.push(
@@ -110,6 +110,15 @@ class _UserManageScreenState extends State<UserManageScreen> {
                                 alignment: Alignment.center,
                                 child: const Text(
                                   '가맹점',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'storeCall',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '가맹점 번호',
                                   overflow: TextOverflow.ellipsis,
                                 ))),
                       ]);
@@ -182,6 +191,7 @@ class UserDataSource extends DataGridSource {
               DataGridCell<String>(
                   columnName: 'joinDate', value: e.createdAt.toString()),
               DataGridCell<String>(columnName: 'store', value: e.store ?? ''),
+      DataGridCell<String>(columnName: 'storeCall', value: e.storeCall ?? ''),
             ]))
         .toList();
   }

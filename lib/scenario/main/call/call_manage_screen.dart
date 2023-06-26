@@ -235,22 +235,6 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                 ))),
                       ]);
 
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: InkWell(
-                            onTap: () {
-                              CallService().deleteAllCallNotUser();
-                            },
-                            child: Container(
-                              height: 50,
-                              width: double.infinity,
-                              color: Colors.white,
-                              child: const Text('비회원 대리 기록 삭제하기'),
-                            )),
-
-                      );
                 } else {
                   return const Center(
                     child: Text('데이터가 없습니다.'),
@@ -258,7 +242,32 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                 }
               },
             ),
-          )
+          ),
+        InkWell(
+                onTap: () {
+                  showDialog(context: context, builder: (BuildContext context){
+                    return AlertDialog(
+                      title: const Text('비회원 대리 기록 삭제'),
+                      content: const Text('비회원 대리 기록을 모두 삭제하시겠습니까?'),
+                      actions: [
+                        TextButton(onPressed: (){
+                          Navigator.pop(context, false);
+                        }, child: const Text('취소')),
+                        TextButton(onPressed: (){
+                          CallService().deleteAllCallNotUser();
+                          Navigator.pop(context, true);
+                        }, child: const Text('확인')),
+                      ],
+                    );
+                  });
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  width: double.infinity,
+                  color: Colors.yellow,
+                  child: const Text('비회원 대리 기록 삭제하기', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )))
         ]));
   }
 }

@@ -25,6 +25,13 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            color: Colors.black,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(0),
             child: Container(
@@ -33,14 +40,29 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
             ),
           ),
         ),
-        body: SizedBox(
+        body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.all(20),
+            alignment: Alignment.topLeft,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    const Text('출금 상태: '),
+                    Text(widget.withdraw.status??''),
+                  ],
+                ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('요청 사용자 번호: '),
+                    Text(widget.withdraw.userCall),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
                   children: [
                     const Text('출금 금액: '),
                     Text(widget.withdraw.amount.toString()),
@@ -48,7 +70,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('출금 은행: '),
                     Text(widget.withdraw.bank),
@@ -56,7 +77,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('출금 계좌: '),
                     Text(widget.withdraw.account),
@@ -64,7 +84,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text('예금주: '),
                     Text(widget.withdraw.bank),
@@ -72,10 +91,9 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('출금 은행: '),
-                    Text(widget.withdraw.bank),
+                    const Text('요청일: '),
+                    Text(widget.withdraw.createdAt),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -84,7 +102,12 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
+                      Expanded(child:
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey[300],
+                          onPrimary: Colors.black,
+                        ),
                           onPressed: () async {
                             final re = await showDialog(
                                 context: context,
@@ -112,11 +135,16 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                               });
                             }
                           },
-                          child: const Text('출금 완료')),
+                          child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 완료')))),
                       const SizedBox(
-                        height: 10,
+                        width: 10,
                       ),
+                      Expanded(child:
                       ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey[300],
+                            onPrimary: Colors.black,
+                          ),
                           onPressed: () async {
                             final re = await showDialog(
                                 context: context,
@@ -162,7 +190,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                               });
                             }
                           },
-                          child: const Text('출금 거절')),
+                          child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 거절')))),
                     ],
                   ),
                 ]

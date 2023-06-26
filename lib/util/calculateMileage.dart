@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 Future<int> calMileage(String type, int amount) async {
+  try{
   // type에 따라서 마일리지 계산
   if (type == '카드') {
     String cardData =
@@ -41,5 +42,9 @@ Future<int> calMileage(String type, int amount) async {
         return 0;
       }
     }
+  }
+  } catch (e) {
+    print('catch!: $e');
+    return 0;
   }
 }
