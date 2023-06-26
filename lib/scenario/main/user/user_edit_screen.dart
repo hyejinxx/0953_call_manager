@@ -60,9 +60,6 @@ class _UserEditScreenState extends State<UserEditScreen> {
           },
         ),
         actions: [
-          // 회원 정보 수정 아이콘
-
-          // 회원 탈퇴 아이콘
           IconButton(
               onPressed: () {
                 showDialog(

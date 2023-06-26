@@ -67,6 +67,7 @@ class UserMileageRecordScreenState
                   height: 1,
                 ),
               ),
+              leadingWidth: 100,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
                 color: Colors.black,
@@ -77,16 +78,20 @@ class UserMileageRecordScreenState
               actions: [
                 // 회원 정보 수정 아이콘
                 IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserEditScreen(user: user)));
+                  },
+                  icon: IconButton(
+                    icon: const Icon(Icons.edit),
+                    color: Colors.black,
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  UserEditScreen(user: user)));
+                      Navigator.pop(context);
                     },
-                    icon:
-                      const Text('수정', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600)),
-                      ),
+                  ),
+                ),
               ],
             ),
             body: SizedBox(
