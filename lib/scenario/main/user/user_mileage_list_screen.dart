@@ -129,13 +129,13 @@ class UserMileageRecordScreenState
                         final list = data
                             .where((element) => element.type != "출금")
                             .toList();
-                        if (callSelectedIndex == 0) {
+                        if (selectedIndex == 0) {
                           list.sort((a, b) => a.date.compareTo(b.date));
-                        } else if (callSelectedIndex == 1) {
+                        } else if (selectedIndex == 1) {
                           list.sort((a, b) => a.type.compareTo(b.type));
-                        } else if (callSelectedIndex == 2) {
+                        } else if (selectedIndex == 2) {
                           list.sort((a, b) => a.amount.compareTo(b.amount));
-                        } else if (callSelectedIndex == 3) {
+                        } else if (selectedIndex == 3) {
                           list.sort(
                               (a, b) => a.sumMileage.compareTo(b.sumMileage));
                         } else {
@@ -217,13 +217,13 @@ class UserMileageRecordScreenState
                         final list = data
                             .where((element) => element.type == "출금")
                             .toList();
-                        if (callSelectedIndex == 0) {
+                        if (selectedIndex == 0) {
                           list.sort((a, b) => a.date.compareTo(b.date));
-                        } else if (callSelectedIndex == 1) {
+                        } else if (selectedIndex == 1) {
                           list.sort((a, b) => a.type.compareTo(b.type));
-                        } else if (callSelectedIndex == 2) {
+                        } else if (selectedIndex == 2) {
                           list.sort((a, b) => a.amount.compareTo(b.amount));
-                        } else if (callSelectedIndex == 3) {
+                        } else if (selectedIndex == 3) {
                           list.sort(
                               (a, b) => a.sumMileage.compareTo(b.sumMileage));
                         } else {
@@ -323,7 +323,7 @@ class UserMileageRecordScreenState
 
                         return SfDataGrid(
                             defaultColumnWidth:
-                                MediaQuery.of(context).size.width / 6,
+                                MediaQuery.of(context).size.width / 7,
                             source: UserCallDataSource(callData: data),
                             onCellDoubleTap: (details) {
                               if (details.rowColumnIndex.rowIndex == 0) {

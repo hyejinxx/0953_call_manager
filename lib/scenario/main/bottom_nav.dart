@@ -33,7 +33,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
       '유저 목록',
       '마일리지 관리',
       '출금 내역 관리',
-      '전화번호 관리',
+      '대리 기록 관리',
       'FAQ 관리',
     ];
 
