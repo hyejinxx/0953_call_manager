@@ -1,4 +1,6 @@
 import 'package:call_0953_manager/scenario/main/bottom_nav.dart';
+import 'package:call_0953_manager/scenario/start/call_number_setting_screen.dart';
+import 'package:call_0953_manager/scenario/start/mileage_setting_screen.dart';
 import 'package:call_0953_manager/service/call_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +115,70 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                       '유저 관리',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CallNumberSettingScreen(),
+                        ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset:
+                          const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    width: 200,
+                    padding: const EdgeInsets.all(20.0),
+                    child: const Text(
+                      '전화번호 설정',
+                      style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MileageSettingScreen(),
+                        ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[300],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset:
+                          const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    width: 200,
+                    padding: const EdgeInsets.all(20.0),
+                    child: const Text(
+                      '마일리지 기준 설정',
+                      style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),

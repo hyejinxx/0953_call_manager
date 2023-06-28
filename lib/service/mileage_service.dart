@@ -98,6 +98,7 @@ class MileageService {
             .document(withdraw.createdAt + withdraw.userCall)
             .update({
           'type': status,
+          'sumMileage': userData.map['mileage']
         });
       }
 

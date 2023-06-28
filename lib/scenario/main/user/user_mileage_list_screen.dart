@@ -127,7 +127,7 @@ class UserMileageRecordScreenState
                     children: [
                       mileage.when(data: (data) {
                         final list = data
-                            .where((element) => element.type != "출금")
+                            .where((element) =>  !element.type.contains('출금'))
                             .toList();
                         if (selectedIndex == 0) {
                           list.sort((a, b) => a.date.compareTo(b.date));
@@ -215,7 +215,7 @@ class UserMileageRecordScreenState
                       }),
                       mileage.when(data: (data) {
                         final list = data
-                            .where((element) => element.type == "출금")
+                            .where((element) => element.type.contains('출금'))
                             .toList();
                         if (selectedIndex == 0) {
                           list.sort((a, b) => a.date.compareTo(b.date));
