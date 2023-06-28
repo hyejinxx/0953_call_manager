@@ -77,29 +77,26 @@ class _FAQPageState extends State<FAQPage> {
                 return snapshot.hasData
                     ? ListView.separated(
                         itemBuilder: (context, index) {
-                          return ListTile(
+                          return InkWell(onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NewFaQScreen(
+                                      faq: snapshot.data![index],
+                                    )));
+                          }, child: ListTile(
                             title: Container(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 7),
                                 child: Text(
                                     'Q${index + 1}. ${snapshot.data![index].question}', style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600,))),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.edit, size: 20),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => NewFaQScreen(
-                                              faq: snapshot.data![index],
-                                            )));
-                              },
-                            ),
+
                             subtitle: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child:
                                     Text('A. ${snapshot.data![index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}', style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
-                          );
+                          ));
                         },
                         itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
                       )
@@ -146,7 +143,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 return snapshot.hasData
                     ? ListView.separated(
                         itemBuilder: (context, index) {
-                          return ListTile(
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NewAnnoScreen(
+                                        ann: snapshot.data![index],
+                                      )));
+                            },
+                              child: ListTile(
                             title: Container(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 7),
@@ -155,22 +161,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                       size: 20, color: Colors.black),
                                   Text(snapshot.data![index].title, style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600,)
                                   )])),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.edit, size: 20),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => NewAnnoScreen(
-                                          ann: snapshot.data![index],
-                                        )));
-                              },
-                            ),
+
                             subtitle: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(snapshot.data![index].content.replaceAll('\\n', '\n').replaceAll('\\', ''), style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500,))),
-                          );
+                          ));
                         },
                         itemCount: snapshot.data!.length, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
                       )
