@@ -69,88 +69,115 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
                             itemCount: snapshot.data!.values.length,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                  onTap: (){
-                                    controller.text = snapshot.data!.values.toList()[index].toString();
-                                    showDialog(context: context, builder: (context){
-                                      return AlertDialog(
-                                        title: Text('마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '')} )'),
-                                        content:  TextField(
-                                          controller: controller,
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                        actions: [
-                                          TextButton(onPressed: (){
-                                            Navigator.pop(context);
-                                          }, child: const Text('취소')),
-                                          TextButton(onPressed: (){
-                                            final standard = snapshot.data!.keys.toList()[index].toString();
-                                            final mileage = int.parse(controller.text);
-                                            ManagerService().updateMileageStandardForCash({standard: mileage});
-                                            Navigator.pop(context);
-                                            setState(() {
-
-                                            });
-                                          }, child: const Text('저장')),
-                                        ],
-                                      );
-
-                                    });
+                                  onTap: () {
+                                    controller.text = snapshot.data!.values
+                                        .toList()[index]
+                                        .toString();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                '마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '')} )'),
+                                            content: TextField(
+                                              controller: controller,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('취소')),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    final standard = snapshot
+                                                        .data!.keys
+                                                        .toList()[index]
+                                                        .toString();
+                                                    final mileage = int.parse(
+                                                        controller.text);
+                                                    ManagerService()
+                                                        .updateMileageStandardForCash(
+                                                            {standard: mileage});
+                                                    Navigator.pop(context);
+                                                    setState(() {});
+                                                  },
+                                                  child: const Text('저장')),
+                                            ],
+                                          );
+                                        });
                                   },
                                   child: ListTile(
-                                  title: Text(
-                                      '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
-                                 ));
+                                    title: Text(
+                                        '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
+                                  ));
                             });
                       } else {
                         return const Center(child: CircularProgressIndicator());
                       }
                     }),
-                    FutureBuilder(
-                        future: ManagerService().getMileageStandardForCard(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                                itemCount: snapshot.data!.values.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                  onTap: (){
-                                    controller.text = snapshot.data!.values.toList()[index].toString();
-                                    showDialog(context: context, builder: (context){
-                                      return AlertDialog(
-                                        title: Text('마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '') + '원'}'),
-                                        content:  TextField(
-                                          controller: controller,
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                        actions: [
-                                          TextButton(onPressed: (){
-                                            Navigator.pop(context);
-                                          }, child: const Text('취소')),
-                                          TextButton(onPressed: (){
-                                            final standard = snapshot.data!.keys.toList()[index].toString();
-                                            final mileage = int.parse(controller.text);
-                                            print({standard: mileage}.toString());
-                                            ManagerService().updateMileageStandardForCard({standard: mileage});
-                                            Navigator.pop(context);
-                                            setState(() {
-
-                                            });
-                                          }, child: const Text('저장')),
-                                        ],
-                                      );
-
-                                    });
+                FutureBuilder(
+                    future: ManagerService().getMileageStandardForCard(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                            itemCount: snapshot.data!.values.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                  onTap: () {
+                                    controller.text = snapshot.data!.values
+                                        .toList()[index]
+                                        .toString();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(
+                                                '마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '') + '원'}'),
+                                            content: TextField(
+                                              controller: controller,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('취소')),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    final standard = snapshot
+                                                        .data!.keys
+                                                        .toList()[index]
+                                                        .toString();
+                                                    final mileage = int.parse(
+                                                        controller.text);
+                                                    print({standard: mileage}
+                                                        .toString());
+                                                    ManagerService()
+                                                        .updateMileageStandardForCard(
+                                                            {standard: mileage});
+                                                    Navigator.pop(context);
+                                                    setState(() {});
+                                                  },
+                                                  child: const Text('저장')),
+                                            ],
+                                          );
+                                        });
                                   },
-                                      child: ListTile(
-                                      title: Text(
-                                          '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
-                                     ));
-                                });
-                          } else {
-                            return const Center(child: CircularProgressIndicator());
-                          }
-                        }),
-                  ]))
+                                  child: ListTile(
+                                    title: Text(
+                                        '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
+                                  ));
+                            });
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }),
+              ]))
             ])));
   }
 }

@@ -49,6 +49,16 @@ class FAQManageScreenState extends ConsumerState<FAQManageScreen>
               ),
             ),
           ),
+          Container(
+            height: 80,
+            alignment: Alignment.center,
+            child: const Text(
+              'User FAQ',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
         ]),
         Expanded(child: TabBarView(controller: _tabController, children: tab))
       ],
@@ -227,9 +237,8 @@ class NewFAQPage extends StatefulWidget {
 class NewFAQPageState extends State<NewFAQPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
+    return Column(children: [
+      Expanded(
           child: FutureBuilder(
               future: AnnouncementService().getNewFAQ(),
               builder: (context, snapshot) {
@@ -273,18 +282,20 @@ class NewFAQPageState extends State<NewFAQPage> {
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
-                                                content: Text('삭제하시겠습니까?'), actions: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text('취소')),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context, true);
-                                                  },
-                                                  child: const Text('확인'))
-                                            ]);
+                                                content: Text('삭제하시겠습니까?'),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('취소')),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context, true);
+                                                      },
+                                                      child: const Text('확인'))
+                                                ]);
                                           }).then((value) => {
                                             if (value == true)
                                               {
@@ -305,21 +316,20 @@ class NewFAQPageState extends State<NewFAQPage> {
                     : const Center(
                         child: CircularProgressIndicator(),
                       );
-              }),
-        ),
-        // InkWell(
-        //     onTap: () {
-        //
-        //     },
-        //     child: Container(
-        //       color: Colors.yellow.withOpacity(0.7),
-        //       width: MediaQuery.of(context).size.width,
-        //       alignment: Alignment.center,
-        //       padding: const EdgeInsets.symmetric(vertical: 16),
-        //       child: const Text('새 FaQ 작성'),
-        //     ))
-      ],
-    );
+              }))
+    ]);
+
+    // InkWell(
+    //     onTap: () {
+    //
+    //     },
+    //     child: Container(
+    //       color: Colors.yellow.withOpacity(0.7),
+    //       width: MediaQuery.of(context).size.width,
+    //       alignment: Alignment.center,
+    //       padding: const EdgeInsets.symmetric(vertical: 16),
+    //       child: const Text('새 FaQ 작성'),
+    //     ))
   }
 }
 
@@ -338,8 +348,10 @@ class AnswerScreenState extends State<AnswerScreen> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        const SizedBox(height: 20),
         Text(widget.faq.question,
             style: const TextStyle(
               fontSize: 16,
@@ -360,7 +372,11 @@ class AnswerScreenState extends State<AnswerScreen> {
         InkWell(
             onTap: () {
               widget.faq.answer = controller.text;
-              AnnouncementService().saveAnswerFAQ(widget.faq);
+              AnnouncementService().saveAnswerFAQ(widget.faq).then((value) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('답변이 저장되었습니다')));
+              });
+              Navigator.pop(context);
             },
             child: Container(
                 width: MediaQuery.of(context).size.width,

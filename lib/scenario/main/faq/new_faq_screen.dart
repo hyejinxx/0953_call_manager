@@ -111,7 +111,9 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                     final faq = FAQ(
                       question: questionTextController.text,
                       answer: answerTextController.text,
-                      createdAt: widget.faq==null? DateTime.now().toString(): widget.faq!.createdAt,
+                      createdAt: widget.faq == null
+                          ? DateTime.now().toString()
+                          : widget.faq!.createdAt,
                       writer: '관리자',
                       state: '등록',
                     );
