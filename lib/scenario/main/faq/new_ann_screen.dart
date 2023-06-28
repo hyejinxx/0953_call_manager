@@ -14,9 +14,10 @@ final imagePickerProvider = StateNotifierProvider<ImageState, File?>((ref) {
 });
 
 class NewAnnoScreen extends ConsumerStatefulWidget {
-   NewAnnoScreen({super.key, this.ann});
+  NewAnnoScreen({super.key, this.ann});
 
   Announcement? ann;
+
   @override
   _NewAnnoScreenState createState() => _NewAnnoScreenState();
 }
@@ -38,73 +39,74 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   Widget build(BuildContext context) {
     final img = ref.watch(imagePickerProvider);
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text('공지사항 작성', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text('공지사항 작성', style: TextStyle(color: Colors.black)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width - 100,
-                      height: 80,
-                      padding: const EdgeInsets.all(10),
-                      child: TextField(
-                        controller: titleTextController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          border: InputBorder.none,
-                          labelText: '제목',
-                        ),
-                      ),
-                    ),
-                    // imageBox(img)
-                  ],
-                ),
-                Expanded(child:
+            Row(
+              children: [
                 Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey[200]),
+                  width: MediaQuery.of(context).size.width - 100,
+                  height: 80,
+                  padding: const EdgeInsets.all(10),
                   child: TextField(
-                      controller: contentController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      maxLength: 10000,
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                      ),
-                      decoration: InputDecoration(
-                        focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide.none),
-                        contentPadding: const EdgeInsets.all(16),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        hintText: '공지사항을 적어주세요',
-                        hintStyle: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontSize: 14.0,
-                        ),
-                      )),
-                )),
-
+                    controller: titleTextController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: InputBorder.none,
+                      labelText: '제목',
+                    ),
+                  ),
+                ),
+                // imageBox(img)
+              ],
+            ),
+            Expanded(
+                child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey[200]),
+              child: TextField(
+                  controller: contentController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  maxLength: 10000,
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                  ),
+                  decoration: InputDecoration(
+                    focusedBorder:
+                        const UnderlineInputBorder(borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.all(16),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    hintText: '공지사항을 적어주세요',
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.7),
+                      fontSize: 14.0,
+                    ),
+                  )),
+            )),
             GestureDetector(
-onTap: (){                if (titleTextController.text.isEmpty ||
+                onTap: () {
+                  if (titleTextController.text.isEmpty ||
                       contentController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('제목과 내용을 입력해주세요')));
@@ -127,8 +129,8 @@ onTap: (){                if (titleTextController.text.isEmpty ||
                         .showSnackBar(SnackBar(content: Text('등록되었습니다')));
                     Navigator.pop(context);
                   }).onError((error, stackTrace) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('등록에 실패했습니다')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('등록에 실패했습니다')));
                   }).whenComplete(() {
                     titleTextController.clear();
                     contentController.clear();

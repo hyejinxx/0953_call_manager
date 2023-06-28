@@ -16,7 +16,7 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
 
   @override
   void initState() {
-    setController();// TODO: implement initState
+    setController(); // TODO: implement initState
     super.initState();
   }
 
@@ -32,8 +32,7 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold
-      (
+    return Scaffold(
         appBar: AppBar(
           title: Text('전화번호 설정',
               style: const TextStyle(color: Colors.black),
@@ -73,7 +72,9 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 SizedBox(
                   width: 300,
                   child: TextFormField(
@@ -83,7 +84,9 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 SizedBox(
                   width: 300,
                   child: TextFormField(
@@ -93,10 +96,16 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 ElevatedButton(
                   onPressed: () {
-                   ManagerService().setCallNumber({'gisa':_textController1.text,'taksong':_textController2.text,'daeri':_textController3.text}).then((value) {
+                    ManagerService().setCallNumber({
+                      'gisa': _textController1.text,
+                      'taksong': _textController2.text,
+                      'daeri': _textController3.text
+                    }).then((value) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('수정되었습니다.')));
                     });
@@ -104,8 +113,8 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white,
                   ),
-                  child: const Text('수정',
-                      style: TextStyle(color: Colors.black)),
+                  child:
+                      const Text('수정', style: TextStyle(color: Colors.black)),
                 ),
               ],
             ))));
