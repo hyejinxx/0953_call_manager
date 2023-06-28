@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +70,7 @@ class ManagerService {
 
   void updateMileageStandardForCash(Map<String, dynamic> value) async {
     try {
-      await firestore.collection('mileageStandard').doc('cash').update(value);
+      await firestore.collection('mileageStandard').doc('cash').update({'a${value.keys.first}': value.values.first});
     } catch (e) {
       throw Exception("updateMileageStandardForCash: error");
     }
@@ -77,7 +78,7 @@ class ManagerService {
 
   void updateMileageStandardForCard(Map<String, dynamic> value) async {
     try {
-      await firestore.collection('mileageStandard').doc('card').update(value);
+      await firestore.collection('mileageStandard').doc('card').update({'a${value.keys.first}': value.values.first});
     } catch (e) {
       throw Exception("updateMileageStandardForCard: error");
     }

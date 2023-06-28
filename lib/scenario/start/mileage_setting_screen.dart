@@ -112,12 +112,12 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                       title: Text(
-                                          '${snapshot.data!.keys.toList()[index]}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
+                                          '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
                                       trailing: IconButton(
                                           onPressed: () {
                                             showDialog(context: context, builder: (context){
                                               return AlertDialog(
-                                                title: Text('마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index]} )'),
+                                                title: Text('마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '')} )'),
                                                 content:  TextField(
                                                   controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
                                                   keyboardType: TextInputType.number,
