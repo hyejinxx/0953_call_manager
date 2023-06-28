@@ -1,6 +1,6 @@
 class FAQ{
   final String question;
-  final String answer;
+  String answer;
   final String createdAt;
   final String writer;
   final String state;

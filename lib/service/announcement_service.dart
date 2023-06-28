@@ -5,13 +5,15 @@ import 'package:call_0953_manager/model/faq.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firedart/firedart.dart';
 
-class AnnouncementService{
+class AnnouncementService {
   Firestore firestore = Firestore.instance;
-  // Reference storage = FirebaseStorage.instance.ref().child("images");/**/
 
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
-      firestore.collection('announcement').document(announcement.createdAt).set(announcement.toJson());
+      firestore
+          .collection('announcement')
+          .document(announcement.createdAt)
+          .set(announcement.toJson());
       print('saveAnnouncement: success');
     } catch (e) {
       print('saveAnnouncement: $e');
@@ -60,16 +62,56 @@ class AnnouncementService{
     }
   }
 
-  // Future<String> uploadImage(String name, File file) async {
-  //   try {
-  //     final pathRef = storage.child(name);
-  //     UploadTask task = pathRef.putFile(file);
-  //
-  //     await task.whenComplete(() => print('upload complete'));
-  //     return await pathRef.getDownloadURL();
-  //   } catch (e) {
-  //     print('err: $e');
-  //     return "err";
-  //   }
-  // }
+  Future<List<FAQ>> getNewFAQ() async {
+    try {
+      List<FAQ> faq = [];
+      await firestore
+          .collection('faq')
+          .document('faq')
+          .collection('all')
+          .get()
+          .then((value) {
+        value.forEach((i) {
+          faq.add(FAQ.fromJson(i.map));
+        });
+      });
+      print('getFAQ: success');
+      return faq;
+    } catch (e) {
+      print('getFAQ: $e');
+      throw Exception("getFAQ: error");
+    }
+  }
+
+  deleteNewFAQ(String createdAt) async {
+    try {
+      await firestore
+          .collection('faq')
+          .document('faq')
+          .collection('all')
+          .document(createdAt)
+          .delete();
+      print('deleteNewFAQ: success');
+    } catch (e) {
+      print('deleteNewFAQ: $e');
+      throw Exception("deleteNewFAQ: error");
+    }
+  }
+
+  saveAnswerFAQ(FAQ faq) async {
+    try {
+      await firestore
+          .collection('faq')
+          .document('faq')
+          .collection('all')
+          .document(faq.createdAt)
+          .update(faq.toJson());
+
+      await firestore.collection('faq').document('faq').collection(faq.writer).document(faq.createdAt).update(faq.toJson());
+      print('saveAnswerFAQ: success');
+    } catch (e) {
+      print('saveAnswerFAQ: $e');
+      throw Exception("saveAnswerFAQ: error");
+    }
+  }
 }
