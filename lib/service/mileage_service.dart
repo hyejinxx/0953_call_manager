@@ -59,15 +59,7 @@ class MileageService {
       final userData =
           await firestore.collection('user').document(withdraw.userCall).get();
       // 유저 마일리지 기록 저장 -> 출금
-      await firestore
-          .collection('user')
-          .document(withdraw.userCall)
-          .collection('mileage')
-          .document(withdraw.createdAt + withdraw.userCall)
-          .update({
-        'type': status,
-        'sumMileage': userData.map['mileage'] - withdraw.amount
-      });
+
 
       if (status == "출금완료") {
         // 유저 마일리지 업데이트
@@ -89,6 +81,24 @@ class MileageService {
             startAddress: '',
             endAddress: '',
             date: DateFormat('yyyy-MM-dd').format(DateTime.now())));
+        await firestore
+            .collection('user')
+            .document(withdraw.userCall)
+            .collection('mileage')
+            .document(withdraw.createdAt + withdraw.userCall)
+            .update({
+          'type': status,
+          'sumMileage': userData.map['mileage'] - withdraw.amount
+        });
+      }else{
+        await firestore
+            .collection('user')
+            .document(withdraw.userCall)
+            .collection('mileage')
+            .document(withdraw.createdAt + withdraw.userCall)
+            .update({
+          'type': status,
+        });
       }
 
       // 관리자용 출금 기록 저장

@@ -181,7 +181,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                                     ));
                             if (re) {
                               MileageService().updateWithdraw(
-                                  widget.withdraw, '출금거절${_controller.text}');
+                                  widget.withdraw, '출금거절: ${_controller.text}');
                               setState(() {
                                 widget.withdraw.status = '출금거절';
                               });

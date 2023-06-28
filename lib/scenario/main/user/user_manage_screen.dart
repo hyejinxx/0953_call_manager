@@ -70,7 +70,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                 data: (data) {
                   if (data.isEmpty) {
                     return const Center(
-                      child: Text('검색 결과가 없습니다.'),
+                      child: Text('유저가 없습니다.'),
                     );
                   } else {
                      // List<User> list = data

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:call_0953_manager/service/file_picker_service.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:call_0953_manager/util/calculateMileage.dart';
 import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firedart/firedart.dart';
 import 'package:intl/intl.dart';
 import '../model/call.dart';
@@ -285,5 +288,18 @@ class CallService {
     } catch (e) {
       throw Exception("deleteAllCallNotUser: $e");
     }
+  }
+
+  Future<void> callToExcel(List<Call> callList)async{
+    var excel =  Excel.createExcel();
+    Sheet sheetObject = excel['비유저 콜'];
+    CellStyle cellStyle = CellStyle(backgroundColorHex: "#1AFF1A");
+    cellStyle.underline = Underline.Single;
+
+    for(var call in callList){
+      sheetObject.appendRow([call.date, call.name, call.call, call.startAddress, call.endAddress, call.price]);
+    }
+
+
   }
 }
