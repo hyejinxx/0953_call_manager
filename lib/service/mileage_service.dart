@@ -17,34 +17,32 @@ class MileageService {
   Future<void> saveMileage(Mileage mileage) async {
     try {
       // 유저 마일리지 업데이트
-      final value = await firestore
+      final value =
+          await firestore.collection('user').document(mileage.call).get();
+
+      int updatedMileage = value.map['mileage'] + mileage.amount;
+      mileage.sumMileage = updatedMileage;
+      await firestore
           .collection('user')
           .document(mileage.call)
-          .get();
+          .update({'mileage': updatedMileage});
 
-        int updatedMileage = value.map['mileage'] + mileage.amount;
-        mileage.sumMileage = updatedMileage;
-        await firestore
-            .collection('user')
-            .document(mileage.call)
-            .update({'mileage': updatedMileage});
+      await firestore
+          .collection('user')
+          .document(mileage.call)
+          .collection('mileage')
+          .document(mileage.orderNumber + mileage.type)
+          .set(mileage.toJson());
 
-        await firestore
-            .collection('user')
-            .document(mileage.call)
-            .collection('mileage')
-            .document(mileage.orderNumber + mileage.type)
-            .set(mileage.toJson());
-
-        final a =
-            await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
-        final mileageNum = jsonDecode(a.body)['name'];
-        await firestore
-            .collection('mileage')
-            .document(mileage.date.substring(0, 7))
-            .collection(mileage.date.substring(8, 10))
-            .document(mileageNum)
-            .set({'mileage': mileageNum});
+      final a =
+          await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
+      final mileageNum = jsonDecode(a.body)['name'];
+      await firestore
+          .collection('mileage')
+          .document(mileage.date.substring(0, 7))
+          .collection(mileage.date.substring(8, 10))
+          .document(mileageNum)
+          .set({'mileage': mileageNum});
 
       // 관리자용 마일리지 기록 저장
     } catch (e) {
@@ -62,46 +60,28 @@ class MileageService {
       if (status == "출금완료") {
         // 유저 마일리지 업데이트
 
-        int updatedMileage = userData.map['mileage'] - withdraw.amount;
+        int updatedMileage = userData.map['mileage'] - withdraw.amount - 500;
         await firestore
             .collection('user')
             .document(withdraw.userCall)
             .update({'mileage': updatedMileage});
 
-        saveMileage(Mileage(
-            orderNumber: DateTime.now().millisecondsSinceEpoch.toString() +
-                withdraw.userCall,
-            name: withdraw.name ?? '',
-            call: withdraw.userCall,
-            type: '출금 수수료',
-            amount: -500,
-            sumMileage: updatedMileage,
-            startAddress: '',
-            endAddress: '',
-            date: DateFormat('yyyy-MM-dd').format(DateTime.now())));
-        await firestore
-            .collection('user')
-            .document(withdraw.userCall)
-            .collection('mileage')
-            .document(withdraw.createdAt + withdraw.userCall)
-            .update({
-          'type': status,
-          'sumMileage': userData.map['mileage'] - withdraw.amount
-        });
-      } else {
-        await firestore
-            .collection('user')
-            .document(withdraw.userCall)
-            .collection('mileage')
-            .document(withdraw.createdAt + withdraw.userCall)
-            .update({'type': status, 'sumMileage': userData.map['mileage']});
       }
+      final withdrawMileage = status == "출금완료" ? userData.map['mileage'] -
+          withdraw.amount - 500 : userData.map['mileage'];
+
+      await firestore
+          .collection('user')
+          .document(withdraw.userCall)
+          .collection('withdraw')
+          .document(withdraw.createdAt + withdraw.userCall)
+          .update({'status': status, 'sumMileage': withdrawMileage});
 
       // 관리자용 출금 기록 저장
       await firestore
           .collection('withdraw')
           .document(withdraw.createdAt + withdraw.userCall)
-          .update({'status': status});
+          .update({'status': status, 'sumMileage': withdrawMileage});
     } catch (e) {
       throw Exception("saveWithdraw: $e");
     }
@@ -149,6 +129,22 @@ class MileageService {
       return mileageList;
     } catch (e) {
       print(e);
+      throw Exception("getMileageRecord: error");
+    }
+  }
+  Future<List<Withdraw>> getWithdrawRecordUser(String userCall) async {
+    List<Withdraw> withdrawList = [];
+    try {
+      await firestore
+          .collection('user')
+          .document(userCall)
+          .collection('withdraw')
+          .get()
+          .then((value) => value.forEach((element) {
+        withdrawList.add(Withdraw.fromJson(element.map));
+      }));
+      return withdrawList;
+    } catch (e) {
       throw Exception("getMileageRecord: error");
     }
   }

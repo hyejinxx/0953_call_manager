@@ -4,8 +4,9 @@ class Withdraw {
   final String bank;
   final String account;
   final String name;
-  String? status;
+  String status;
   final String createdAt;
+  int? sumMileage;
 
   Withdraw({
     required this.userCall,
@@ -13,8 +14,9 @@ class Withdraw {
     required this.bank,
     required this.account,
     required this.name,
-    this.status,
+    required this.status,
     required this.createdAt,
+    this.sumMileage,
   });
 
   factory Withdraw.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Withdraw {
       name: json['name'],
       status: json['status'],
       createdAt: json['createdAt'],
+      sumMileage: json['sumMileage'],
     );
   }
 
@@ -37,6 +40,7 @@ class Withdraw {
     name: db['name'],
     status: db['status'],
     createdAt: db['createdAt'],
+    sumMileage: db['sumMileage'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -47,5 +51,6 @@ class Withdraw {
     'name': name,
     'status': status,
     'createdAt': createdAt,
+    'sumMileage': sumMileage,
   };
 }

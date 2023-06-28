@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../model/mileage.dart';
+import '../../../model/withdraw.dart';
 import '../../../service/mileage_service.dart';
 import '../../../service/user_service.dart';
 
@@ -25,6 +26,7 @@ class UserMileageRecordScreenState
     extends ConsumerState<UserMileageRecordScreen>
     with TickerProviderStateMixin {
   late FutureProvider<List<Mileage>> mileageProvider;
+  late FutureProvider<List<Withdraw>> withdrawProvider;
   late FutureProvider<List<Call>> callProvider;
   late FutureProvider<User?> userProvider;
   late TabController tabController;
@@ -36,6 +38,8 @@ class UserMileageRecordScreenState
   void initState() {
     mileageProvider = FutureProvider<List<Mileage>>(
         (ref) => MileageService().getMileageRecordUser(widget.user));
+    withdrawProvider = FutureProvider<List<Withdraw>>(
+            (ref) => MileageService().getWithdrawRecordUser(widget.user));
 
     callProvider = FutureProvider<List<Call>>(
         (ref) => CallService().getCallForUser(widget.user));
@@ -55,6 +59,7 @@ class UserMileageRecordScreenState
   @override
   Widget build(BuildContext context) {
     final mileage = ref.watch(mileageProvider);
+    final withdraw = ref.watch(withdrawProvider);
     final user = ref.watch(userProvider);
     final selectedIndex = ref.watch(_selectedIndex);
     final callSelectedIndex = ref.watch(_callSelectedIndex);
@@ -126,26 +131,24 @@ class UserMileageRecordScreenState
                     controller: tabController,
                     children: [
                       mileage.when(data: (data) {
-                        final list = data
-                            .where((element) => !element.type.contains('출금'))
-                            .toList();
+
                         if (selectedIndex == 0) {
-                          list.sort((a, b) => a.date.compareTo(b.date));
+                          data.sort((a, b) => a.date.compareTo(b.date));
                         } else if (selectedIndex == 1) {
-                          list.sort((a, b) => a.type.compareTo(b.type));
+                          data.sort((a, b) => a.type.compareTo(b.type));
                         } else if (selectedIndex == 2) {
-                          list.sort((a, b) => a.amount.compareTo(b.amount));
+                          data.sort((a, b) => a.amount.compareTo(b.amount));
                         } else if (selectedIndex == 3) {
-                          list.sort(
+                          data.sort(
                               (a, b) => a.sumMileage.compareTo(b.sumMileage));
                         } else {
-                          list.sort((a, b) => a.date.compareTo(b.date));
+                          data.sort((a, b) => a.date.compareTo(b.date));
                         }
                         return SfDataGrid(
                             defaultColumnWidth:
                                 MediaQuery.of(context).size.width / 6,
                             source: UserMileageDataSource(
-                                mileageData: list.reversed.toList()),
+                                mileageData: data.reversed.toList()),
                             onCellDoubleTap: (details) {
                               if (details.rowColumnIndex.rowIndex == 0) {
                                 ref.read(_selectedIndex.notifier).state =
@@ -213,26 +216,23 @@ class UserMileageRecordScreenState
                       }, loading: () {
                         return const Text('기록을 불러오는 중...');
                       }),
-                      mileage.when(data: (data) {
-                        final list = data
-                            .where((element) => element.type.contains('출금'))
-                            .toList();
+                      withdraw.when(data: (data) {
                         if (selectedIndex == 0) {
-                          list.sort((a, b) => a.date.compareTo(b.date));
+                          data.sort((a, b) => a.createdAt.compareTo(b.createdAt));
                         } else if (selectedIndex == 1) {
-                          list.sort((a, b) => a.type.compareTo(b.type));
+                          data.sort((a, b) => a.status.compareTo(b.status));
                         } else if (selectedIndex == 2) {
-                          list.sort((a, b) => a.amount.compareTo(b.amount));
+                          data.sort((a, b) => a.amount.compareTo(b.amount));
                         } else if (selectedIndex == 3) {
-                          list.sort(
-                              (a, b) => a.sumMileage.compareTo(b.sumMileage));
+                          data.sort(
+                              (a, b) => a.sumMileage??0.compareTo(b.sumMileage??0));
                         } else {
-                          list.sort((a, b) => a.date.compareTo(b.date));
+                          data.sort((a, b) => a.createdAt.compareTo(b.createdAt));
                         }
                         return SfDataGrid(
                             defaultColumnWidth:
                                 MediaQuery.of(context).size.width / 6,
-                            source: UserMileageDataSource(mileageData: list),
+                            source: UserWithdrawDataSource(withdrawData: data),
                             onCellDoubleTap: (details) {
                               if (details.rowColumnIndex.rowIndex == 0) {
                                 ref.read(_selectedIndex.notifier).state =
@@ -255,7 +255,7 @@ class UserMileageRecordScreenState
                                       padding: const EdgeInsets.all(8.0),
                                       alignment: Alignment.center,
                                       child: const Text(
-                                        '적립유형',
+                                        '기록',
                                         overflow: TextOverflow.ellipsis,
                                       ))),
                               GridColumn(
@@ -264,7 +264,7 @@ class UserMileageRecordScreenState
                                       padding: const EdgeInsets.all(8.0),
                                       alignment: Alignment.center,
                                       child: const Text(
-                                        '금액',
+                                        '출금액',
                                         overflow: TextOverflow.ellipsis,
                                       ))),
                               GridColumn(
@@ -277,21 +277,21 @@ class UserMileageRecordScreenState
                                         overflow: TextOverflow.ellipsis,
                                       ))),
                               GridColumn(
-                                  columnName: 'startAddress',
+                                  columnName: 'bank',
                                   label: Container(
                                       padding: const EdgeInsets.all(8.0),
                                       alignment: Alignment.center,
                                       child: const Text(
-                                        '출발지',
+                                        '은행',
                                         overflow: TextOverflow.ellipsis,
                                       ))),
                               GridColumn(
-                                  columnName: 'endAddress',
+                                  columnName: 'account',
                                   label: Container(
                                       padding: const EdgeInsets.all(8.0),
                                       alignment: Alignment.center,
                                       child: const Text(
-                                        '도착지',
+                                        '계좌',
                                         overflow: TextOverflow.ellipsis,
                                       )))
                             ]);
@@ -483,6 +483,41 @@ class UserMileageDataSource extends DataGridSource {
         child: Text(e.value.toString()),
       );
     }).toList());
+  }
+}
+
+class UserWithdrawDataSource extends DataGridSource {
+  /// Creates the employee data source class with required details.
+  UserWithdrawDataSource({required List<Withdraw> withdrawData}) {
+    _withdrawData = withdrawData
+        .map<DataGridRow>((e) => DataGridRow(cells: [
+      DataGridCell<String>(columnName: 'date', value: e.createdAt),
+      DataGridCell<String>(columnName: 'type', value: e.status),
+      DataGridCell<int>(columnName: 'amount', value: e.amount),
+      DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
+      DataGridCell<String>(
+          columnName: 'bank', value: e.bank),
+      DataGridCell<String>(
+          columnName: 'account', value: e.account),
+    ]))
+        .toList();
+  }
+
+  List<DataGridRow> _withdrawData = [];
+
+  @override
+  List<DataGridRow> get rows => _withdrawData;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(e.value.toString()),
+          );
+        }).toList());
   }
 }
 
