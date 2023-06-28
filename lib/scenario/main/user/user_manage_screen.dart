@@ -2,18 +2,19 @@ import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.da
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../model/user.dart';
 
-class UserManageScreen extends StatefulWidget {
+class UserManageScreen extends ConsumerStatefulWidget {
   const UserManageScreen({super.key});
 
   @override
-  State<UserManageScreen> createState() => _UserManageScreenState();
+  _UserManageScreenState createState() => _UserManageScreenState();
 }
 
-class _UserManageScreenState extends State<UserManageScreen> {
+class _UserManageScreenState extends ConsumerState<UserManageScreen> {
   final phoneTextController = TextEditingController();
 
   @override
@@ -24,19 +25,28 @@ class _UserManageScreenState extends State<UserManageScreen> {
     super.initState();
   }
 
+  final indexProvider = StateProvider<int>((ref) => 0);
+  final FutureProvider userListProvider =
+      FutureProvider((ref) => UserService().getAllUser());
+
   @override
   Widget build(BuildContext context) {
+    final index = ref.watch(indexProvider);
+    final userList = ref.watch(userListProvider);
     return Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
-          FutureBuilder(future: MileageService().getRequireMileage(), builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text('총 마일리지: ${snapshot.data![0]} - 출금 가능 마일리지: ${snapshot.data![1]} = ${snapshot.data![0] - snapshot.data![2]}');
-            } else {
-              return const Text('보유 필요 금액: 0');
-            }
-          }),
+          FutureBuilder(
+              future: MileageService().getRequireMileage(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                      '총 마일리지: ${snapshot.data![0]}  출금 가능 마일리지: ${snapshot.data![1]} 유저 수: ${snapshot.data![2]}');
+                } else {
+                  return const Text('보유 필요 금액: 0');
+                }
+              }),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: TextField(
@@ -49,120 +59,116 @@ class _UserManageScreenState extends State<UserManageScreen> {
             ),
           ),
           Expanded(
-              child: FutureBuilder(
-            future: UserService().getAllUser(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                print(snapshot.data);
-                final userList = snapshot.data!
-                    .where((element) =>
-                        element.call.contains(phoneTextController.text))
-                    .toList();
-                if (userList.isEmpty) {
-                  return const Center(
-                    child: Text('검색 결과가 없습니다.'),
-                  );
-                } else {
-                  return SfDataGrid(
-                      source: UserDataSource(userData: userList),
-                      columnWidthMode: ColumnWidthMode.fill,
-                      onCellTap: (value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserMileageRecordScreen(
-                                      user: userList[
-                                              value.rowColumnIndex.rowIndex - 1]
-                                          .call,
-                                    )));
-                      },
-                      onCellDoubleTap: (details) {
-                        if (details.rowColumnIndex.rowIndex == 0) {
-                          final index = details.rowColumnIndex.columnIndex;
-                          if (index == 0) {
-                            userList.sort((a, b) => a.call.compareTo(b.call));
-                          } else if (index == 1) {
-                            userList.sort((a, b) => a.name.compareTo(b.name));
-                          } else if (index == 2) {
-                            userList
-                                .sort((a, b) => a.mileage.compareTo(b.mileage));
-                          } else if (index == 3) {
-                            userList.sort(
-                                (a, b) => a.createdAt.compareTo(b.createdAt));
-                          } else if (index == 4) {
-                            // userList.sort((a, b) => a.store?.compareTo(b.store));
-                          } else {}
-                        }
-
-                        setState(() {});
-                      },
-                      columns: <GridColumn>[
-                        GridColumn(
-                            columnName: 'call',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '전화번호',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'name',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '닉네임',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'mileage',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '마일리지',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'joinDate',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '가입일',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'store',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '가맹점',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'storeCall',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '가맹점 번호',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                      ]);
-                }
-              } else {
+              child: userList.when(
+            data: (data) {
+              final userList = data
+                  .where((element) =>
+                      element.call.contains(phoneTextController.text))
+                  .toList();
+              if (userList.isEmpty) {
                 return const Center(
                   child: Text('검색 결과가 없습니다.'),
                 );
+              } else {
+                if (index == 0) {
+                  userList.sort((a, b) => a.call.compareTo(b.call));
+                } else if (index == 1) {
+                  userList.sort((a, b) => a.name.compareTo(b.name));
+                } else if (index == 2) {
+                  userList
+                      .sort((a, b) => a.mileage ?? 0.compareTo(b.mileage ?? 0));
+                } else if (index == 3) {
+                  userList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+                } else if (index == 4) {
+                  userList
+                      .sort((a, b) => a.store ?? ''.compareTo(b.store ?? ''));
+                } else if (index == 5) {
+                } else {
+                  userList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+                }
+
+                return SfDataGrid(
+                    source: UserDataSource(userData: userList),
+                    columnWidthMode: ColumnWidthMode.fill,
+                    onCellTap: (value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserMileageRecordScreen(
+                                    user: userList[
+                                            value.rowColumnIndex.rowIndex - 1]
+                                        .call,
+                                  )));
+                    },
+                    onCellDoubleTap: (details) {
+                      if (details.rowColumnIndex.rowIndex == 0) {
+                        ref.read(indexProvider.notifier).state =
+                            details.rowColumnIndex.columnIndex;
+                      }
+                    },
+                    columns: <GridColumn>[
+                      GridColumn(
+                          columnName: 'call',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '전화번호',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
+                          columnName: 'name',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '닉네임',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
+                          columnName: 'mileage',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '마일리지',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
+                          columnName: 'joinDate',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '가입일',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
+                          columnName: 'store',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '가맹점',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
+                          columnName: 'storeCall',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '가맹점 번호',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                    ]);
               }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
             },
-          )),
+            error: (e, st) => Text('error'),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ))
         ]));
   }
 

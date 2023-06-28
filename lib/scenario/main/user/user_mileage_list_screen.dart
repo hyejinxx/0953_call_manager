@@ -25,14 +25,20 @@ class UserMileageRecordScreenState
     extends ConsumerState<UserMileageRecordScreen>
     with TickerProviderStateMixin {
   late FutureProvider<List<Mileage>> mileageProvider;
+  late FutureProvider<List<Call>> callProvider;
   late FutureProvider<User?> userProvider;
   late TabController tabController;
+
+  final _selectedIndex = StateProvider((ref) => 0);
+  final _callSelectedIndex = StateProvider((ref) => 0);
 
   @override
   void initState() {
     mileageProvider = FutureProvider<List<Mileage>>(
         (ref) => MileageService().getMileageRecordUser(widget.user));
 
+    callProvider = FutureProvider<List<Call>>(
+        (ref) => CallService().getCallForUser(widget.user));
     userProvider =
         FutureProvider<User?>((ref) => UserService().getUser(widget.user));
     tabController = TabController(length: 3, vsync: this);
@@ -50,6 +56,10 @@ class UserMileageRecordScreenState
   Widget build(BuildContext context) {
     final mileage = ref.watch(mileageProvider);
     final user = ref.watch(userProvider);
+    final selectedIndex = ref.watch(_selectedIndex);
+    final callSelectedIndex = ref.watch(_callSelectedIndex);
+    final call = ref.watch(callProvider);
+
     return user.when(
       data: (user) {
         if (user == null) {
@@ -107,6 +117,7 @@ class UserMileageRecordScreenState
                     tabs: const [
                       Tab(text: '입금 내역'),
                       Tab(text: '출금 내역'),
+                      Tab(text: '콜 내역'),
                     ],
                     labelColor: Colors.black,
                   ),
@@ -114,236 +125,282 @@ class UserMileageRecordScreenState
                       child: TabBarView(
                     controller: tabController,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: mileage.when(data: (data) {
-                          final list = data
-                              .where((element) => element.type != "출금")
-                              .toList();
-                          list.sort((a, b) => b.date.compareTo(a.date));
-                          return SfDataGrid(
-                              defaultColumnWidth:
-                                  MediaQuery.of(context).size.width / 5,
-                              source: UserMileageDataSource(mileageData: list.reversed.toList()),
-                              columns: <GridColumn>[
-                                GridColumn(
-                                    columnName: 'date',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '일자',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'type',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '적립유형',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'amount',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '금액',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'sumMileage',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '누적액',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'startAddress',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '출발지',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'endAddress',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '도착지',
-                                          overflow: TextOverflow.ellipsis,
-                                        )))
-                              ]);
-                        }, error: (error, stackTrace) {
-                          return const Text('기록을 불러오는 중 오류가 발생했습니다.');
-                        }, loading: () {
-                          return const Text('기록을 불러오는 중...');
-                        }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: mileage.when(data: (data) {
-                          final list = data
-                              .where((element) => element.type == "출금")
-                              .toList();
-                          list.sort((a, b) => b.date.compareTo(a.date));
-                          return SfDataGrid(
-                              defaultColumnWidth:
-                                  MediaQuery.of(context).size.width / 6,
-                              source: UserMileageDataSource(mileageData: list),
-                              columns: <GridColumn>[
-                                GridColumn(
-                                    columnName: 'date',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '일자',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'type',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '적립유형',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
+                      mileage.when(data: (data) {
+                        final list = data
+                            .where((element) => element.type != "출금")
+                            .toList();
+                        if (callSelectedIndex == 0) {
+                          list.sort((a, b) => a.date.compareTo(b.date));
+                        } else if (callSelectedIndex == 1) {
+                          list.sort((a, b) => a.type.compareTo(b.type));
+                        } else if (callSelectedIndex == 2) {
+                          list.sort((a, b) => a.amount.compareTo(b.amount));
+                        } else if (callSelectedIndex == 3) {
+                          list.sort(
+                              (a, b) => a.sumMileage.compareTo(b.sumMileage));
+                        } else {
+                          list.sort((a, b) => a.date.compareTo(b.date));
+                        }
+                        return SfDataGrid(
+                            defaultColumnWidth:
+                                MediaQuery.of(context).size.width / 6,
+                            source: UserMileageDataSource(
+                                mileageData: list.reversed.toList()),
+                            onCellDoubleTap: (details) {
+                              if (details.rowColumnIndex.rowIndex == 0) {
+                                ref.read(_selectedIndex.notifier).state =
+                                    details.rowColumnIndex.columnIndex;
+                              }
+                            },
+                            columns: <GridColumn>[
+                              GridColumn(
+                                  columnName: 'date',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '일자',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'type',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '적립유형',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'amount',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '금액',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'sumMileage',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '누적액',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'startAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '출발지',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'endAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '도착지',
+                                        overflow: TextOverflow.ellipsis,
+                                      )))
+                            ]);
+                      }, error: (error, stackTrace) {
+                        return const Text('기록을 불러오는 중 오류가 발생했습니다.');
+                      }, loading: () {
+                        return const Text('기록을 불러오는 중...');
+                      }),
+                      mileage.when(data: (data) {
+                        final list = data
+                            .where((element) => element.type == "출금")
+                            .toList();
+                        if (callSelectedIndex == 0) {
+                          list.sort((a, b) => a.date.compareTo(b.date));
+                        } else if (callSelectedIndex == 1) {
+                          list.sort((a, b) => a.type.compareTo(b.type));
+                        } else if (callSelectedIndex == 2) {
+                          list.sort((a, b) => a.amount.compareTo(b.amount));
+                        } else if (callSelectedIndex == 3) {
+                          list.sort(
+                              (a, b) => a.sumMileage.compareTo(b.sumMileage));
+                        } else {
+                          list.sort((a, b) => a.date.compareTo(b.date));
+                        }
+                        return SfDataGrid(
+                            defaultColumnWidth:
+                                MediaQuery.of(context).size.width / 6,
+                            source: UserMileageDataSource(mileageData: list),
+                            onCellDoubleTap: (details) {
+                              if (details.rowColumnIndex.rowIndex == 0) {
+                                ref.read(_selectedIndex.notifier).state =
+                                    details.rowColumnIndex.columnIndex;
+                              }
+                            },
+                            columns: <GridColumn>[
+                              GridColumn(
+                                  columnName: 'date',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '일자',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'type',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '적립유형',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'amount',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '금액',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'sumMileage',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '누적액',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'startAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '출발지',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'endAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '도착지',
+                                        overflow: TextOverflow.ellipsis,
+                                      )))
+                            ]);
+                      }, error: (error, stackTrace) {
+                        return const Text('기록을 불러오는 중 오류가 발생했습니다.');
+                      }, loading: () {
+                        return const Text('기록을 불러오는 중...');
+                      }),
+                      call.when(data: (data) {
+                        if (data.isEmpty) return const Text('기록이 없습니다.');
 
-                                GridColumn(
-                                    columnName: 'amount',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '금액',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'sumMileage',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '누적액',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'startAddress',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '출발지',
-                                          overflow: TextOverflow.ellipsis,
-                                        ))),
-                                GridColumn(
-                                    columnName: 'endAddress',
-                                    label: Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          '도착지',
-                                          overflow: TextOverflow.ellipsis,
-                                        )))
-                              ]);
-                        }, error: (error, stackTrace) {
-                          return const Text('기록을 불러오는 중 오류가 발생했습니다.');
-                        }, loading: () {
-                          return const Text('기록을 불러오는 중...');
-                        }),
-                      ),
-                      FutureBuilder(
-                          future: CallService().getCallForUser(widget.user),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData && snapshot.data != null) {
-                              snapshot.data!
-                                  .sort((a, b) => b.date.compareTo(a.date));
+                        if (callSelectedIndex == 0) {
+                          data.sort((a, b) => a.date.compareTo(b.date));
+                        } else if (callSelectedIndex == 3) {
+                          data.sort((a, b) => a.price.compareTo(b.price));
+                        } else if (callSelectedIndex == 4) {
+                          data.sort((a, b) =>
+                              a.mileage ?? 0.compareTo(b.mileage ?? 0));
+                        } else if (callSelectedIndex == 5) {
+                          data.sort((a, b) =>
+                              a.bonusMileage ??
+                              0.compareTo(b.bonusMileage ?? 0));
+                        } else if (callSelectedIndex == 6) {
+                          data.sort((a, b) =>
+                              a.sumMileage ?? 0.compareTo(b.sumMileage ?? 0));
+                        } else {
+                          data.sort((a, b) => a.date.compareTo(b.date));
+                        }
 
-                              return SfDataGrid(
-                                  defaultColumnWidth:
-                                      MediaQuery.of(context).size.width / 6,
-                                  source: UserCallDataSource(
-                                      callData: snapshot.data!),
-                                  columns: <GridColumn>[
-                                    GridColumn(
-                                        columnName: 'date',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '일자',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'startAddress',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '출발',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'endAddress',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '도착',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'price',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '콜 금액',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'mileage',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '적립금',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'bonusMileage',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '이벤트',
-                                              overflow: TextOverflow.ellipsis,
-                                            ))),
-                                    GridColumn(
-                                        columnName: 'sumMileage',
-                                        label: Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              '총 적립금',
-                                              overflow: TextOverflow.ellipsis,
-                                            )))
-                                  ]);
-                            } else if (snapshot.hasError) {
-                              return const Text('기록을 불러오는 중 오류가 발생했습니다.');
-                            } else {
-                              return const Text('기록을 불러오는 중...');
-                            }
-                          }),
+                        return SfDataGrid(
+                            defaultColumnWidth:
+                                MediaQuery.of(context).size.width / 6,
+                            source: UserCallDataSource(callData: data),
+                            onCellDoubleTap: (details) {
+                              if (details.rowColumnIndex.rowIndex == 0) {
+                                ref.read(_callSelectedIndex.notifier).state =
+                                    details.rowColumnIndex.columnIndex;
+                              }
+                            },
+                            columns: <GridColumn>[
+                              GridColumn(
+                                  columnName: 'date',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '일자',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'startAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '출발',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'endAddress',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '도착',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'price',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '콜 금액',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'mileage',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '적립금',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'bonusMileage',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '이벤트',
+                                        overflow: TextOverflow.ellipsis,
+                                      ))),
+                              GridColumn(
+                                  columnName: 'sumMileage',
+                                  label: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        '총 적립',
+                                        overflow: TextOverflow.ellipsis,
+                                      )))
+                            ]);
+                      }, error: (error, stackTrace) {
+                        return const Text('기록을 불러오는 중 오류가 발생했습니다.');
+                      }, loading: () {
+                        return const Text('기록을 불러오는 중...');
+                      }),
                     ],
                   )),
                   InkWell(
@@ -400,8 +457,7 @@ class UserMileageDataSource extends DataGridSource {
     _mileageData = mileageData
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: 'date', value: e.date),
-      DataGridCell<String>(columnName: 'type', value: e.type),
-
+              DataGridCell<String>(columnName: 'type', value: e.type),
               DataGridCell<int>(columnName: 'amount', value: e.amount),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
               DataGridCell<String>(
@@ -444,8 +500,7 @@ class UserCallDataSource extends DataGridSource {
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
               DataGridCell<int>(
                   columnName: 'bonusMileage', value: e.bonusMileage),
-      DataGridCell<int>(
-          columnName: 'sumMileage', value: e.sumMileage),
+              DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
             ]))
         .toList();
   }
