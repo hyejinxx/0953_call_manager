@@ -124,7 +124,7 @@ class UserMileageRecordScreenState
                           return SfDataGrid(
                               defaultColumnWidth:
                                   MediaQuery.of(context).size.width / 5,
-                              source: UserMileageDataSource(mileageData: list),
+                              source: UserMileageDataSource(mileageData: list.reversed.toList()),
                               columns: <GridColumn>[
                                 GridColumn(
                                     columnName: 'date',
@@ -133,6 +133,15 @@ class UserMileageRecordScreenState
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '일자',
+                                          overflow: TextOverflow.ellipsis,
+                                        ))),
+                                GridColumn(
+                                    columnName: 'type',
+                                    label: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          '적립유형',
                                           overflow: TextOverflow.ellipsis,
                                         ))),
                                 GridColumn(
@@ -187,7 +196,7 @@ class UserMileageRecordScreenState
                           list.sort((a, b) => b.date.compareTo(a.date));
                           return SfDataGrid(
                               defaultColumnWidth:
-                                  MediaQuery.of(context).size.width / 5,
+                                  MediaQuery.of(context).size.width / 6,
                               source: UserMileageDataSource(mileageData: list),
                               columns: <GridColumn>[
                                 GridColumn(
@@ -199,6 +208,16 @@ class UserMileageRecordScreenState
                                           '일자',
                                           overflow: TextOverflow.ellipsis,
                                         ))),
+                                GridColumn(
+                                    columnName: 'type',
+                                    label: Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          '적립유형',
+                                          overflow: TextOverflow.ellipsis,
+                                        ))),
+
                                 GridColumn(
                                     columnName: 'amount',
                                     label: Container(
@@ -381,6 +400,8 @@ class UserMileageDataSource extends DataGridSource {
     _mileageData = mileageData
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: 'date', value: e.date),
+      DataGridCell<String>(columnName: 'type', value: e.type),
+
               DataGridCell<int>(columnName: 'amount', value: e.amount),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
               DataGridCell<String>(
