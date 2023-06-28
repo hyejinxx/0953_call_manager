@@ -22,11 +22,28 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
 
   late List<bool> isSelected;
 
+  final indexProvider = StateProvider<int>((ref) => 0);
+
+  late FutureProvider mileageListProvider;
+
+  @override
+  void initState() {
+    mileageListProvider = FutureProvider((ref) {
+      final isUser = ref.watch(isUserProvider);
+      return Future.value(isUser
+          ? CallService().getAllCall()
+          : CallService().getAllCallNotUser());
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final startDate = ref.watch(firstDate);
     final endDate = ref.watch(lastDate);
     final isUser = ref.watch(isUserProvider);
+    final mileageList = ref.watch(mileageListProvider);
+    final index = ref.watch(indexProvider);
 
     return SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -37,7 +54,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
               onPressed: (index) {
                 setState(() {
                   if (index == 0) {
-                   ref.read(isUserProvider.notifier).state = true;
+                    ref.read(isUserProvider.notifier).state = true;
                   } else {
                     ref.read(isUserProvider.notifier).state = false;
                   }
@@ -156,111 +173,129 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
             ],
           ),
           Expanded(
-            child: FutureBuilder(
-              future: isUser
-                  ? CallService().getAllCall()
-                  : CallService().getAllCallNotUser(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  snapshot.data!.sort((a, b) => b.date.compareTo(a.date));
-                  List<Call> result = isAll
-                      ? snapshot.data!
-                      : snapshot.data!
-                          .where((element) =>
-                              DateFormat('yyyy-MM-dd')
-                                  .parse(element.date)
-                                  .add(const Duration(days: 1))
-                                  .isAfter(startDate) &&
-                              DateFormat('yyyy-MM-dd')
-                                  .parse(element.date)
-                                  .subtract(const Duration(days: 1))
-                                  .isBefore(endDate))
-                          .toList();
-                  return SfDataGrid(
-                      defaultColumnWidth: MediaQuery.of(context).size.width / 6,
-                      source: CallDataSource(callData: result),
-                      onCellDoubleTap: (details){
-                        if (details.rowColumnIndex.rowIndex == 0) {
-                          final index = details.rowColumnIndex.columnIndex;
-                          if (index == 0) {
-                            result.sort((a, b) => a.call.compareTo(b.call));
-                          } else if (index == 1) {
-                            result.sort((a, b) => a.name.compareTo(b.name));
-                          } else if (index == 2) {
-                            result.sort((a, b) => a.mileage??0.compareTo(b.mileage??0));
-                          } else if (index == 3) {
-                            result.sort((a, b) => a.bonusMileage??0.compareTo(b.bonusMileage??0));
-                          } else if (index == 4) {
-                            result.sort((a, b) => a.date.compareTo(b.date));
-                          } else if (index == 5) {
-                            result.sort((a, b) => a.price.compareTo(b.price));
+            child: mileageList.when(
+                data: (data) {
+                  if (data.isNotEmpty) {
+                    List<Call> result = isAll
+                        ? data
+                        : data
+                            .where((element) =>
+                                DateFormat('yyyy-MM-dd')
+                                    .parse(element.date)
+                                    .add(const Duration(days: 1))
+                                    .isAfter(startDate) &&
+                                DateFormat('yyyy-MM-dd')
+                                    .parse(element.date)
+                                    .subtract(const Duration(days: 1))
+                                    .isBefore(endDate))
+                            .toList();
+
+                    if (index == 0) {
+                      result.sort((a, b) => a.call.compareTo(b.call));
+                    } else if (index == 1) {
+                      result.sort((a, b) => a.name.compareTo(b.name));
+                    } else if (index == 2) {
+                      result.sort(
+                          (a, b) => a.mileage ?? 0.compareTo(b.mileage ?? 0));
+                    } else if (index == 3) {
+                      result.sort((a, b) =>
+                          a.bonusMileage ?? 0.compareTo(b.bonusMileage ?? 0));
+                    } else if (index == 4) {
+                      result.sort((a, b) =>
+                          a.sumMileage ?? 0.compareTo(b.sumMileage ?? 0));
+                    } else if (index == 5) {
+                      result.sort((a, b) => a.date.compareTo(b.date));
+                    } else if (index == 6) {
+                      result.sort((a, b) => a.price.compareTo(b.price));
+                    } else {
+                      result.sort((a, b) => a.date.compareTo(b.date));
+                    }
+
+                    return SfDataGrid(
+                        defaultColumnWidth:
+                            MediaQuery.of(context).size.width / 7,
+                        source: CallDataSource(callData: result),
+                        onCellDoubleTap: (details) {
+                          if (details.rowColumnIndex.rowIndex == 0) {
+                            ref.read(indexProvider.notifier).state =
+                                details.rowColumnIndex.columnIndex;
                           }
-                          setState(() {});
-                        }
-                      },
-                      columns: <GridColumn>[
-                        GridColumn(
-                            columnName: 'call',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '전화번호',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'name',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '이름',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'mileage',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '적립',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'bonusMileage',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '이벤트 적립',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'date',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '일자',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                        GridColumn(
-                            columnName: 'price',
-                            label: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  '대리 금액',
-                                  overflow: TextOverflow.ellipsis,
-                                ))),
-                      ]);
-                } else {
-                  return const Center(
-                    child: Text('데이터가 없습니다.'),
-                  );
-                }
-              },
-            ),
+                        },
+                        columns: <GridColumn>[
+                          GridColumn(
+                              columnName: 'call',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '전화번호',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'name',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '이름',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'mileage',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '적립',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'bonusMileage',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '이벤트 적립',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'sumMileage',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '소계',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'date',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '일자',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'price',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '대리 금액',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                        ]);
+                  } else {
+                    return const Center(
+                      child: Text('데이터가 없습니다.'),
+                    );
+                  }
+                },
+                error: (error, st) => Text('error'),
+                loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    )),
           ),
           InkWell(
               onTap: () {
@@ -310,6 +345,7 @@ class CallDataSource extends DataGridSource {
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
               DataGridCell<int>(
                   columnName: 'bonusMileage', value: e.bonusMileage),
+              DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
               DataGridCell<String>(
                   columnName: 'date', value: '${e.date} ${e.time}'),
               DataGridCell<int>(columnName: 'price', value: e.price),

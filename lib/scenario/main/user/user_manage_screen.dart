@@ -1,4 +1,5 @@
 import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.dart';
+import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -29,6 +30,13 @@ class _UserManageScreenState extends State<UserManageScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
+          FutureBuilder(future: MileageService().getRequireMileage(), builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text('총 마일리지: ${snapshot.data![0]} - 출금 가능 마일리지: ${snapshot.data![1]} = ${snapshot.data![0] - snapshot.data![2]}');
+            } else {
+              return const Text('보유 필요 금액: 0');
+            }
+          }),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: TextField(

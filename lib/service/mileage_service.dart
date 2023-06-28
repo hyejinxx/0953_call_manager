@@ -16,7 +16,6 @@ class MileageService {
 
   Future<void> saveMileage(Mileage mileage) async {
     try {
-
       // 유저 마일리지 업데이트
       await firestore
           .collection('user')
@@ -193,6 +192,26 @@ class MileageService {
       return mileageList;
     } catch (e) {
       throw Exception("getMileageRecord: $e");
+    }
+  }
+
+  Future<List<int>> getRequireMileage() async {
+    try {
+      int sum = 0;
+      int req = 0;
+      int index = 0;
+      final value = await firestore.collection('user').get();
+      value.forEach((element) {
+        sum += element.map['mileage'] as int;
+        if (element.map['mileage'] > 20500) {
+          int a = (element.map['mileage'] as int) - 10500;
+          req += a;
+        }
+      });
+      index = value.length;
+      return [sum, req, index];
+    } catch (e) {
+      throw Exception("getRequireMileage: $e");
     }
   }
 }
