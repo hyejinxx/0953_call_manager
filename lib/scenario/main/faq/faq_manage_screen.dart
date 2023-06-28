@@ -221,10 +221,10 @@ class NewFAQPage extends StatefulWidget {
   const NewFAQPage({Key? key}) : super(key: key);
 
   @override
-  State<FAQPage> createState() => NewFAQPageState();
+  State<NewFAQPage> createState() => NewFAQPageState();
 }
 
-class NewFAQPageState extends State<FAQPage> {
+class NewFAQPageState extends State<NewFAQPage> {
   @override
   Widget build(BuildContext context) {
     return Column(

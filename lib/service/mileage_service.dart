@@ -17,37 +17,36 @@ class MileageService {
   Future<void> saveMileage(Mileage mileage) async {
     try {
       // 유저 마일리지 업데이트
-      await firestore
+      final value = await firestore
           .collection('user')
           .document(mileage.call)
-          .get()
-          .then((value) async {
-        if (value.map != null) {
-          int updatedMileage = value.map['mileage'] + mileage.amount;
-          mileage.sumMileage = updatedMileage;
-          await firestore
-              .collection('user')
-              .document(mileage.call)
-              .update({'mileage': updatedMileage});
+          .get();
 
-          await firestore
-              .collection('user')
-              .document(mileage.call)
-              .collection('mileage')
-              .document(mileage.orderNumber + mileage.type)
-              .set(mileage.toJson());
-        }
-      });
+        int updatedMileage = value.map['mileage'] + mileage.amount;
+        mileage.sumMileage = updatedMileage;
+        await firestore
+            .collection('user')
+            .document(mileage.call)
+            .update({'mileage': updatedMileage});
+
+        await firestore
+            .collection('user')
+            .document(mileage.call)
+            .collection('mileage')
+            .document(mileage.orderNumber + mileage.type)
+            .set(mileage.toJson());
+
+        final a =
+            await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
+        final mileageNum = jsonDecode(a.body)['name'];
+        await firestore
+            .collection('mileage')
+            .document(mileage.date.substring(0, 7))
+            .collection(mileage.date.substring(8, 10))
+            .document(mileageNum)
+            .set({'mileage': mileageNum});
+
       // 관리자용 마일리지 기록 저장
-      final a =
-          await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
-      final mileageNum = jsonDecode(a.body)['name'];
-      await firestore
-          .collection('mileage')
-          .document(mileage.date.substring(0, 7))
-          .collection(mileage.date.substring(8, 10))
-          .document(mileageNum)
-          .set({'mileage': mileageNum});
     } catch (e) {
       throw Exception("saveMileage: $e");
     }
@@ -59,7 +58,6 @@ class MileageService {
       final userData =
           await firestore.collection('user').document(withdraw.userCall).get();
       // 유저 마일리지 기록 저장 -> 출금
-
 
       if (status == "출금완료") {
         // 유저 마일리지 업데이트
@@ -90,16 +88,13 @@ class MileageService {
           'type': status,
           'sumMileage': userData.map['mileage'] - withdraw.amount
         });
-      }else{
+      } else {
         await firestore
             .collection('user')
             .document(withdraw.userCall)
             .collection('mileage')
             .document(withdraw.createdAt + withdraw.userCall)
-            .update({
-          'type': status,
-          'sumMileage': userData.map['mileage']
-        });
+            .update({'type': status, 'sumMileage': userData.map['mileage']});
       }
 
       // 관리자용 출금 기록 저장
