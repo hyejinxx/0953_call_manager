@@ -15,35 +15,31 @@ class CallManageScreen extends ConsumerStatefulWidget {
 class CallManageScreenState extends ConsumerState<CallManageScreen> {
   final firstDate = StateProvider(
       (ref) => DateTime.now().subtract(const Duration(days: 365)));
+
   final lastDate = StateProvider((ref) => DateTime.now());
+  final isUserProvider = StateProvider((ref) => true);
   bool isAll = true;
-  bool isUser = true;
 
   late List<bool> isSelected;
-
-  @override
-  void initState() {
-    isSelected = [isUser, !isUser];
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final startDate = ref.watch(firstDate);
     final endDate = ref.watch(lastDate);
+    final isUser = ref.watch(isUserProvider);
 
     return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ToggleButtons(
-              isSelected: isSelected,
+              isSelected: [isUser, !isUser],
               onPressed: (index) {
                 setState(() {
                   if (index == 0) {
-                    isUser = true;
+                   ref.read(isUserProvider.notifier).state = true;
                   } else {
-                    isUser = false;
+                    ref.read(isUserProvider.notifier).state = false;
                   }
                 });
               },
