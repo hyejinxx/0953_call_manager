@@ -31,8 +31,8 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                 const Center(
                   child: Image(
                     image: AssetImage('assets/image/0953.gif'),
-                    width: 350,
-                    height: 350,
+                    width: 300,
+                    height: 300,
                   ),
                 ),
                 InkWell(
@@ -119,6 +119,9 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -151,6 +154,9 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -173,7 +179,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                         ),
                       ],
                     ),
-                    width: 200,
+                    width: 250,
                     padding: const EdgeInsets.all(20.0),
                     child: const Text(
                       '마일리지 기준 설정',

@@ -1,24 +1,26 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firedart/firedart.dart';
 import 'package:flutter/services.dart';
 
 class ManagerService {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Firestore firestore = Firestore.instance;
 
   Future<Map<String, dynamic>> getCallNumber() async {
     try {
       final data =
-          await firestore.collection('callNumber').doc('callNumber').get();
-      if (data.data() == null) {
+          await firestore.collection('callNumber').document('callNumber').get();
+      if (data == null) {
         return {
           'daeri': '0432160953',
           'gisa': '01050160103',
           'taksong': '01050160103'
         };
       } else {
-        print(data.data()!);
-        return data.data()!;
+        print(data!);
+        return data.map;
       }
     } catch (e) {
       throw Exception("getCallNumber: error");
@@ -27,7 +29,7 @@ class ManagerService {
 
   Future<void> setCallNumber(Map<String, dynamic> number) async {
     try {
-      await firestore.collection('callNumber').doc('callNumber').update(number);
+      await firestore.collection('callNumber').document('callNumber').update(number);
     } catch (e) {
       throw Exception("setCallNumber: error");
     }
@@ -36,50 +38,57 @@ class ManagerService {
   Future<Map<String, dynamic>?> getMileageStandardForCard() async {
     Map<String, dynamic>? cardData = await firestore
         .collection('mileageStandard')
-        .doc('card')
+        .document('card')
         .get()
         .then((value) {
-      return value.data();
+      return value.map;
     }).onError((error, stackTrace) async {
       var data = await rootBundle.loadString('assets/json/cashMileage.json');
       return jsonDecode(data);
     });
 
-    return cardData;
+    if (cardData == null) {
+      return null;
+    } else {
+      Map<String, dynamic> cardData2 = Map.fromEntries(cardData.entries.toList()..sort((a, b) => int.parse(a.key.replaceAll('a', '')).compareTo(int.parse(b.key.replaceAll('a', '')))));
+      return cardData2;
+    }
   }
 
   Future<Map<String, dynamic>> getMileageStandardForCash() async {
     try {
       Map<String, dynamic>? cashData = await firestore
           .collection('mileageStandard')
-          .doc('cash')
+          .document('cash')
           .get()
           .then((value) {
-        return value.data();
+        return value.map;
       }).onError((error, stackTrace) async {
         var data = await rootBundle.loadString('assets/json/cashMileage.json');
         return jsonDecode(data);
       });
 
-      return cashData!;
+      Map<String, dynamic> cashData2 = Map.fromEntries(cashData.entries.toList()..sort((a, b) => int.parse(a.key.replaceAll('a', '')).compareTo(int.parse(b.key.replaceAll('a', '')))));
+
+      return cashData2;
     } catch (e) {
       throw Exception("getMileageStandardForCash: error");
     }
   }
 
-  void updateMileageStandardForCash(Map<String, dynamic> value) async {
+  void updateMileageStandardForCash(Map<String, int> value) async {
     try {
-      await firestore.collection('mileageStandard').doc('cash').update(value);
+      await firestore.collection('mileageStandard').document('cash').update(value);
     } catch (e) {
-      throw Exception("updateMileageStandardForCash: error");
+      throw Exception("updateMileageStandardForCash: $e");
     }
   }
 
   void updateMileageStandardForCard(Map<String, dynamic> value) async {
     try {
-      await firestore.collection('mileageStandard').doc('card').update(value);
+      await firestore.collection('mileageStandard').document('card').update(value);
     } catch (e) {
-      throw Exception("updateMileageStandardForCard: error");
+      throw Exception("updateMileageStandardForCard: $e");
     }
   }
 }

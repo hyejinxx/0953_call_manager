@@ -16,7 +16,7 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    setController();// TODO: implement initState
     super.initState();
   }
 
@@ -32,7 +32,31 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold
+      (
+        appBar: AppBar(
+          title: Text('전화번호 설정',
+              style: const TextStyle(color: Colors.black),
+              textAlign: TextAlign.center),
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(0),
+            child: Container(
+              color: Colors.grey[300],
+              height: 1,
+            ),
+          ),
+          leadingWidth: 100,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            color: Colors.black,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -47,29 +71,26 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                     decoration: const InputDecoration(
                       labelText: '일일기사',
                     ),
-                    obscureText: true,
                   ),
                 ),
                 const SizedBox(height: 20,),
                 SizedBox(
                   width: 300,
                   child: TextFormField(
-                    controller: _textController1,
+                    controller: _textController2,
                     decoration: const InputDecoration(
                       labelText: '탁송',
                     ),
-                    obscureText: true,
                   ),
                 ),
                 const SizedBox(height: 20,),
                 SizedBox(
                   width: 300,
                   child: TextFormField(
-                    controller: _textController1,
+                    controller: _textController3,
                     decoration: const InputDecoration(
                       labelText: '대리운전',
                     ),
-                    obscureText: true,
                   ),
                 ),
                 const SizedBox(height: 20,),
