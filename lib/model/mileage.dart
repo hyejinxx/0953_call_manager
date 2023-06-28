@@ -5,6 +5,9 @@ class Mileage {
   final String type;
   final int amount;
   final String date;
+  final String startAddress;
+  final String endAddress;
+  int sumMileage;
 
   Mileage({
     required this.orderNumber,
@@ -13,6 +16,9 @@ class Mileage {
     required this.type,
     required this.amount,
     required this.date,
+    required this.startAddress,
+    required this.endAddress,
+    required this.sumMileage,
   });
 
   factory Mileage.fromJson(Map<String, dynamic> json) {
@@ -23,6 +29,9 @@ class Mileage {
       type: json['type'],
       amount: json['amount'],
       date: json['date'],
+      startAddress: json['startAddress'],
+      endAddress: json['endAddress'],
+      sumMileage: json['sumMileage'],
     );
   }
 
@@ -34,6 +43,9 @@ class Mileage {
       type: db['type'],
       amount: db['amount'],
       date: db['date'],
+      startAddress: db['startAddress'],
+      endAddress: db['endAddress'],
+      sumMileage: db['sumMileage'],
     );
   }
 
@@ -44,6 +56,9 @@ class Mileage {
     'type': type,
     'amount': amount,
     'date': date,
+    'startAddress': startAddress,
+    'endAddress': endAddress,
+    'sumMileage': sumMileage,
   };
 }
 

@@ -59,12 +59,34 @@ class _UserManageScreenState extends State<UserManageScreen> {
                       source: UserDataSource(userData: userList),
                       columnWidthMode: ColumnWidthMode.fill,
                       onCellTap: (value) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UserMileageRecordScreen(
-                                        user:userList[value.rowColumnIndex.rowIndex-1].call,
-                                      )));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserMileageRecordScreen(
+                                      user: userList[
+                                              value.rowColumnIndex.rowIndex - 1]
+                                          .call,
+                                    )));
+                      },
+                      onCellDoubleTap: (details) {
+                        if (details.rowColumnIndex.rowIndex == 0) {
+                          final index = details.rowColumnIndex.columnIndex;
+                          if (index == 0) {
+                            userList.sort((a, b) => a.call.compareTo(b.call));
+                          } else if (index == 1) {
+                            userList.sort((a, b) => a.name.compareTo(b.name));
+                          } else if (index == 2) {
+                            userList
+                                .sort((a, b) => a.mileage.compareTo(b.mileage));
+                          } else if (index == 3) {
+                            userList.sort(
+                                (a, b) => a.createdAt.compareTo(b.createdAt));
+                          } else if (index == 4) {
+                            // userList.sort((a, b) => a.store?.compareTo(b.store));
+                          } else {}
+                        }
+
+                        setState(() {});
                       },
                       columns: <GridColumn>[
                         GridColumn(
@@ -191,7 +213,8 @@ class UserDataSource extends DataGridSource {
               DataGridCell<String>(
                   columnName: 'joinDate', value: e.createdAt.toString()),
               DataGridCell<String>(columnName: 'store', value: e.store ?? ''),
-      DataGridCell<String>(columnName: 'storeCall', value: e.storeCall ?? ''),
+              DataGridCell<String>(
+                  columnName: 'storeCall', value: e.storeCall ?? ''),
             ]))
         .toList();
   }

@@ -16,13 +16,7 @@ class MileageService {
 
   Future<void> saveMileage(Mileage mileage) async {
     try {
-      // 유저 마일리지 기록 저장
-      await firestore
-          .collection('user')
-          .document(mileage.call)
-          .collection('mileage')
-          .document(mileage.orderNumber + mileage.type)
-          .set(mileage.toJson());
+
       // 유저 마일리지 업데이트
       await firestore
           .collection('user')
@@ -31,15 +25,23 @@ class MileageService {
           .then((value) async {
         if (value.map != null) {
           int updatedMileage = value.map['mileage'] + mileage.amount;
+          mileage.sumMileage = updatedMileage;
           await firestore
               .collection('user')
               .document(mileage.call)
               .update({'mileage': updatedMileage});
+
+          await firestore
+              .collection('user')
+              .document(mileage.call)
+              .collection('mileage')
+              .document(mileage.orderNumber + mileage.type)
+              .set(mileage.toJson());
         }
       });
       // 관리자용 마일리지 기록 저장
-      final a = await http.post(Uri.parse(mileageUrl),
-          body: jsonEncode(mileage));
+      final a =
+          await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
       final mileageNum = jsonDecode(a.body)['name'];
       await firestore
           .collection('mileage')
@@ -55,40 +57,41 @@ class MileageService {
   // 마일리지 출금 완료 처리
   Future<void> updateWithdraw(Withdraw withdraw, String status) async {
     try {
+      final userData =
+          await firestore.collection('user').document(withdraw.userCall).get();
       // 유저 마일리지 기록 저장 -> 출금
       await firestore
           .collection('user')
           .document(withdraw.userCall)
           .collection('mileage')
           .document(withdraw.createdAt + withdraw.userCall)
-          .update({'type': status});
+          .update({
+        'type': status,
+        'sumMileage': userData.map['mileage'] - withdraw.amount
+      });
+
       if (status == "출금완료") {
         // 유저 마일리지 업데이트
+
+        int updatedMileage = userData.map['mileage'] - withdraw.amount;
         await firestore
             .collection('user')
             .document(withdraw.userCall)
-            .get()
-            .then((value) async {
-          if (value != null) {
-            int updatedMileage = value.map['mileage'] - withdraw.amount;
-            await firestore
-                .collection('user')
-                .document(withdraw.userCall)
-                .update({'mileage': updatedMileage});
+            .update({'mileage': updatedMileage});
 
-            saveMileage(Mileage(
-                orderNumber:
-                DateTime.now().millisecondsSinceEpoch.toString() +
-                   withdraw.userCall,
-                name: withdraw.name ?? '',
-                call: withdraw.userCall,
-                type: '출금 수수료',
-                amount: -500,
-                date: DateFormat('yyyy-MM-dd').format(DateTime.now())));
-
-          }
-        });
+        saveMileage(Mileage(
+            orderNumber: DateTime.now().millisecondsSinceEpoch.toString() +
+                withdraw.userCall,
+            name: withdraw.name ?? '',
+            call: withdraw.userCall,
+            type: '출금 수수료',
+            amount: -500,
+            sumMileage: updatedMileage,
+            startAddress: '',
+            endAddress: '',
+            date: DateFormat('yyyy-MM-dd').format(DateTime.now())));
       }
+
       // 관리자용 출금 기록 저장
       await firestore
           .collection('withdraw')
@@ -104,7 +107,8 @@ class MileageService {
     try {
       await http.get(Uri.parse(withdrawUrl)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<dynamic, dynamic> data = jsonDecode(value.body) as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> data =
+            jsonDecode(value.body) as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           withdrawList.add(Withdraw.fromDB(value));
         });
@@ -115,7 +119,7 @@ class MileageService {
             .document(e.createdAt + e.userCall)
             .get()
             .then((value) {
-              e.status = value.map['status'];
+          e.status = value.map['status'];
         });
       }));
       return withdrawList;
@@ -160,7 +164,8 @@ class MileageService {
       });
       await http.get(Uri.parse(mileageUrl)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<dynamic, dynamic> data = jsonDecode(value.body) as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> data =
+            jsonDecode(value.body) as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           mileageIdList.add(key);
           mileageList.add(Mileage.fromDB(value));
@@ -179,7 +184,8 @@ class MileageService {
         if (jsonDecode(value.body) == null) return;
         print(value.body);
 
-        final Map<dynamic, dynamic> data = jsonDecode(value.body) as Map<dynamic, dynamic>;
+        final Map<dynamic, dynamic> data =
+            jsonDecode(value.body) as Map<dynamic, dynamic>;
         data.forEach((key, value) {
           mileageList.add(Mileage.fromDB(value));
         });

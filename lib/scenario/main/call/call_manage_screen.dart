@@ -118,7 +118,8 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -156,7 +157,8 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                   ],
                 ),
               ],
-            ],),
+            ],
+          ),
           Expanded(
             child: FutureBuilder(
               future: isUser
@@ -178,7 +180,29 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                   .subtract(const Duration(days: 1))
                                   .isBefore(endDate))
                           .toList();
-                  return SfDataGrid(defaultColumnWidth: MediaQuery.of(context).size.width/6, source: CallDataSource(callData: result), columns: <GridColumn>[
+                  return SfDataGrid(
+                      defaultColumnWidth: MediaQuery.of(context).size.width / 6,
+                      source: CallDataSource(callData: result),
+                      onCellDoubleTap: (details){
+                        if (details.rowColumnIndex.rowIndex == 0) {
+                          final index = details.rowColumnIndex.columnIndex;
+                          if (index == 0) {
+                            result.sort((a, b) => a.call.compareTo(b.call));
+                          } else if (index == 1) {
+                            result.sort((a, b) => a.name.compareTo(b.name));
+                          } else if (index == 2) {
+                            result.sort((a, b) => a.mileage??0.compareTo(b.mileage??0));
+                          } else if (index == 3) {
+                            result.sort((a, b) => a.bonusMileage??0.compareTo(b.bonusMileage??0));
+                          } else if (index == 4) {
+                            result.sort((a, b) => a.date.compareTo(b.date));
+                          } else if (index == 5) {
+                            result.sort((a, b) => a.price.compareTo(b.price));
+                          }
+                          setState(() {});
+                        }
+                      },
+                      columns: <GridColumn>[
                         GridColumn(
                             columnName: 'call',
                             label: Container(
@@ -234,7 +258,6 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ))),
                       ]);
-
                 } else {
                   return const Center(
                     child: Text('데이터가 없습니다.'),
@@ -243,47 +266,58 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
               },
             ),
           ),
-        InkWell(
-                onTap: () {
-                  showDialog(context: context, builder: (BuildContext context){
-                    return AlertDialog(
-                      title: const Text('비회원 대리 기록 삭제'),
-                      content: const Text('비회원 대리 기록을 모두 삭제하시겠습니까?'),
-                      actions: [
-                        TextButton(onPressed: (){
-                          Navigator.pop(context, false);
-                        }, child: const Text('취소')),
-                        TextButton(onPressed: (){
-                          CallService().deleteAllCallNotUser();
-                          Navigator.pop(context, true);
-                        }, child: const Text('확인')),
-                      ],
-                    );
-                  });
-                },
-                child: Container(
+          InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('비회원 대리 기록 삭제'),
+                        content: const Text('비회원 대리 기록을 모두 삭제하시겠습니까?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context, false);
+                              },
+                              child: const Text('취소')),
+                          TextButton(
+                              onPressed: () {
+                                CallService().deleteAllCallNotUser();
+                                Navigator.pop(context, true);
+                              },
+                              child: const Text('확인')),
+                        ],
+                      );
+                    });
+              },
+              child: Container(
                   alignment: Alignment.center,
                   height: 50,
                   width: double.infinity,
                   color: Colors.yellow,
-                  child: const Text('비회원 대리 기록 삭제하기', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                )))
+                  child: const Text(
+                    '비회원 대리 기록 삭제하기',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )))
         ]));
   }
 }
+
 class CallDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
   CallDataSource({required List<Call> callData}) {
     _callData = callData
         .map<DataGridRow>((e) => DataGridRow(cells: [
-      DataGridCell<String>(columnName: 'call', value: e.call),
-      DataGridCell<String>(columnName: 'name', value: e.name),
-      DataGridCell<int>(columnName: 'mileage', value: e.mileage),
-      DataGridCell<int>(columnName: 'bonusMileage', value: e.bonusMileage),
-      DataGridCell<String>(
-          columnName: 'date', value: '${e.date} ${e.time}'),
-      DataGridCell<int>(columnName: 'price', value: e.price),
-    ]))
+              DataGridCell<String>(columnName: 'call', value: e.call),
+              DataGridCell<String>(columnName: 'name', value: e.name),
+              DataGridCell<int>(columnName: 'mileage', value: e.mileage),
+              DataGridCell<int>(
+                  columnName: 'bonusMileage', value: e.bonusMileage),
+              DataGridCell<String>(
+                  columnName: 'date', value: '${e.date} ${e.time}'),
+              DataGridCell<int>(columnName: 'price', value: e.price),
+            ]))
         .toList();
   }
 
@@ -296,12 +330,11 @@ class CallDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-          return Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(e.value.toString()),
-          );
-        }).toList());
+      return Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(8.0),
+        child: Text(e.value.toString()),
+      );
+    }).toList());
   }
 }
-

@@ -11,6 +11,7 @@ class Call {
   final String time;
   int? mileage;
   int? bonusMileage;
+  int? sumMileage;
 
   Call({
     required this.orderNumber,
@@ -24,6 +25,7 @@ class Call {
     required this.time,
     this.mileage,
     this.bonusMileage,
+    this.sumMileage,
   });
 
   factory Call.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class Call {
       time: json['time'],
       mileage: json['mileage'],
       bonusMileage: json['bonusMileage'],
+      sumMileage: json['sumMileage'],
     );
   }
 
@@ -55,6 +58,7 @@ class Call {
       time: db['time'],
       mileage: db['mileage'],
       bonusMileage: db['bonusMileage'],
+      sumMileage: db['sumMileage'],
     );
   }
 
@@ -70,5 +74,6 @@ class Call {
     'time': time,
     'mileage': mileage,
     'bonusMileage': bonusMileage,
+    'sumMileage': sumMileage,
   };
 }

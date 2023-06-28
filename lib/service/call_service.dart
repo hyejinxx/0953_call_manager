@@ -69,43 +69,45 @@ class CallService {
 
           try {
             final orderNumber =
-            '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data
-                .elementAt(callIndex)}'
-                .replaceAll('/', '');
+                '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
+                    .replaceAll('/', '');
             final bonusMileage = await calMileage(
                 data.elementAt(cardIndex).toString().contains('결제완료'
-                    '')
+                        '')
                     ? '카드'
                     : '현금',
                 int.parse(
                     data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
-          Call call = Call(
+            Call call = Call(
               orderNumber: orderNumber,
               name: data.elementAt(nameIndex).toString(),
               call: data.elementAt(callIndex).toString().replaceAll('-', ''),
-              price: int.parse(data.elementAt(priceIndex).toString().replaceAll(',', '')),
+              price: int.parse(
+                  data.elementAt(priceIndex).toString().replaceAll(',', '')),
               date: DateFormat('yyyy-').format(DateTime.now()) +
                   data.elementAt(dateIndex).toString().replaceAll('/', '-'),
               time: data.elementAt(timeIndex).toString(),
               startAddress: data.elementAt(startAddressIndex).toString(),
               endAddress: data.elementAt(endAddressIndex).toString(),
               mileage: 1000,
-              bonusMileage: bonusMileage);
+              bonusMileage: bonusMileage,
+              sumMileage: 1000 + bonusMileage,
+            );
 
-          User? user = await UserService().getUser(
-              data.elementAt(callIndex).toString().replaceAll('-', ''));
-          print(call);
-          if (user != null) {
-            print('user: ${user.name}');
-            await saveCall(call);
-          } else {
-            print('not user');
-            call.mileage = 0;
-            call.bonusMileage = 0;
+            User? user = await UserService().getUser(
+                data.elementAt(callIndex).toString().replaceAll('-', ''));
+            print(call);
+            if (user != null) {
+              print('user: ${user.name}');
+              await saveCall(call);
+            } else {
+              print('not user');
+              call.mileage = 0;
+              call.bonusMileage = 0;
 
-            await saveCallNotUser(call);
-          }
+              await saveCallNotUser(call);
+            }
           } catch (e) {
             print(e);
             continue;
@@ -117,8 +119,6 @@ class CallService {
       throw Exception(e.toString());
     }
   }
-
-
 
   Future<void> saveCall(Call call) async {
     try {
@@ -134,6 +134,13 @@ class CallService {
           .document(callNum)
           .set({'call': callNum});
 
+      firestore
+          .collection('user')
+          .document(call.call)
+          .collection('call')
+          .document(callNum)
+          .set(call.toJson());
+
       saveMileage(call);
       print('saved');
     } catch (e) {
@@ -148,7 +155,10 @@ class CallService {
         name: call.name,
         call: call.call,
         type: '콜',
+        startAddress: call.startAddress ?? '',
+        endAddress: call.endAddress ?? '',
         amount: 1000,
+        sumMileage: 0,
         date: call.date);
     await MileageService().saveMileage(mileage);
     if (call.bonusMileage != null && call.bonusMileage != 0) {
@@ -157,6 +167,9 @@ class CallService {
           name: call.name,
           call: call.call,
           type: '이벤트 마일리지',
+          startAddress: call.startAddress ?? '',
+          endAddress: call.endAddress ?? '',
+          sumMileage: 0,
           amount: call.bonusMileage!,
           date: call.date);
       await MileageService().saveMileage(bonusMileage);
@@ -208,6 +221,25 @@ class CallService {
     }
   }
 
+  Future<List<Call>> getCallForUser(String userCall) async {
+    List<Call> callList = [];
+    try {
+      await firestore
+          .collection('user')
+          .document(userCall)
+          .collection('call')
+          .get()
+          .then((value) => value.forEach((element) {
+                callList.add(Call.fromJson(element.map));
+              }));
+      print(callList.length);
+      return callList;
+    } catch (e) {
+      print(e);
+      throw Exception("getCallForUserList: error");
+    }
+  }
+
   Future<void> saveCallNotUser(Call call) async {
     try {
       print('saving');
@@ -236,7 +268,7 @@ class CallService {
         print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
-        json.decode(value.body) as Map<String, dynamic>;
+            json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -249,8 +281,7 @@ class CallService {
 
   Future<void> deleteAllCallNotUser() async {
     try {
-      await http.delete(Uri.parse(urlNotUser)).then((value) {
-      });
+      await http.delete(Uri.parse(urlNotUser)).then((value) {});
     } catch (e) {
       throw Exception("deleteAllCallNotUser: $e");
     }

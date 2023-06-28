@@ -103,12 +103,14 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                               phoneTextController.text,
                       name: widget.name ?? '',
                       call: phoneTextController.text,
-                      type: '추가 마일리지',
+                      type: '이벤트 마일리지',
                       amount: int.parse(amountTextController.text),
+                      startAddress: '',
+                      endAddress: '',
+                      sumMileage: 0,
                       date: DateFormat('yyyy-MM-dd').format(DateTime.now()))).then((value) {
                         showSnackBar('적립되었습니다.');
                         Navigator.pop(context);
-
                   });
 
                 },
