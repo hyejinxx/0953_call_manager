@@ -41,10 +41,14 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
               future: MileageService().getRequireMileage(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text(
-                      '총 마일리지: ${snapshot.data![0]}  보유 필요 마일리지: ${snapshot.data![1]} 유저 수: ${snapshot.data![2]}');
+                  return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        '유저가 보유한 총 마일리지: ${snapshot.data![0]}  관리자 보유 필요 마일리지: ${snapshot.data![1]}  총 유저 수: ${snapshot.data![2]}',
+                        style: const TextStyle(fontSize: 20),
+                      ));
                 } else {
-                  return const Text('보유 필요 금액: 0');
+                  return const Text('로딩중...');
                 }
               }),
           Padding(

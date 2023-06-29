@@ -29,14 +29,56 @@ class ManagerService {
 
   Future<void> setCallNumber(Map<String, dynamic> number) async {
     try {
-      await firestore.collection('callNumber').document('callNumber').update(number);
+      await firestore
+          .collection('callNumber')
+          .document('callNumber')
+          .update(number);
     } catch (e) {
       throw Exception("setCallNumber: error");
     }
   }
 
-  Future<Map<String, dynamic>?> getMileageStandardForCard() async {
-    Map<String, dynamic>? cardData = await firestore
+  Future<Map<String, dynamic>> getMileageStandardForCard() async {
+    Map<String, dynamic> cardData = await firestore
+        .collection('mileageStandard')
+        .document('standardCard')
+        .get()
+        .then((value) {
+      return value.map;
+    }).onError((error, stackTrace) async {
+      var data = await rootBundle.loadString('assets/json/cashMileageStandard.json');
+      return jsonDecode(data);
+    });
+
+    return Map.fromEntries(cardData.entries.toList()
+      ..sort((a, b) => int.parse(a.key.replaceAll('a', ''))
+          .compareTo(int.parse(b.key.replaceAll('a', '')))));
+  }
+
+  Future<Map<String, dynamic>> getMileageStandardForCash() async {
+    try {
+      Map<String, dynamic>? cashData = await firestore
+          .collection('mileageStandard')
+          .document('standardCash')
+          .get()
+          .then((value) {
+        return value.map;
+      }).onError((error, stackTrace) async {
+        var data = await rootBundle.loadString('assets/json/cashMileageStandard.json');
+        return jsonDecode(data);
+      });
+
+     return Map.fromEntries(cashData.entries.toList()
+        ..sort((a, b) => int.parse(a.key.replaceAll('a', ''))
+            .compareTo(int.parse(b.key.replaceAll('a', '')))));
+
+    } catch (e) {
+      throw Exception("getMileageStandardForCash: error");
+    }
+  }
+
+  Future<Map<String, dynamic>> getBonusMileageStandardForCard() async {
+    Map<String, dynamic> cardData = await firestore
         .collection('mileageStandard')
         .document('card')
         .get()
@@ -47,15 +89,12 @@ class ManagerService {
       return jsonDecode(data);
     });
 
-    if (cardData == null) {
-      return null;
-    } else {
-      Map<String, dynamic> cardData2 = Map.fromEntries(cardData.entries.toList()..sort((a, b) => int.parse(a.key.replaceAll('a', '')).compareTo(int.parse(b.key.replaceAll('a', '')))));
-      return cardData2;
-    }
+    return Map.fromEntries(cardData.entries.toList()
+      ..sort((a, b) => int.parse(a.key.replaceAll('a', ''))
+          .compareTo(int.parse(b.key.replaceAll('a', '')))));
   }
 
-  Future<Map<String, dynamic>> getMileageStandardForCash() async {
+  Future<Map<String, dynamic>> getBonusMileageStandardForCash() async {
     try {
       Map<String, dynamic>? cashData = await firestore
           .collection('mileageStandard')
@@ -68,9 +107,10 @@ class ManagerService {
         return jsonDecode(data);
       });
 
-      Map<String, dynamic> cashData2 = Map.fromEntries(cashData.entries.toList()..sort((a, b) => int.parse(a.key.replaceAll('a', '')).compareTo(int.parse(b.key.replaceAll('a', '')))));
+      return Map.fromEntries(cashData.entries.toList()
+        ..sort((a, b) => int.parse(a.key.replaceAll('a', ''))
+            .compareTo(int.parse(b.key.replaceAll('a', '')))));
 
-      return cashData2;
     } catch (e) {
       throw Exception("getMileageStandardForCash: error");
     }
@@ -78,7 +118,10 @@ class ManagerService {
 
   void updateMileageStandardForCash(Map<String, int> value) async {
     try {
-      await firestore.collection('mileageStandard').document('cash').update(value);
+      await firestore
+          .collection('mileageStandard')
+          .document('standardCash')
+          .update(value);
     } catch (e) {
       throw Exception("updateMileageStandardForCash: $e");
     }
@@ -86,7 +129,31 @@ class ManagerService {
 
   void updateMileageStandardForCard(Map<String, dynamic> value) async {
     try {
-      await firestore.collection('mileageStandard').document('card').update(value);
+      await firestore
+          .collection('mileageStandard')
+          .document('standardCard')
+          .update(value);
+    } catch (e) {
+      throw Exception("updateMileageStandardForCard: $e");
+    }
+  }
+  void updateBonusMileageStandardForCash(Map<String, int> value) async {
+    try {
+      await firestore
+          .collection('mileageStandard')
+          .document('cash')
+          .update(value);
+    } catch (e) {
+      throw Exception("updateMileageStandardForCash: $e");
+    }
+  }
+
+  void updateBonusMileageStandardForCard(Map<String, dynamic> value) async {
+    try {
+      await firestore
+          .collection('mileageStandard')
+          .document('card')
+          .update(value);
     } catch (e) {
       throw Exception("updateMileageStandardForCard: $e");
     }

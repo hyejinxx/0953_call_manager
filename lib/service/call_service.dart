@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:call_0953_manager/service/file_picker_service.dart';
+import 'package:call_0953_manager/service/manager_service.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:call_0953_manager/util/calculateMileage.dart';
 import 'package:excel/excel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firedart/firedart.dart';
 import 'package:intl/intl.dart';
 import '../model/call.dart';
@@ -29,7 +29,15 @@ class CallService {
       var excel = Excel.decodeBytes(bytes);
       bool isFirst = true;
 
+      // 마일리지 기준 가져오기
+      final cardStandard = await ManagerService().getMileageStandardForCard();
+      final cashStandard = await ManagerService().getMileageStandardForCash();
+      final cardBonusStandard = await ManagerService().getBonusMileageStandardForCard();
+      final cashBonusStandard = await ManagerService().getBonusMileageStandardForCash();
+
+      // 엑셀 파일의 시트마다 반복
       await Future.wait(excel.tables.keys.map((e) async {
+        // 엑셀 파일의 첫번째 행(헤더)에서 각 열의 인덱스를 가져옴
         final nameIndex = excel.tables[e]!.rows.first.indexOf(excel
             .tables[e]!.rows.first
             .where((element) => element?.value.toString() == '고객명')
@@ -63,6 +71,7 @@ class CallService {
             .where((element) => element?.value.toString() == '카드')
             .elementAt(0));
 
+        // 엑셀 파일의 각 행(데이터)마다 반복
         for (var row in excel.tables[e]!.rows) {
           if (isFirst) {
             isFirst = false;
@@ -74,14 +83,31 @@ class CallService {
             final orderNumber =
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
-            final bonusMileage = await calMileage(
-                data.elementAt(cardIndex).toString().contains('결제완료'
-                        '')
-                    ? '카드'
-                    : '현금',
-                int.parse(
-                    data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
+            int mileage = 0;
+            int bonusMileage = 0;
+
+            User? user = await UserService().getUser(
+                data.elementAt(callIndex).toString().replaceAll('-', ''));
+            if (user != null) {
+              final num = calMileage(int.parse(
+                  data.elementAt(priceIndex).toString().replaceAll(',', '')));
+
+              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                mileage = int.parse(cardStandard['a$num']);
+              } else {
+                mileage = int.parse(cashStandard['a$num']);
+              }
+
+              // 보너스 마일리지 계산
+              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                bonusMileage = int.parse(cardBonusStandard['a$num']);
+              } else {
+                bonusMileage = int.parse(cashBonusStandard['a$num']);
+              }
+            }
+
+            // 마일리지 계산
             Call call = Call(
               orderNumber: orderNumber,
               name: data.elementAt(nameIndex).toString(),
@@ -93,22 +119,14 @@ class CallService {
               time: data.elementAt(timeIndex).toString(),
               startAddress: data.elementAt(startAddressIndex).toString(),
               endAddress: data.elementAt(endAddressIndex).toString(),
-              mileage: 1000,
+              mileage: mileage,
               bonusMileage: bonusMileage,
-              sumMileage: 1000 + bonusMileage,
+              sumMileage: mileage + bonusMileage,
             );
 
-            User? user = await UserService().getUser(
-                data.elementAt(callIndex).toString().replaceAll('-', ''));
-            print(call);
             if (user != null) {
-              print('user: ${user.name}');
               await saveCall(call);
             } else {
-              print('not user');
-              call.mileage = 0;
-              call.bonusMileage = 0;
-
               await saveCallNotUser(call);
             }
           } catch (e) {
@@ -290,16 +308,21 @@ class CallService {
     }
   }
 
-  Future<void> callToExcel(List<Call> callList)async{
-    var excel =  Excel.createExcel();
+  Future<void> callToExcel(List<Call> callList) async {
+    var excel = Excel.createExcel();
     Sheet sheetObject = excel['비유저 콜'];
     CellStyle cellStyle = CellStyle(backgroundColorHex: "#1AFF1A");
     cellStyle.underline = Underline.Single;
 
-    for(var call in callList){
-      sheetObject.appendRow([call.date, call.name, call.call, call.startAddress, call.endAddress, call.price]);
+    for (var call in callList) {
+      sheetObject.appendRow([
+        call.date,
+        call.name,
+        call.call,
+        call.startAddress,
+        call.endAddress,
+        call.price
+      ]);
     }
-
-
   }
 }

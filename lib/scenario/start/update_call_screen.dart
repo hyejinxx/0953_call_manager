@@ -88,109 +88,34 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
+                  mainBotton(
+                      '유저 관리',
+                      () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const BottomNavigation(),
-                          ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[300],
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      width: 200,
-                      padding: const EdgeInsets.all(20.0),
-                      child: const Text(
-                        '유저 관리',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                          ))),
                   const SizedBox(
                     height: 20,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
+                  mainBotton(
+                      '전화번호 설정',
+                      () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 const CallNumberSettingScreen(),
-                          ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[300],
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      width: 200,
-                      padding: const EdgeInsets.all(20.0),
-                      child: const Text(
-                        '전화번호 설정',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                          ))),
                   const SizedBox(
                     height: 20,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MileageSettingScreen(),
-                          ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[300],
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      width: 250,
-                      padding: const EdgeInsets.all(20.0),
-                      child: const Text(
-                        '마일리지 기준 설정',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  mainBotton('마일리지 기준 설정', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MileageSettingScreen(),
+                        ));
+                  }),
                 ],
               ),
               if (_saveState == SaveState.saving)
@@ -210,5 +135,32 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                   ),
                 ),
             ]))));
+  }
+
+  Widget mainBotton(String text, Function() onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey[300],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        width: 250,
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 }
