@@ -5,6 +5,8 @@ import 'package:call_0953_manager/service/call_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import 'bonus_mileage_setting_screen.dart';
+
 enum SaveState { init, saving, success, fail }
 
 class UpdateCallScreen extends StatefulWidget {
@@ -31,8 +33,8 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                   const Center(
                     child: Image(
                       image: AssetImage('assets/image/0953.gif'),
-                      width: 300,
-                      height: 300,
+                      width: 250,
+                      height: 250,
                     ),
                   ),
                   InkWell(
@@ -109,11 +111,22 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  mainBotton('마일리지 기준 설정', () {
+                  mainBotton('마일리지 설정', () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const MileageSettingScreen(),
+                        ));
+                  }),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  mainBotton('이벤트 마일리지 설정', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BonusMileageSettingScreen(),
+
                         ));
                   }),
                 ],

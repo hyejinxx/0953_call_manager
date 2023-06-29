@@ -94,16 +94,16 @@ class CallService {
                   data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
               if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                mileage = int.parse(cardStandard['a$num']);
+                mileage = cardStandard['a$num'];
               } else {
-                mileage = int.parse(cashStandard['a$num']);
+                mileage = cashStandard['a$num'];
               }
 
               // 보너스 마일리지 계산
               if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                bonusMileage = int.parse(cardBonusStandard['a$num']);
+                bonusMileage = cardBonusStandard['a$num'];
               } else {
-                bonusMileage = int.parse(cashBonusStandard['a$num']);
+                bonusMileage = cashBonusStandard['a$num'];
               }
             }
 
@@ -171,23 +171,25 @@ class CallService {
   }
 
   Future<void> saveMileage(Call call) async {
-    final Mileage mileage = Mileage(
-        orderNumber: call.orderNumber,
-        name: call.name,
-        call: call.call,
-        type: '콜',
-        startAddress: call.startAddress ?? '',
-        endAddress: call.endAddress ?? '',
-        amount: 1000,
-        sumMileage: 0,
-        date: call.date);
-    await MileageService().saveMileage(mileage);
+    if(call.mileage != 0 && call.mileage != null) {
+      final Mileage mileage = Mileage(
+          orderNumber: call.orderNumber,
+          name: call.name,
+          call: call.call,
+          type: '콜 적립',
+          startAddress: call.startAddress ?? '',
+          endAddress: call.endAddress ?? '',
+          amount: call.mileage!,
+          sumMileage: 0,
+          date: call.date);
+      await MileageService().saveMileage(mileage);
+    }
     if (call.bonusMileage != null && call.bonusMileage != 0) {
       final Mileage bonusMileage = Mileage(
           orderNumber: call.orderNumber,
           name: call.name,
           call: call.call,
-          type: '이벤트 마일리지',
+          type: '이벤트 적립',
           startAddress: call.startAddress ?? '',
           endAddress: call.endAddress ?? '',
           sumMileage: 0,

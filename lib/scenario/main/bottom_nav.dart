@@ -44,6 +44,13 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0),
           child: Container(

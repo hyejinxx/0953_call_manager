@@ -93,14 +93,17 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     source: UserDataSource(userData: list),
                     columnWidthMode: ColumnWidthMode.fill,
                     onCellTap: (value) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserMileageRecordScreen(
-                                    user:
-                                        list[value.rowColumnIndex.rowIndex - 1]
-                                            .call,
-                                  )));
+                      if(value.rowColumnIndex.rowIndex != 0) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    UserMileageRecordScreen(
+                                      user:
+                                      list[value.rowColumnIndex.rowIndex - 1]
+                                          .call,
+                                    )));
+                      }
                     },
                     onCellDoubleTap: (details) {
                       if (details.rowColumnIndex.rowIndex == 0) {
