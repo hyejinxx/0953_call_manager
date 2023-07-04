@@ -129,7 +129,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => WithdrawScreen(
-                                          withdraw: result[
+                                          withdraw: result.reversed.toList()[
                                               value.rowColumnIndex.rowIndex -
                                                   1],
                                         )));

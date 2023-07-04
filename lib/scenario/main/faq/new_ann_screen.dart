@@ -43,7 +43,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
           elevation: 0,
           title: const Text('공지사항 작성', style: TextStyle(color: Colors.black)),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },

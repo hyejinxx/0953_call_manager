@@ -105,6 +105,46 @@ class _FAQPageState extends State<FAQPage> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
                                         ))),
+                                trailing: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.yellow,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              content: Text('삭제하시겠습니까?'),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('취소')),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context, true);
+                                                    },
+                                                    child: const Text('확인'))
+                                              ]);
+                                        }).then((value) => {
+                                          if (value == true)
+                                            {
+                                              AnnouncementService()
+                                                  .deleateFAQ(snapshot
+                                                      .data![index].createdAt)
+                                                  .then((value) =>
+                                                      setState(() {}))
+                                            }
+                                        });
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    '삭제',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
                                 subtitle: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10),
@@ -156,6 +196,28 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        FutureBuilder(
+            future: AnnouncementService().getPopUpAnnouncement(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PopUpScreen(text: snapshot.data!)));
+                    },
+                    child: Container(
+                      color: Colors.grey.withOpacity(0.7),
+                      width: MediaQuery.of(context).size.width,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text('팝업 공지사항 수정'),
+                    ));
+              } else {
+                return Container();
+              }
+            }),
         Expanded(
           child: FutureBuilder(
               future: AnnouncementService().getAnnouncement(),
@@ -186,6 +248,46 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                             fontWeight: FontWeight.w600,
                                           ))
                                     ])),
+                                trailing: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.yellow,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              content: Text('삭제하시겠습니까?'),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('취소')),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context, true);
+                                                    },
+                                                    child: const Text('확인'))
+                                              ]);
+                                        }).then((value) => {
+                                          if (value == true)
+                                            {
+                                              AnnouncementService()
+                                                  .deleateAnn(snapshot
+                                                      .data![index].createdAt)
+                                                  .then((value) =>
+                                                      setState(() {}))
+                                            }
+                                        });
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    '삭제',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
                                 subtitle: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10),
@@ -300,10 +402,13 @@ class NewFAQPageState extends State<NewFAQPage> {
                                             if (value == true)
                                               {
                                                 AnnouncementService()
-                                                    .deleteNewFAQ(snapshot
-                                                        .data![index].createdAt)
+                                                    .deleteNewFAQ(
+                                                        snapshot.data![index])
+                                                    .then((value) =>
+                                                        setState(() {}))
                                               }
                                           });
+                                      setState(() {});
                                     },
                                     icon: const Icon(Icons.delete)),
                               ));
@@ -330,6 +435,107 @@ class NewFAQPageState extends State<NewFAQPage> {
     //       padding: const EdgeInsets.symmetric(vertical: 16),
     //       child: const Text('새 FaQ 작성'),
     //     ))
+  }
+}
+
+class PopUpScreen extends StatefulWidget {
+  const PopUpScreen({super.key, required this.text});
+
+  final String text;
+  @override
+  State<PopUpScreen> createState() => _PopUpScreenState();
+}
+
+class _PopUpScreenState extends State<PopUpScreen> {
+  final contentController = TextEditingController();
+
+  @override
+  void initState() {
+   contentController.text = widget.text;
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text('팝업 공지사항 수정', style: TextStyle(color: Colors.black)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: Colors.white,
+        ),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[200]),
+                    child: TextField(
+                        controller: contentController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        maxLength: 10000,
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                        ),
+                        decoration: InputDecoration(
+                          focusedBorder:
+                          const UnderlineInputBorder(borderSide: BorderSide.none),
+                          contentPadding: const EdgeInsets.all(16),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          hintText: '공지사항을 적어주세요',
+                          hintStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.7),
+                            fontSize: 14.0,
+                          ),
+                        )),
+                  )),
+              GestureDetector(
+                  onTap: () {
+                    if (
+                        contentController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('내용을 입력해주세요')));
+                      return;
+                    }
+
+                    AnnouncementService()
+                        .savePopUpAnnouncement(contentController.text)
+                        .then((value) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('등록되었습니다')));
+                      Navigator.pop(context);
+                    }).onError((error, stackTrace) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('등록에 실패했습니다')));
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    color: Colors.yellow.withOpacity(0.7),
+                    width: MediaQuery.of(context).size.width,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text('등록하기',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0)),
+                  ))
+            ]));
   }
 }
 

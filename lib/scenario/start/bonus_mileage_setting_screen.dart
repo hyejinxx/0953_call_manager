@@ -5,7 +5,8 @@ class BonusMileageSettingScreen extends StatefulWidget {
   const BonusMileageSettingScreen({super.key});
 
   @override
-  State<BonusMileageSettingScreen> createState() => BonusMileageSettingScreenState();
+  State<BonusMileageSettingScreen> createState() =>
+      BonusMileageSettingScreenState();
 }
 
 class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
@@ -65,53 +66,57 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                     future: ManagerService().getBonusMileageStandardForCash(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return ListView.builder(
+                        return ListView.separated(
                             itemCount: snapshot.data!.values.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider(
+                                height: 1,
+                                thickness: 1,
+                              );
+                            },
                             itemBuilder: (context, index) {
-                              return InkWell(
-                                  onTap: () {
-                                    controller.text = snapshot.data!.values
-                                        .toList()[index]
-                                        .toString();
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(
-                                                '마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '')} )'),
-                                            content: TextField(
-                                              controller: controller,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text('취소')),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    final standard = snapshot
-                                                        .data!.keys
-                                                        .toList()[index]
-                                                        .toString();
-                                                    final mileage = int.parse(
-                                                        controller.text);
-                                                    ManagerService()
-                                                        .updateBonusMileageStandardForCash(
-                                                            {standard: mileage});
-                                                    Navigator.pop(context);
-                                                    setState(() {});
-                                                  },
-                                                  child: const Text('저장')),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: ListTile(
-                                    title: Text(
-                                        '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                          width: 100,
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                              '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' +
+                                                  '원')),
+                                      Container(
+                                        width: 100,
+                                        height: 30,
+                                        child: TextField(
+                                          controller: TextEditingController(
+                                              text: snapshot.data!.values
+                                                  .toList()[index]
+                                                  .toString()),
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              final standard = snapshot
+                                                  .data!.keys
+                                                  .toList()[index]
+                                                  .toString();
+                                              print(
+                                                  {standard: value}.toString());
+                                              ManagerService()
+                                                  .updateBonusMileageStandardForCash({
+                                                standard: int.parse(value)
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
                                   ));
                             });
                       } else {
@@ -122,55 +127,52 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                     future: ManagerService().getBonusMileageStandardForCard(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return ListView.builder(
+                        return ListView.separated(
                             itemCount: snapshot.data!.values.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider(
+                                height: 1,
+                                thickness: 1,
+                              );
+                            },
                             itemBuilder: (context, index) {
-                              return InkWell(
-                                  onTap: () {
-                                    controller.text = snapshot.data!.values
-                                        .toList()[index]
-                                        .toString();
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(
-                                                '마일리지 설정 변경 ( ${snapshot.data!.keys.toList()[index].replaceAll('a', '') + '원'}'),
-                                            content: TextField(
-                                              controller: controller,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: const Text('취소')),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    final standard = snapshot
-                                                        .data!.keys
-                                                        .toList()[index]
-                                                        .toString();
-                                                    final mileage = int.parse(
-                                                        controller.text);
-                                                    print({standard: mileage}
-                                                        .toString());
-                                                    ManagerService()
-                                                        .updateBonusMileageStandardForCard(
-                                                            {standard: mileage});
-                                                    Navigator.pop(context);
-                                                    setState(() {});
-                                                  },
-                                                  child: const Text('저장')),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: ListTile(
-                                    title: Text(
-                                        '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}원 이상 마일리지 : ${snapshot.data!.values.toList()[index]}원'),
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                          width: 100,
+                                          padding:
+                                              const EdgeInsets.only(left: 10),
+                                          child: Text(
+                                              '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' +
+                                                  '원')),
+                                      Container(
+                                        width: 100,
+                                        height: 30,
+                                        child: TextField(
+                                          controller: TextEditingController(
+                                              text: snapshot.data!.values
+                                                  .toList()[index]
+                                                  .toString()),
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            final standard = snapshot.data!.keys
+                                                .toList()[index]
+                                                .toString();
+                                            print({standard: value}.toString());
+                                            ManagerService()
+                                                .updateBonusMileageStandardForCard(
+                                                    {standard: value});
+                                          },
+                                        ),
+                                      )
+                                    ],
                                   ));
                             });
                       } else {

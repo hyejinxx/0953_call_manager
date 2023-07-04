@@ -86,7 +86,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 Row(
                   children: [
                     const Text('예금주: '),
-                    Text(widget.withdraw.bank),
+                    Text(widget.withdraw.name),
                   ],
                 ),
                 const SizedBox(height: 20),

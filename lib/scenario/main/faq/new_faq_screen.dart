@@ -29,7 +29,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
           elevation: 0,
           title: const Text('FAQ 작성', style: TextStyle(color: Colors.black)),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
