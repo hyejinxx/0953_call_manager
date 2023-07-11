@@ -77,9 +77,11 @@ class CallService {
             isFirst = false;
             continue;
           }
-          final data = row.map((e) => e?.value);
 
           try {
+            final data = row.map((e) => e?.value);
+            if(data.elementAt(nameIndex) == null) continue;
+
             final orderNumber =
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
@@ -129,8 +131,10 @@ class CallService {
             } else {
               await saveCallNotUser(call);
             }
+            print('saved: $orderNumber');
           } catch (e) {
-            print(e);
+            print('save error: $e');
+
             continue;
           }
         }
