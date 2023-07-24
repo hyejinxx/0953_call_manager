@@ -36,6 +36,7 @@ class MileageService {
 
       final a =
           await http.post(Uri.parse(mileageUrl), body: jsonEncode(mileage));
+
       final mileageNum = jsonDecode(a.body)['name'];
       await firestore
           .collection('mileage')

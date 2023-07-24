@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:call_0953_manager/model/announcement.dart';
 import 'package:call_0953_manager/model/faq.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firedart/firedart.dart';
 
 class AnnouncementService {
   Firestore firestore = Firestore.instance;
+
 
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
