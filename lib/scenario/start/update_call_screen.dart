@@ -27,6 +27,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
             height: MediaQuery.of(context).size.height,
             child: Center(
                 child: Stack(children: [
+                  SingleChildScrollView(child:
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -42,7 +43,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                       setState(() {
                         _saveState = SaveState.saving;
                       });
-                      final result = await CallService().excelToCall();
+                      final result = await CallService().excelToCall().onError((error, stackTrace) => false);
                       if (result) {
                         setState(() {
                           _saveState = SaveState.success;
@@ -130,7 +131,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                         ));
                   }),
                 ],
-              ),
+              )),
               if (_saveState == SaveState.saving)
                 const Positioned(
                   top: 0,
