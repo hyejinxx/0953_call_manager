@@ -93,14 +93,13 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     source: UserDataSource(userData: list),
                     columnWidthMode: ColumnWidthMode.fill,
                     onCellTap: (value) {
-                      if(value.rowColumnIndex.rowIndex != 0) {
+                      if (value.rowColumnIndex.rowIndex != 0) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    UserMileageRecordScreen(
-                                      user:
-                                      list[value.rowColumnIndex.rowIndex - 1]
+                                builder: (context) => UserMileageRecordScreen(
+                                      user: list[
+                                              value.rowColumnIndex.rowIndex - 1]
                                           .call,
                                     )));
                       }
@@ -158,6 +157,15 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                                 overflow: TextOverflow.ellipsis,
                               ))),
                       GridColumn(
+                          columnName: 'destination',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '주 목적지',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
                           columnName: 'store',
                           label: Container(
                               padding: const EdgeInsets.all(8.0),
@@ -198,6 +206,8 @@ class UserDataSource extends DataGridSource {
               DataGridCell(columnName: 'destination', value: e.destination??''),
               DataGridCell<String>(
                   columnName: 'joinDate', value: e.createdAt.toString()),
+              DataGridCell<String>(
+                  columnName: 'destination', value: e.destination ?? ''),
               DataGridCell<String>(columnName: 'store', value: e.store ?? ''),
               DataGridCell<String>(
                   columnName: 'storeCall', value: e.storeCall ?? ''),

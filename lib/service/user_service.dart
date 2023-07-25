@@ -23,7 +23,7 @@ class UserService {
   Future<User?> getUser(String userCall) async {
     try {
       final data = await firestore.collection('user').document(userCall).get();
-      if (data.map.isNotEmpty && data!= null) {
+      if (data.map.isNotEmpty && data != null) {
         print(User.fromJson(data.map!));
         return User.fromJson(data.map!);
       } else {
@@ -41,11 +41,20 @@ class UserService {
       throw Exception("editUser: $e");
     }
   }
+
   Future<void> deleteUser(String userCall) async {
     try {
       await firestore.collection('user').document(userCall).delete();
-      firestore.collection('user').document('mileage').delete();
-
+      firestore
+          .collection('user')
+          .document(userCall)
+          .collection('mileage')
+          .get()
+          .then((value) => {
+                value.forEach((element) {
+                  element.reference.delete();
+                })
+              });
     } catch (e) {
       throw Exception("deleteUser: $e");
     }
