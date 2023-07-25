@@ -70,12 +70,12 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                   child: Text('유저가 없습니다.'),
                 );
               } else {
-                // List<User> list = data
-                //    .where((element) =>
-                //    element.call.contains(phoneTextController.text))
-                //    .toList() ;
+                List<User> list = data
+                   .where((element) =>
+                   element.call.contains(phoneTextController.text) == true)
+                   .toList() ;
 
-                List<User> list = data;
+                // List<User> list = data;
 
                 if (index == 0) {
                   list.sort((a, b) => a.call.compareTo(b.call));
