@@ -83,7 +83,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                   list.sort((a, b) => a.name.compareTo(b.name));
                 } else if (index == 2) {
                   list.sort((a, b) => a.mileage ?? 0.compareTo(b.mileage ?? 0));
-                } else if (index == 3) {
+                } else if (index == 4) {
                   list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
                 } else {
                   list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
@@ -140,6 +140,15 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                                 overflow: TextOverflow.ellipsis,
                               ))),
                       GridColumn(
+                          columnName: 'destination',
+                          label: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '목적지',
+                                overflow: TextOverflow.ellipsis,
+                              ))),
+                      GridColumn(
                           columnName: 'joinDate',
                           label: Container(
                               padding: const EdgeInsets.all(8.0),
@@ -186,6 +195,7 @@ class UserDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'call', value: e.call),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
+              DataGridCell(columnName: 'destination', value: e.destination??''),
               DataGridCell<String>(
                   columnName: 'joinDate', value: e.createdAt.toString()),
               DataGridCell<String>(columnName: 'store', value: e.store ?? ''),
