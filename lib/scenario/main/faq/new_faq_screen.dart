@@ -117,7 +117,24 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                       writer: '관리자',
                       state: '등록',
                     );
-                    AnnouncementService().saveFAQ(faq).then((value) {
+                    final isUpdate = widget.faq != null;
+                    AnnouncementService().saveFAQ(faq).then((value) async {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('업데이트 알림을 전송하시겠습니까?'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('닫기')),
+                              TextButton(
+                                  onPressed: () {
+                                    AnnouncementService().pushFCM(isUpdate);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('전송'))
+                            ],
+                          ));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('등록되었습니다'),

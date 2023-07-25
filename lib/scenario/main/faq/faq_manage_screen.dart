@@ -167,20 +167,63 @@ class _FAQPageState extends State<FAQPage> {
                       );
               }),
         ),
-        InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewFaQScreen()));
-            },
-            child: Container(
-              color: Colors.yellow.withOpacity(0.7),
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: const Text('새 FaQ 작성'),
-            ))
+        Row(children: [
+          InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewFaQScreen()));
+              },
+              child: Container(
+                color: Colors.yellow.withOpacity(0.7),
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: const Text('새 FaQ 작성'),
+              )),
+          InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('알림'),
+                        content: const Text('업데이트 알림을 보내시겠습니까?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('취소')),
+                          TextButton(
+                              onPressed: () {
+                                AnnouncementService()
+                                    .pushFCM(true)
+                                    .then((value) =>
+                                    showToast('업데이트 알림을 보냈습니다.'))
+                                    .catchError((e) =>
+                                    showToast('업데이트 알림을 보내는데 실패했습니다.'));
+                                Navigator.pop(context);
+                              },
+                              child: const Text('확인')),
+                        ],
+                      );
+                    });
+              },
+              child: Container(
+                color: Colors.blue.withOpacity(0.7),
+                width: MediaQuery.of(context).size.width * 0.5,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: const Text('업데이트 알림 보내기', style: TextStyle(color: Colors.white),),
+              ))
+        ],)
+
+
       ],
     );
+  }
+  showToast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
 
@@ -312,20 +355,66 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                       );
               }),
         ),
-        InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewAnnoScreen()));
-            },
-            child: Container(
-              color: Colors.yellow.withOpacity(0.7),
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: const Text('새 공지 작성'),
-            ))
+        Row(
+          children: [
+            InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => NewAnnoScreen()));
+                },
+                child: Container(
+                  color: Colors.yellow.withOpacity(0.7),
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: const Text('새 공지 작성'),
+                )),
+            InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('알림'),
+                          content: const Text('업데이트 알림을 보내시겠습니까?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('취소')),
+                            TextButton(
+                                onPressed: () {
+                                  AnnouncementService()
+                                      .pushFCM(true)
+                                      .then((value) =>
+                                      showToast('업데이트 알림을 보냈습니다.'))
+                                      .catchError((e) =>
+                                      showToast('업데이트 알림을 보내는데 실패했습니다.'));
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('확인')),
+                          ],
+                        );
+                      });
+                },
+                child: Container(
+                    color: Colors.blue.withOpacity(0.9),
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: const Text(
+                      '업데이트 알림 보내기',
+                      style: TextStyle(color: Colors.white),
+                    )))
+          ],
+        )
+
       ],
     );
+  }
+  showToast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:call_0953_manager/model/announcement.dart';
 import 'package:call_0953_manager/model/faq.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firedart/firedart.dart';
 
 class AnnouncementService {
@@ -76,6 +77,23 @@ class AnnouncementService {
     } catch (e) {
       print('saveFAQ: $e');
       throw Exception("saveFAQ: $e");
+    }
+  }
+  Future<void> pushFCM(bool update) async {
+    try {
+      HttpsCallable callable = update
+          ? FirebaseFunctions.instance.httpsCallable('updateAnn')
+          : FirebaseFunctions.instance.httpsCallable('newAnn');
+
+      print(update);
+
+      final results = await callable();
+      print('pushFCM: success');
+      print(results.data);
+      print(results.toString());
+    } catch (e) {
+      print('pushFAQ: $e');
+      throw Exception("pushFAQ: $e");
     }
   }
 
@@ -175,6 +193,24 @@ class AnnouncementService {
     } catch (e) {
       print('saveAnswerFAQ: $e');
       throw Exception("saveAnswerFAQ: error");
+    }
+  }
+
+  Future<void> pushAnswer(String callNum) async {
+    try {
+
+      HttpsCallable callable =  FirebaseFunctions.instance.httpsCallable('updateFAQ', options: HttpsCallableOptions(timeout: Duration(seconds: 30)));
+      // callable.call(<String, dynamic>{
+      //   'call': call,
+      // });
+
+      final results = await callable.call({'call': callNum});
+      print('pushFCM: success');
+      print(results.data);
+      print(results.toString());
+    } catch (e) {
+      print('pushFAQ: $e');
+      throw Exception("pushFAQ: $e");
     }
   }
 }

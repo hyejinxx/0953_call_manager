@@ -122,9 +122,29 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           ? DateFormat('yyyy-MM-dd').format(DateTime.now())
                           : widget.ann!.date,
                       image: null);
+                  final isUpdate = widget.ann != null;
                   AnnouncementService()
                       .saveAnnouncement(announcement)
-                      .then((value) {
+                      .then((value) async{
+
+                    await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('업데이트 알림을 전송하시겠습니까?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('닫기')),
+                            TextButton(
+                                onPressed: () {
+                                  AnnouncementService().pushFCM(isUpdate);
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('전송'))
+                          ],
+                        ));
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(content: Text('등록되었습니다')));
                     Navigator.pop(context);
