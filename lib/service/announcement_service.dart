@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:call_0953_manager/model/announcement.dart';
 import 'package:call_0953_manager/model/faq.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firedart/firedart.dart';
+import 'package:http/http.dart' as http;
 
 class AnnouncementService {
   Firestore firestore = Firestore.instance;
 
+  final pushFcmUrl = 'https://us-central1-project-568166903627460027.cloudfunctions.net/pushFcm';
 
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
@@ -81,18 +84,18 @@ class AnnouncementService {
   }
   Future<void> pushFCM(bool update) async {
     try {
-      HttpsCallable callable = update
-          ? FirebaseFunctions.instance.httpsCallable('updateAnn')
-          : FirebaseFunctions.instance.httpsCallable('newAnn');
+      final http.Response response = await http.post(
+        Uri.parse(update ? '$pushFcmUrl/updateAnn' : '$pushFcmUrl/newAnn'),
+        headers: <String, String>{
+          'Content-Type': 'application/X-www-form-urlencoded',
+        },
+      );
 
-      print(update);
-
-      final results = await callable();
       print('pushFCM: success');
-      print(results.data);
-      print(results.toString());
+      print(response.body);
+      print(response..toString());
     } catch (e) {
-      print('pushFAQ: $e');
+      print('pushFAQ: ${e}');
       throw Exception("pushFAQ: $e");
     }
   }
@@ -198,16 +201,16 @@ class AnnouncementService {
 
   Future<void> pushAnswer(String callNum) async {
     try {
-
-      HttpsCallable callable =  FirebaseFunctions.instance.httpsCallable('updateFAQ', options: HttpsCallableOptions(timeout: Duration(seconds: 30)));
-      // callable.call(<String, dynamic>{
-      //   'call': call,
-      // });
-
-      final results = await callable.call({'call': callNum});
+      final http.Response response = await http.post(
+        Uri.parse('$pushFcmUrl/newAnswer'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'call': callNum}),
+      );
       print('pushFCM: success');
-      print(results.data);
-      print(results.toString());
+      print(response.statusCode);
+      print(response.toString());
     } catch (e) {
       print('pushFAQ: $e');
       throw Exception("pushFAQ: $e");

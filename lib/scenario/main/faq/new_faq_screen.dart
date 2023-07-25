@@ -119,7 +119,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                     );
                     final isUpdate = widget.faq != null;
                     AnnouncementService().saveFAQ(faq).then((value) async {
-                      showDialog(
+                      await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                             title: const Text('업데이트 알림을 전송하시겠습니까?'),

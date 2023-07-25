@@ -175,7 +175,7 @@ class _FAQPageState extends State<FAQPage> {
               },
               child: Container(
                 color: Colors.yellow.withOpacity(0.7),
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery.of(context).size.width*0.5,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: const Text('새 FaQ 작성'),
@@ -364,7 +364,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 },
                 child: Container(
                   color: Colors.yellow.withOpacity(0.7),
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width*0.5,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: const Text('새 공지 작성'),
@@ -642,18 +642,21 @@ class AnswerScreenState extends State<AnswerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Padding(
+        padding:
+        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Text(widget.faq.question,
             style: const TextStyle(
               fontSize: 16,
               color: Colors.black,
               fontWeight: FontWeight.w600,
             )),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: TextField(
@@ -668,6 +671,7 @@ class AnswerScreenState extends State<AnswerScreen> {
             onTap: () {
               widget.faq.answer = controller.text;
               AnnouncementService().saveAnswerFAQ(widget.faq).then((value) {
+                AnnouncementService().pushAnswer(widget.faq.writer);
                 ScaffoldMessenger.of(context)
                     .showSnackBar(const SnackBar(content: Text('답변이 저장되었습니다')));
               });
@@ -684,6 +688,6 @@ class AnswerScreenState extends State<AnswerScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 )))
       ],
-    );
+    ));
   }
 }
