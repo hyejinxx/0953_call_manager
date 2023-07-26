@@ -56,6 +56,7 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
             },
           ),
         ),
+        backgroundColor: Colors.white,
         body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,

@@ -46,6 +46,7 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
             },
           ),
         ),
+        backgroundColor: Colors.white,
         body: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,

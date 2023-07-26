@@ -1,6 +1,6 @@
 import 'package:call_0953_manager/service/mileage_service.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -34,115 +34,114 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ExpansionTile(
-          title: Text('기간 선택'),
-          children: [
-            CheckboxListTile(
-              title: InkWell(
-                onTap: () {
-                  setState(() {
-                    isAll = !isAll;
-                  });
-                },
-                child: const Text('모든 마일리지 보기'),
-              ),
-              value: isAll,
-              onChanged: (value) {
-                setState(() {
-                  isAll = value!;
-                });
-              },
-            ),
-            if (!isAll) ...[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('시작 날짜 : ${startDate.toString().substring(0, 10)}',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black)),
-                        ElevatedButton(
-                            onPressed: () {
-                              showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime.now().subtract(
-                                          const Duration(days: 365 * 3)),
-                                      lastDate: DateTime.now())
-                                  .then((value) {
-                                if (value != null) {
-                                  ref.read(firstDate.notifier).state = value;
-                                }
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.yellow,
-                            ),
-                            child: const Text('날짜선택',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black))),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('끝 날짜 : ${endDate.toString().substring(0, 10)}',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black)),
-                        ElevatedButton(
-                            onPressed: () {
-                              showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime.now()
-                                          .subtract(const Duration(days: 365)),
-                                      lastDate: DateTime.now())
-                                  .then((value) {
-                                if (value != null) {
-                                  ref.read(lastDate.notifier).state = value;
-                                }
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.yellow,
-                            ),
-                            child: const Text('날짜선택',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black))),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-        Expanded(
-            child: mileage.when(
+      child:
+        // ExpansionTile(
+        //   title: Text('기간 선택'),
+        //   children: [
+        //     CheckboxListTile(
+        //       title: InkWell(
+        //         onTap: () {
+        //           setState(() {
+        //             isAll = !isAll;
+        //           });
+        //         },
+        //         child: const Text('모든 마일리지 보기'),
+        //       ),
+        //       value: isAll,
+        //       onChanged: (value) {
+        //         setState(() {
+        //           isAll = value!;
+        //         });
+        //       },
+        //     ),
+        //     if (!isAll) ...[
+        //       Column(
+        //         mainAxisSize: MainAxisSize.min,
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Padding(
+        //             padding: const EdgeInsets.symmetric(
+        //                 horizontal: 20, vertical: 10),
+        //             child: Row(
+        //               mainAxisSize: MainAxisSize.max,
+        //               crossAxisAlignment: CrossAxisAlignment.center,
+        //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //               children: [
+        //                 Text('시작 날짜 : ${startDate.toString().substring(0, 10)}',
+        //                     style: const TextStyle(
+        //                         fontSize: 16,
+        //                         fontWeight: FontWeight.w500,
+        //                         color: Colors.black)),
+        //                 ElevatedButton(
+        //                     onPressed: () {
+        //                       showDatePicker(
+        //                               context: context,
+        //                               initialDate: DateTime.now(),
+        //                               firstDate: DateTime.now().subtract(
+        //                                   const Duration(days: 365 * 3)),
+        //                               lastDate: DateTime.now())
+        //                           .then((value) {
+        //                         if (value != null) {
+        //                           ref.read(firstDate.notifier).state = value;
+        //                         }
+        //                       });
+        //                     },
+        //                     style: ElevatedButton.styleFrom(
+        //                       primary: Colors.yellow,
+        //                     ),
+        //                     child: const Text('날짜선택',
+        //                         style: TextStyle(
+        //                             fontSize: 13,
+        //                             fontWeight: FontWeight.w500,
+        //                             color: Colors.black))),
+        //               ],
+        //             ),
+        //           ),
+        //           Padding(
+        //             padding: const EdgeInsets.symmetric(
+        //                 horizontal: 20, vertical: 10),
+        //             child: Row(
+        //               mainAxisSize: MainAxisSize.max,
+        //               crossAxisAlignment: CrossAxisAlignment.center,
+        //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //               children: [
+        //                 Text('끝 날짜 : ${endDate.toString().substring(0, 10)}',
+        //                     style: const TextStyle(
+        //                         fontSize: 16,
+        //                         fontWeight: FontWeight.w500,
+        //                         color: Colors.black)),
+        //                 ElevatedButton(
+        //                     onPressed: () {
+        //                       showDatePicker(
+        //                               context: context,
+        //                               initialDate: DateTime.now(),
+        //                               firstDate: DateTime.now()
+        //                                   .subtract(const Duration(days: 365)),
+        //                               lastDate: DateTime.now())
+        //                           .then((value) {
+        //                         if (value != null) {
+        //                           ref.read(lastDate.notifier).state = value;
+        //                         }
+        //                       });
+        //                     },
+        //                     style: ElevatedButton.styleFrom(
+        //                       primary: Colors.yellow,
+        //                     ),
+        //                     child: const Text('날짜선택',
+        //                         style: TextStyle(
+        //                             fontSize: 13,
+        //                             fontWeight: FontWeight.w500,
+        //                             color: Colors.black))),
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ],
+        // ),
+         mileage.when(
                 data: (data) {
                   if (data.isNotEmpty) {
                     List<Mileage> result = isAll
@@ -267,9 +266,9 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                 },
                 error: (error, st) => Text('errer'),
                 loading: () =>
-                    const Center(child: CircularProgressIndicator()))),
-      ]),
-    );
+                    const Center(child: ProgressRing()),)
+      );
+
   }
 }
 
