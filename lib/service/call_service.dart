@@ -32,8 +32,10 @@ class CallService {
       // 마일리지 기준 가져오기
       final cardStandard = await ManagerService().getMileageStandardForCard();
       final cashStandard = await ManagerService().getMileageStandardForCash();
-      final cardBonusStandard = await ManagerService().getBonusMileageStandardForCard();
-      final cashBonusStandard = await ManagerService().getBonusMileageStandardForCash();
+      final cardBonusStandard =
+          await ManagerService().getBonusMileageStandardForCard();
+      final cashBonusStandard =
+          await ManagerService().getBonusMileageStandardForCash();
 
       // 엑셀 파일의 시트마다 반복
       await Future.wait(excel.tables.keys.map((e) async {
@@ -80,7 +82,7 @@ class CallService {
 
           try {
             final data = row.map((e) => e?.value);
-            if(data.elementAt(nameIndex) == null) continue;
+            if (data.elementAt(nameIndex) == null) continue;
 
             final orderNumber =
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
@@ -175,7 +177,7 @@ class CallService {
   }
 
   Future<void> saveMileage(Call call) async {
-    if(call.mileage != 0 && call.mileage != null) {
+    if (call.mileage != 0 && call.mileage != null) {
       final Mileage mileage = Mileage(
           orderNumber: call.orderNumber,
           name: call.name,
@@ -229,6 +231,7 @@ class CallService {
       throw Exception("getCallRecord: $e");
     }
   }
+
   Future<List<Call>> getAllCall() async {
     List<Call> callList = [];
     try {
@@ -236,7 +239,7 @@ class CallService {
         print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
-        json.decode(value.body) as Map<String, dynamic>;
+            json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -246,7 +249,7 @@ class CallService {
         print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
-        json.decode(value.body) as Map<String, dynamic>;
+            json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -337,6 +340,19 @@ class CallService {
   Future<void> deleteAllCallNotUser() async {
     try {
       await http.delete(Uri.parse(urlNotUser)).then((value) {});
+    } catch (e) {
+      throw Exception("deleteAllCallNotUser: $e");
+    }
+  }
+
+  Future<void> deleteAllCallUser() async {
+    try {
+      await http.delete(Uri.parse(url)).then((value) {});
+      firestore.collection('call').get().then((value) {
+        for (var element in value) {
+          element.reference.delete();
+        }
+      });
     } catch (e) {
       throw Exception("deleteAllCallNotUser: $e");
     }
