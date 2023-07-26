@@ -229,8 +229,36 @@ class CallService {
       throw Exception("getCallRecord: $e");
     }
   }
-
   Future<List<Call>> getAllCall() async {
+    List<Call> callList = [];
+    try {
+      await http.get(Uri.parse(url)).then((value) {
+        print(value.body);
+        if (jsonDecode(value.body) == null) return;
+        final Map<String, dynamic> data =
+        json.decode(value.body) as Map<String, dynamic>;
+        data.forEach((key, value) {
+          callList.add(Call.fromJson(value));
+        });
+      });
+
+      await http.get(Uri.parse(urlNotUser)).then((value) {
+        print(value.body);
+        if (jsonDecode(value.body) == null) return;
+        final Map<String, dynamic> data =
+        json.decode(value.body) as Map<String, dynamic>;
+        data.forEach((key, value) {
+          callList.add(Call.fromJson(value));
+        });
+      });
+
+      return callList;
+    } catch (e) {
+      throw Exception("getCallRecord: $e");
+    }
+  }
+
+  Future<List<Call>> getAllCallUser() async {
     List<Call> callList = [];
     try {
       await http.get(Uri.parse(url)).then((value) {

@@ -159,32 +159,33 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                                     .isBefore(endDate))
                             .toList();
 
-                    if (index == 0) {
-                     result.sort((a, b) => a.call.compareTo(b.call));
-                    } else if (index == 1) {
-                      result.sort((a, b) => a.name.compareTo(b.name));
-                    } else if (index == 2) {
-                      result.sort((a, b) => a.date.compareTo(b.date));
-                    } else if (index == 5) {
-                      result.sort((a, b) => a.amount.compareTo(b.amount));
-                    } else if (index == 6) {
-                      result
-                          .sort((a, b) => a.sumMileage.compareTo(b.sumMileage));
-                    } else if (index == 7) {
-                      result.sort((a, b) => a.type.compareTo(b.type));
-                    } else {
-                      result.sort((a, b) => a.date.compareTo(b.date));
-                    }
+                    // if (index == 0) {
+                    //  result.sort((a, b) => a.call.compareTo(b.call));
+                    // } else if (index == 1) {
+                    //   result.sort((a, b) => a.name.compareTo(b.name));
+                    // } else if (index == 2) {
+                    //   result.sort((a, b) => a.date.compareTo(b.date));
+                    // } else if (index == 5) {
+                    //   result.sort((a, b) => a.amount.compareTo(b.amount));
+                    // } else if (index == 6) {
+                    //   result
+                    //       .sort((a, b) => a.sumMileage.compareTo(b.sumMileage));
+                    // } else if (index == 7) {
+                    //   result.sort((a, b) => a.type.compareTo(b.type));
+                    // } else {
+                    //   result.sort((a, b) => a.date.compareTo(b.date));
+                    // }
 
                     return SfDataGrid(
-                        onCellDoubleTap: (details) {
-                          if (details.rowColumnIndex.rowIndex == 0) {
-                            ref.read(indexProvider.notifier).state =
-                                details.rowColumnIndex.columnIndex;
-                          }
-                        },
+                        // onCellDoubleTap: (details) {
+                        //   if (details.rowColumnIndex.rowIndex == 0) {
+                        //     ref.read(indexProvider.notifier).state =
+                        //         details.rowColumnIndex.columnIndex;
+                        //   }
+                        // },
                         defaultColumnWidth:
                             MediaQuery.of(context).size.width / 8,
+                        sortingGestureType: SortingGestureType.doubleTap,
                         source: MileageDataSource(mileageData: result),
                         columns: <GridColumn>[
                           GridColumn(
