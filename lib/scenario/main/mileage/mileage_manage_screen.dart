@@ -176,6 +176,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     // }
 
                     return SfDataGrid(
+                      allowSorting: true,
                         // onCellDoubleTap: (details) {
                         //   if (details.rowColumnIndex.rowIndex == 0) {
                         //     ref.read(indexProvider.notifier).state =
@@ -183,8 +184,14 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                         //   }
                         // },
                         defaultColumnWidth:
-                            MediaQuery.of(context).size.width / 8,
+                            (MediaQuery.of(context).size.width -200) / 8,
                         sortingGestureType: SortingGestureType.doubleTap,
+                        // showCheckboxColumn: true,
+                        showSortNumbers: true,
+                        showHorizontalScrollbar: true,
+                        showVerticalScrollbar: true,
+                        shrinkWrapRows: true,
+                        shrinkWrapColumns: true,
                         source: MileageDataSource(mileageData: result),
                         columns: <GridColumn>[
                           GridColumn(

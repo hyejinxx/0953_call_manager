@@ -1,3 +1,4 @@
+
 import 'package:call_0953_manager/model/call.dart';
 import 'package:call_0953_manager/service/call_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -187,6 +188,11 @@ class _CallListWidgetState extends ConsumerState<CallListWidget> {
             }
           },
           sortingGestureType: SortingGestureType.doubleTap,
+          allowSorting: true,
+          showCheckboxColumn: true,
+          showSortNumbers: true,
+          shrinkWrapRows: true,
+          shrinkWrapColumns: true,
           checkboxColumnSettings: const DataGridCheckboxColumnSettings(
               showCheckboxOnHeader: false),
           columns: <GridColumn>[
