@@ -20,7 +20,9 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        color: Colors.white,
         height: MediaQuery.of(context).size.height,
         child: Center(
             child: Stack(children: [
@@ -40,8 +42,8 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
                     backgroundColor: ButtonState.all(
                       Colors.yellow,
                     ),
-                    elevation: ButtonState.all(10),
-                    foregroundColor: ButtonState.all(Colors.white),
+
+                    foregroundColor: ButtonState.all(Colors.black),
                   ),
                   child: const Text(
                     '콜 저장',
@@ -126,8 +128,8 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
           backgroundColor: ButtonState.all(
             Colors.yellow,
           ),
-          elevation: ButtonState.all(10),
-          foregroundColor: ButtonState.all(Colors.white),
+
+          foregroundColor: ButtonState.all(Colors.black),
         ),
         onPressed: onTap,
         child: Text(

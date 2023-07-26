@@ -175,17 +175,17 @@ class _WindowViewState extends ConsumerState<WindowView> {
             style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
       ),
       pane: NavigationPane(
-        size: NavigationPaneSize(
+        size: const NavigationPaneSize(
           compactWidth: 56.0,
-          openMaxWidth: 280.0,
+          openMaxWidth: 200.0,
         ),
         items: <NavigationPaneItem>[
-          PaneItem(icon: const Icon(FluentIcons.account_management), body: screen.elementAt(0)),
-          PaneItem(icon: const Icon(FluentIcons.folder_list), body: screen.elementAt(1)),
-          PaneItem(icon: const Icon(FluentIcons.bill), body: screen.elementAt(2)),
-          PaneItem(icon: const Icon(FluentIcons.phone), body: screen.elementAt(3)),
-          PaneItem(icon: const Icon(FluentIcons.post_update), body: screen.elementAt(4)),
-          PaneItem(icon: const Icon(FluentIcons.phone), body: screen.elementAt(5)),
+          PaneItem(icon: const Icon(FluentIcons.account_management), title: Text(screenTitle.elementAt(0)), body: screen.elementAt(0)),
+          PaneItem(icon: const Icon(FluentIcons.folder_list), title: Text(screenTitle.elementAt(1)), body: screen.elementAt(1)),
+          PaneItem(icon: const Icon(FluentIcons.bill), title: Text(screenTitle.elementAt(2)), body: screen.elementAt(2)),
+          PaneItem(icon: const Icon(FluentIcons.phone), title: Text(screenTitle.elementAt(3)), body: screen.elementAt(3)),
+          PaneItem(icon: const Icon(FluentIcons.post_update), title: Text(screenTitle.elementAt(4)), body: screen.elementAt(4)),
+          PaneItem(icon: const Icon(FluentIcons.phone), title: Text(screenTitle.elementAt(5)), body: screen.elementAt(5)),
         ],
         selected: currentPage,
         onChanged: (i) => ref.read(navProvider.notifier).state = i,

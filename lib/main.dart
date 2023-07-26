@@ -1,3 +1,4 @@
+import 'package:call_0953_manager/scenario/main/bottom_nav.dart';
 import 'package:call_0953_manager/scenario/start/update_call_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firedart/firedart.dart';
@@ -37,6 +38,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const FluentApp(home: UpdateCallScreen());
+    return const FluentApp(home: WindowView());
   }
 }
