@@ -37,11 +37,16 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   @override
   Widget build(BuildContext context) {
     final img = ref.watch(imagePickerProvider);
-    return Column(
+    return Container(color: Colors.white, child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(FluentIcons.back)),
             Row(
               children: [
                 Container(
@@ -61,11 +66,12 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
             ),
             Expanded(
                 child: Container(
+
               width: MediaQuery.of(context).size.width,
               margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[200]),
+                  color: Colors.white),
               child: TextFormBox(
                   controller: contentController,
                   keyboardType: TextInputType.multiline,
@@ -76,7 +82,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                   ),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[200]),
+                      color: Colors.white),
                   placeholder: '내용을 적어주세요'),
             )),
             GestureDetector(
@@ -143,7 +149,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           fontSize: 16.0)),
                 ))
           ],
-        );
+        ));
   }
 
   Widget imageBox(File? img) {

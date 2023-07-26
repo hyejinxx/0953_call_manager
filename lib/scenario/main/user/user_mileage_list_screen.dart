@@ -27,7 +27,6 @@ class UserMileageRecordScreenState
     with TickerProviderStateMixin {
   late FutureProvider<List<Mileage>> mileageProvider;
   late FutureProvider<List<Withdraw>> withdrawProvider;
-  late FutureProvider<List<Call>> callProvider;
   late FutureProvider<User?> userProvider;
   late TabController tabController;
 
@@ -43,7 +42,7 @@ class UserMileageRecordScreenState
 
     userProvider =
         FutureProvider<User?>((ref) => UserService().getUser(widget.user));
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 2, vsync: this);
 
     super.initState();
   }
@@ -61,7 +60,7 @@ class UserMileageRecordScreenState
     final user = ref.watch(userProvider);
     final selectedIndex = ref.watch(_selectedIndex);
     final callSelectedIndex = ref.watch(_callSelectedIndex);
-    final call = ref.watch(callProvider);
+
 
     return user.when(
       data: (user) {
@@ -73,7 +72,7 @@ class UserMileageRecordScreenState
               title: Text(user.call,
                   style: const TextStyle(color: Colors.black),
                   textAlign: TextAlign.center),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               centerTitle: true,
               elevation: 0,
               bottom: PreferredSize(
@@ -109,6 +108,7 @@ class UserMileageRecordScreenState
                 ),
               ],
             ),
+            backgroundColor: Colors.white,
             body: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,

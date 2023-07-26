@@ -42,7 +42,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
         title: Text(widget.user.call,
             style: const TextStyle(color: Colors.black),
             textAlign: TextAlign.center),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
         bottom: PreferredSize(

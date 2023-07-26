@@ -2,6 +2,7 @@ import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.da
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart'as ma;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -43,7 +44,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Text(
                         '유저가 보유한 총 마일리지: ${snapshot.data![0]}  관리자 보유 필요 마일리지: ${snapshot.data![1]}  총 유저 수: ${snapshot.data![2]}',
-                        style: const TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: 15),
                       ));
                 } else {
                   return const Text('로딩중...');
@@ -78,6 +79,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     columnWidthMode: ColumnWidthMode.fill,
                     sortingGestureType: SortingGestureType.doubleTap,
                     // showCheckboxColumn: true,
+                    defaultColumnWidth: (MediaQuery.of(context).size.width-200) / 8,
                     showSortNumbers: true,
                     showHorizontalScrollbar: true,
                     showVerticalScrollbar: true,
@@ -85,14 +87,14 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     shrinkWrapColumns: true,
                     onCellTap: (value) {
                       if (value.rowColumnIndex.rowIndex != 0) {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => UserMileageRecordScreen(
-                        //               user: list[
-                        //                       value.rowColumnIndex.rowIndex - 1]
-                        //                   .call,
-                        //             )));
+                        Navigator.push(
+                            context,
+                            ma.MaterialPageRoute(
+                                builder: (context) => UserMileageRecordScreen(
+                                      user: list[
+                                              value.rowColumnIndex.rowIndex - 1]
+                                          .call,
+                                    )));
                       }
                     },
                     columns: <GridColumn>[

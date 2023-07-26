@@ -22,7 +22,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           title: const Text('출금 관리',
               style: TextStyle(color: Colors.black),
               textAlign: TextAlign.center),
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
           leading: IconButton(
@@ -40,6 +40,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
             ),
           ),
         ),
+        backgroundColor: Colors.white,
         body: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,

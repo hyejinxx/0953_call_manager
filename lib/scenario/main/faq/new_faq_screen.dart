@@ -24,8 +24,17 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(color: Colors.white, child:
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
       children: [
+        IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(FluentIcons.back)),
         Container(
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -48,12 +57,15 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.grey[200]),
+              borderRadius: BorderRadius.circular(10), color: Colors.white),
           child: TextFormBox(
             controller: answerTextController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             maxLength: 10000,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white)),
             style: const TextStyle(
               fontSize: 14.0,
             ),
@@ -119,6 +131,6 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                       fontSize: 16.0)),
             ))
       ],
-    );
+    ));
   }
 }

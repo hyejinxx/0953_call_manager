@@ -36,7 +36,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
           title: const Text('마일리지 입력',
               style: TextStyle(color: Colors.black),
               textAlign: TextAlign.center),
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
           leading: IconButton(
@@ -53,6 +53,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
             ),
           ),
         ),
+        backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();

@@ -192,6 +192,8 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                         showVerticalScrollbar: true,
                         shrinkWrapRows: true,
                         shrinkWrapColumns: true,
+                        selectionManager: RowSelectionManager(),
+                        selectionMode: SelectionMode.multiple,
                         source: MileageDataSource(mileageData: result),
                         columns: <GridColumn>[
                           GridColumn(

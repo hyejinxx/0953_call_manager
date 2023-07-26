@@ -55,8 +55,9 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(children: [
                     for (int i = 0; i < 4; i++) ...[
-                      Padding(padding: const EdgeInsets.all(5), child: Row(children: [
+                      Padding(padding: const EdgeInsets.all(10), child: Row(children: [
                         RadioButton(
                           checked: radioIndex == i,
                           // set onChanged to null to disable the button
@@ -66,8 +67,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                         const SizedBox(width: 4),
                         Text(radioButtons[i])
                       ]),)
-                    ],
-                    ...[
+                    ]]),
                       SizedBox(
                     width: double.infinity,
                     child:
@@ -169,7 +169,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                   ))),
                         ],
                       ))
-                    ]
+
                   ]);
             } else {
               return const Center(
