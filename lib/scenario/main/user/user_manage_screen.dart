@@ -1,7 +1,7 @@
 import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -25,13 +25,11 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
     super.initState();
   }
 
-  final indexProvider = StateProvider<int>((ref) => 0);
   final FutureProvider userListProvider =
       FutureProvider((ref) => UserService().getAllUser());
 
   @override
   Widget build(BuildContext context) {
-    final index = ref.watch(indexProvider);
     final userList = ref.watch(userListProvider);
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -45,7 +43,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Text(
                         '유저가 보유한 총 마일리지: ${snapshot.data![0]}  관리자 보유 필요 마일리지: ${snapshot.data![1]}  총 유저 수: ${snapshot.data![2]}',
-                        style: const TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 13),
                       ));
                 } else {
                   return const Text('로딩중...');
@@ -53,12 +51,12 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
               }),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: TextField(
+            child: TextFormBox(
               controller: phoneTextController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '검색할 유저의 번호를 입력하세요',
-              ),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5)),
+              placeholder: '전화번호 검색',
               obscureText: false,
             ),
           ),
@@ -74,40 +72,27 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                    .where((element) =>
                    element.call.contains(phoneTextController.text) == true)
                    .toList() ;
-
-                // List<User> list = data;
-
-                if (index == 0) {
-                  list.sort((a, b) => a.call.compareTo(b.call));
-                } else if (index == 1) {
-                  list.sort((a, b) => a.name.compareTo(b.name));
-                } else if (index == 2) {
-                  list.sort((a, b) => a.mileage ?? 0.compareTo(b.mileage ?? 0));
-                } else if (index == 4) {
-                  list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-                } else {
-                  list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-                }
-
                 return SfDataGrid(
                     source: UserDataSource(userData: list),
+                    allowSorting: true,
                     columnWidthMode: ColumnWidthMode.fill,
+                    sortingGestureType: SortingGestureType.doubleTap,
+                    // showCheckboxColumn: true,
+                    showSortNumbers: true,
+                    showHorizontalScrollbar: true,
+                    showVerticalScrollbar: true,
+                    shrinkWrapRows: true,
+                    shrinkWrapColumns: true,
                     onCellTap: (value) {
                       if (value.rowColumnIndex.rowIndex != 0) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserMileageRecordScreen(
-                                      user: list[
-                                              value.rowColumnIndex.rowIndex - 1]
-                                          .call,
-                                    )));
-                      }
-                    },
-                    onCellDoubleTap: (details) {
-                      if (details.rowColumnIndex.rowIndex == 0) {
-                        ref.read(indexProvider.notifier).state =
-                            details.rowColumnIndex.columnIndex;
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => UserMileageRecordScreen(
+                        //               user: list[
+                        //                       value.rowColumnIndex.rowIndex - 1]
+                        //                   .call,
+                        //             )));
                       }
                     },
                     columns: <GridColumn>[
@@ -188,7 +173,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
             },
             error: (e, st) => Text('error'),
             loading: () => const Center(
-              child: CircularProgressIndicator(),
+              child: ProgressRing(),
             ),
           ))
         ]));
