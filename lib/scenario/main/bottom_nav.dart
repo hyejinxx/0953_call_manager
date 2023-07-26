@@ -170,14 +170,23 @@ class _WindowViewState extends ConsumerState<WindowView> {
   Widget build(BuildContext context) {
     final currentPage = ref.watch(navProvider);
     return NavigationView(
+
       appBar: NavigationAppBar(
         title: Text('해피해피 0953',
             style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
       ),
+
       pane: NavigationPane(
         size: const NavigationPaneSize(
           compactWidth: 56.0,
           openMaxWidth: 200.0,
+        ),
+        displayMode: PaneDisplayMode.auto,
+        menuButton: IconButton(
+          icon: const Icon(FluentIcons.collapse_menu),
+          onPressed: () {
+
+          },
         ),
         items: <NavigationPaneItem>[
           PaneItem(icon: const Icon(FluentIcons.account_management), title: Text(screenTitle.elementAt(0)), body: screen.elementAt(0)),

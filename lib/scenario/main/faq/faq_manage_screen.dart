@@ -2,7 +2,8 @@ import 'package:call_0953_manager/model/faq.dart';
 import 'package:call_0953_manager/scenario/main/faq/new_ann_screen.dart';
 import 'package:call_0953_manager/scenario/main/faq/new_faq_screen.dart';
 import 'package:call_0953_manager/service/announcement_service.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' as ma;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FAQManageScreen extends ConsumerStatefulWidget {
@@ -13,56 +14,33 @@ class FAQManageScreen extends ConsumerStatefulWidget {
 }
 
 class FAQManageScreenState extends ConsumerState<FAQManageScreen>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
+{
+
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
-  final tab = [const AnnouncementPage(), const FAQPage(), const NewFAQPage()];
-
+  final tabIndexProvider = StateProvider<int>((ref) => 0);
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(controller: _tabController, tabs: [
-          Container(
-            height: 80,
-            alignment: Alignment.center,
-            child: const Text(
-              '공지사항',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
+    final tabIndex = ref.watch(tabIndexProvider);
+    return
+
+        TabView(currentIndex: tabIndex, tabs: [
+          Tab(
+            text: const Text('공지사항'), body: const AnnouncementPage(),
           ),
-          Container(
-            height: 80,
-            alignment: Alignment.center,
-            child: const Text(
-              'FAQ',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
+          Tab(
+            text: const Text('FAQ'), body: const FAQPage(),
           ),
-          Container(
-            height: 80,
-            alignment: Alignment.center,
-            child: const Text(
-              'User FAQ',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
+          Tab(
+            text: const Text('User FAQ'), body: const NewFAQPage(),
           ),
-        ]),
-        Expanded(child: TabBarView(controller: _tabController, children: tab))
-      ],
-    );
+        ], onChanged: (index) {
+          ref.read(tabIndexProvider.notifier).state = index;
+        });
   }
 }
 
@@ -85,11 +63,11 @@ class _FAQPageState extends State<FAQPage> {
                 return snapshot.hasData
                     ? ListView.separated(
                         itemBuilder: (context, index) {
-                          return InkWell(
+                          return GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(
+                                    ma.MaterialPageRoute(
                                         builder: (context) => NewFaQScreen(
                                               faq: snapshot.data![index],
                                             )));
@@ -105,16 +83,16 @@ class _FAQPageState extends State<FAQPage> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
                                         ))),
-                                trailing: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.yellow,
-                                  ),
+                                trailing: Button(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          ButtonState.all(Colors.grey[300])),
                                   onPressed: () {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AlertDialog(
-                                              content: Text('삭제하시겠습니까?'),
+                                          return ContentDialog(
+                                              content: const Text('삭제하시겠습니까?'),
                                               actions: [
                                                 TextButton(
                                                     onPressed: () {
@@ -140,7 +118,7 @@ class _FAQPageState extends State<FAQPage> {
                                         });
                                     setState(() {});
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     '삭제',
                                     style: TextStyle(color: Colors.black),
                                   ),
@@ -152,7 +130,7 @@ class _FAQPageState extends State<FAQPage> {
                                         'A. ${snapshot.data![index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}',
                                         style: const TextStyle(
                                           fontSize: 14,
-                                          color: Colors.black54,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w500,
                                         ))),
                               ));
@@ -163,15 +141,15 @@ class _FAQPageState extends State<FAQPage> {
                         },
                       )
                     : const Center(
-                        child: CircularProgressIndicator(),
+                        child: ProgressRing(),
                       );
               }),
         ),
         Row(children: [
-          InkWell(
+          GestureDetector(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => NewFaQScreen()));
+                    ma.MaterialPageRoute(builder: (context) => NewFaQScreen()));
               },
               child: Container(
                 color: Colors.yellow.withOpacity(0.7),
@@ -180,12 +158,12 @@ class _FAQPageState extends State<FAQPage> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: const Text('새 FaQ 작성'),
               )),
-          InkWell(
+          GestureDetector(
               onTap: () {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialog(
+                      return ContentDialog(
                         title: const Text('알림'),
                         content: const Text('업데이트 알림을 보내시겠습니까?'),
                         actions: [
@@ -223,7 +201,7 @@ class _FAQPageState extends State<FAQPage> {
     );
   }
   showToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    showSnackbar(context, Snackbar(content: Text(msg)));
   }
 }
 
@@ -243,11 +221,11 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             future: AnnouncementService().getPopUpAnnouncement(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return InkWell(
+                return GestureDetector(
                     onTap: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          ma.MaterialPageRoute(
                               builder: (context) => PopUpScreen(text: snapshot.data!)));
                     },
                     child: Container(
@@ -255,7 +233,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                       width: MediaQuery.of(context).size.width,
                       alignment: Alignment.center,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Text('팝업 공지사항 수정'),
+                      child: const Text('팝업 공지사항 수정'),
                     ));
               } else {
                 return Container();
@@ -268,11 +246,11 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 return snapshot.hasData
                     ? ListView.separated(
                         itemBuilder: (context, index) {
-                          return InkWell(
+                          return GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(
+                                    ma.MaterialPageRoute(
                                         builder: (context) => NewAnnoScreen(
                                               ann: snapshot.data![index],
                                             )));
@@ -282,7 +260,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 7),
                                     child: Row(children: [
-                                      const Icon(Icons.arrow_right,
+                                      const Icon(FluentIcons.arrow_up_right,
                                           size: 20, color: Colors.black),
                                       Text(snapshot.data![index].title,
                                           style: const TextStyle(
@@ -291,16 +269,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                             fontWeight: FontWeight.w600,
                                           ))
                                     ])),
-                                trailing: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.yellow,
-                                  ),
+                                trailing: Button(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          ButtonState.all(Colors.yellow)),
                                   onPressed: () {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AlertDialog(
-                                              content: Text('삭제하시겠습니까?'),
+                                          return ContentDialog(
+                                              content: const Text('삭제하시겠습니까?'),
                                               actions: [
                                                 TextButton(
                                                     onPressed: () {
@@ -326,7 +304,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                         });
                                     setState(() {});
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     '삭제',
                                     style: TextStyle(color: Colors.black),
                                   ),
@@ -340,7 +318,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                             .replaceAll('\\', ''),
                                         style: const TextStyle(
                                           fontSize: 14,
-                                          color: Colors.black54,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w500,
                                         ))),
                               ));
@@ -351,16 +329,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                         },
                       )
                     : const Center(
-                        child: CircularProgressIndicator(),
+                        child: ProgressRing(),
                       );
               }),
         ),
         Row(
           children: [
-            InkWell(
+            GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => NewAnnoScreen()));
+                      ma.MaterialPageRoute(builder: (context) => NewAnnoScreen()));
                 },
                 child: Container(
                   color: Colors.yellow.withOpacity(0.7),
@@ -369,12 +347,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: const Text('새 공지 작성'),
                 )),
-            InkWell(
+            GestureDetector(
                 onTap: () {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
+                        return ContentDialog(
                           title: const Text('알림'),
                           content: const Text('업데이트 알림을 보내시겠습니까?'),
                           actions: [
@@ -414,7 +392,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     );
   }
   showToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    showSnackbar(context, Snackbar(content: Text(msg)));
   }
 }
 
@@ -436,9 +414,9 @@ class NewFAQPageState extends State<NewFAQPage> {
                 return snapshot.hasData
                     ? ListView.separated(
                         itemBuilder: (context, index) {
-                          return InkWell(
+                          return GestureDetector(
                               onTap: () {
-                                showModalBottomSheet(
+                                showBottomSheet(
                                     context: context,
                                     builder: (context) => AnswerScreen(
                                           faq: snapshot.data![index],
@@ -464,7 +442,7 @@ class NewFAQPageState extends State<NewFAQPage> {
                                             : 'A. ${snapshot.data![index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}',
                                         style: const TextStyle(
                                           fontSize: 14,
-                                          color: Colors.black54,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w500,
                                         ))),
                                 trailing: IconButton(
@@ -472,8 +450,8 @@ class NewFAQPageState extends State<NewFAQPage> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return AlertDialog(
-                                                content: Text('삭제하시겠습니까?'),
+                                            return ContentDialog(
+                                                content: const Text('삭제하시겠습니까?'),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: () {
@@ -499,7 +477,7 @@ class NewFAQPageState extends State<NewFAQPage> {
                                           });
                                       setState(() {});
                                     },
-                                    icon: const Icon(Icons.delete)),
+                                    icon: const Icon(FluentIcons.delete)),
                               ));
                         },
                         itemCount: snapshot.data!.length,
@@ -508,22 +486,23 @@ class NewFAQPageState extends State<NewFAQPage> {
                         },
                       )
                     : const Center(
-                        child: CircularProgressIndicator(),
+                        child: ProgressRing(),
                       );
-              }))
+              })),
+      GestureDetector(
+          onTap: () {
+
+          },
+          child: Container(
+            color: Colors.yellow.withOpacity(0.7),
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: const Text('새 FaQ 작성'),
+          ))
     ]);
 
-    // InkWell(
-    //     onTap: () {
-    //
-    //     },
-    //     child: Container(
-    //       color: Colors.yellow.withOpacity(0.7),
-    //       width: MediaQuery.of(context).size.width,
-    //       alignment: Alignment.center,
-    //       padding: const EdgeInsets.symmetric(vertical: 16),
-    //       child: const Text('새 FaQ 작성'),
-    //     ))
+
   }
 }
 
@@ -545,19 +524,7 @@ class _PopUpScreenState extends State<PopUpScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('팝업 공지사항 수정', style: TextStyle(color: Colors.black)),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          backgroundColor: Colors.white,
-        ),
-        body: Column(
+    return Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -569,7 +536,7 @@ class _PopUpScreenState extends State<PopUpScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.grey[200]),
-                    child: TextField(
+                    child: TextFormBox(
                         controller: contentController,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
@@ -577,39 +544,24 @@ class _PopUpScreenState extends State<PopUpScreen> {
                         style: const TextStyle(
                           fontSize: 14.0,
                         ),
-                        decoration: InputDecoration(
-                          focusedBorder:
-                          const UnderlineInputBorder(borderSide: BorderSide.none),
-                          contentPadding: const EdgeInsets.all(16),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          hintText: '공지사항을 적어주세요',
-                          hintStyle: TextStyle(
-                            color: Colors.black.withOpacity(0.7),
-                            fontSize: 14.0,
-                          ),
-                        )),
+                        placeholder: '공지사항을 적어주세요',
+                        ),
                   )),
               GestureDetector(
                   onTap: () {
                     if (
                         contentController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('내용을 입력해주세요')));
+                      showSnackbar(context, const Snackbar(content: Text('내용을 입력해주세요')));
                       return;
                     }
 
                     AnnouncementService()
                         .savePopUpAnnouncement(contentController.text)
                         .then((value) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text('등록되었습니다')));
+                      showSnackbar(context, const Snackbar(content: Text('등록되었습니다')));
                       Navigator.pop(context);
                     }).onError((error, stackTrace) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text('등록에 실패했습니다')));
+                      showSnackbar(context, const Snackbar(content: Text('오류가 발생했습니다')));
                     });
                   },
                   child: Container(
@@ -618,13 +570,13 @@ class _PopUpScreenState extends State<PopUpScreen> {
                     width: MediaQuery.of(context).size.width,
                     alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text('등록하기',
+                    child: const Text('등록하기',
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0)),
                   ))
-            ]));
+            ]);
   }
 }
 
@@ -659,21 +611,20 @@ class AnswerScreenState extends State<AnswerScreen> {
         const SizedBox(height: 10),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: TextField(
+            child: TextFormBox(
                 controller: controller,
                 maxLines: 10,
-                decoration: const InputDecoration(
-                    hintText: '답변을 입력해주세요',
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey))))),
-        InkWell(
+                placeholder: '답변을 입력해주세요',
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[200]),
+                )),
+        GestureDetector(
             onTap: () {
               widget.faq.answer = controller.text;
               AnnouncementService().saveAnswerFAQ(widget.faq).then((value) {
                 AnnouncementService().pushAnswer(widget.faq.writer);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('답변이 저장되었습니다')));
+                showSnackbar(context, const Snackbar(content: Text('답변이 저장되었습니다')));
               });
               Navigator.pop(context);
             },

@@ -52,8 +52,12 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
             .of(context)
             .size
             .height,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          TabView(currentIndex: tabIndex, tabs: [
+        child:
+          TabView(currentIndex: tabIndex,
+              onChanged: (index) {
+                ref.read(tabIndexProvider.notifier).state = index;
+              },
+              tabs: [
             Tab(text: const Text('회원'), body: callList.when(data: (data) {
               return CallListWidget(callData: data);
             }, error: (e, st) => const Center(child: Text('기록을 불러오지 못했습니다')), loading: () {
@@ -109,7 +113,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
           //
           //
           // ),
-        ]));
+        );
   }
 }
 
