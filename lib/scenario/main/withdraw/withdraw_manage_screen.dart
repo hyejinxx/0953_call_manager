@@ -56,18 +56,21 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     for (int i = 0; i < 4; i++) ...[
-                      Row(children: [
+                      Padding(padding: const EdgeInsets.all(5), child: Row(children: [
                         RadioButton(
                           checked: radioIndex == i,
                           // set onChanged to null to disable the button
                           onChanged: (value) =>
                               ref.read(indexProvider.notifier).state = i,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(radioButtons[i])
-                      ]),
+                      ]),)
                     ],
                     ...[
+                      SizedBox(
+                    width: double.infinity,
+                    child:
                       SfDataGrid(
                         onCellDoubleTap: (detail) {
                           if (detail.rowColumnIndex.rowIndex == 0) {
@@ -75,6 +78,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                 detail.rowColumnIndex.columnIndex;
                           }
                         },
+
                         onCellTap: (value) {
                           // if (value.rowColumnIndex.rowIndex != 0) {
                           //   Navigator.push(
@@ -164,7 +168,7 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                     overflow: TextOverflow.ellipsis,
                                   ))),
                         ],
-                      )
+                      ))
                     ]
                   ]);
             } else {
