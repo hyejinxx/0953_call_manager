@@ -17,6 +17,7 @@ class MileageAddScreen extends StatefulWidget {
 class _MileageAddScreenState extends State<MileageAddScreen> {
   final phoneTextController = TextEditingController();
   final amountTextController = TextEditingController();
+  final memoTextController = TextEditingController(text: '이벤트 마일리지');
 
   @override
   void initState() {
@@ -81,6 +82,18 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                   obscureText: false,
                 ),
               ),
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: TextField(
+                  controller: memoTextController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '마일리지 사유',
+                  ),
+                  obscureText: false,
+                ),
+              ),
               ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all(const Size(80, 50)),
@@ -103,7 +116,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                               phoneTextController.text,
                       name: widget.name ?? '',
                       call: phoneTextController.text,
-                      type: '이벤트 마일리지',
+                      type: memoTextController.text,
                       amount: int.parse(amountTextController.text),
                       startAddress: '',
                       endAddress: '',
