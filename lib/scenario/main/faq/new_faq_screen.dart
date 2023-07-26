@@ -1,6 +1,6 @@
 import 'package:call_0953_manager/model/faq.dart';
 import 'package:call_0953_manager/service/announcement_service.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 class NewFaQScreen extends StatefulWidget {
   NewFaQScreen({super.key, this.faq});
@@ -24,104 +24,64 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('FAQ 작성', style: TextStyle(color: Colors.black)),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          backgroundColor: Colors.white,
-        ),
-        body: Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: TextField(
-                  controller: questionTextController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 300,
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                  ),
-                  decoration: InputDecoration(
-                    focusedBorder:
-                        const UnderlineInputBorder(borderSide: BorderSide.none),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    contentPadding: const EdgeInsets.all(16),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    hintText: '질문을 적어주세요',
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                      fontSize: 14.0,
-                    ),
-                  )),
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          child: TextFormBox(
+            controller: questionTextController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            maxLength: 300,
+            style: const TextStyle(
+              fontSize: 14.0,
             ),
-            Expanded(
-                child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[200]),
-              child: TextField(
-                  controller: answerTextController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 10000,
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                  ),
-                  decoration: InputDecoration(
-                    focusedBorder:
-                        const UnderlineInputBorder(borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.all(16),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    hintText: '대답을 적어주세요',
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                      fontSize: 14.0,
-                    ),
-                  )),
-            )),
-            InkWell(
-                onTap: () {
-                  if (questionTextController.text.isEmpty ||
-                      answerTextController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('질문과 답변을 모두 입력해주세요'),
-                      ),
-                    );
-                  } else {
-                    final faq = FAQ(
-                      question: questionTextController.text,
-                      answer: answerTextController.text,
-                      createdAt: widget.faq == null
-                          ? DateTime.now().toString()
-                          : widget.faq!.createdAt,
-                      writer: '관리자',
-                      state: '등록',
-                    );
-                    final isUpdate = widget.faq != null;
-                    AnnouncementService().saveFAQ(faq).then((value) async {
-                      await showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
+            placeholder: '질문을 적어주세요',
+            obscureText: false,
+            padding: const EdgeInsets.all(16),
+          ),
+        ),
+        Expanded(
+            child: Container(
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: Colors.grey[200]),
+          child: TextFormBox(
+            controller: answerTextController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            maxLength: 10000,
+            style: const TextStyle(
+              fontSize: 14.0,
+            ),
+            placeholder: '대답을 적어주세요',
+            padding: const EdgeInsets.all(16),
+          ),
+        )),
+        GestureDetector(
+            onTap: () {
+              if (questionTextController.text.isEmpty ||
+                  answerTextController.text.isEmpty) {
+                showSnackbar(
+                    context, Snackbar(content: Text('질문과 답변을 모두 입력해주세요')));
+              } else {
+                final faq = FAQ(
+                  question: questionTextController.text,
+                  answer: answerTextController.text,
+                  createdAt: widget.faq == null
+                      ? DateTime.now().toString()
+                      : widget.faq!.createdAt,
+                  writer: '관리자',
+                  state: '등록',
+                );
+                final isUpdate = widget.faq != null;
+                AnnouncementService().saveFAQ(faq).then((value) async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) => ContentDialog(
                             title: const Text('업데이트 알림을 전송하시겠습니까?'),
                             actions: [
                               TextButton(
@@ -135,37 +95,30 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                                   child: const Text('전송'))
                             ],
                           ));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('등록되었습니다'),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }).onError((error, stackTrace) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('등록에 실패했습니다'),
-                        ),
-                      );
-                    }).whenComplete(() {
-                      questionTextController.clear();
-                      answerTextController.clear();
-                    });
-                  }
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  color: Colors.yellow.withOpacity(0.7),
-                  width: MediaQuery.of(context).size.width,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: const Text('등록하기',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0)),
-                ))
-          ],
-        ));
+                  showSnackbar(context, Snackbar(content: Text('등록되었습니다')));
+                  Navigator.pop(context);
+                }).onError((error, stackTrace) {
+                  showSnackbar(context,
+                      Snackbar(content: Text('등록에 실패했습니다. 다시 시도해주세요')));
+                }).whenComplete(() {
+                  questionTextController.clear();
+                  answerTextController.clear();
+                });
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.only(top: 10),
+              color: Colors.yellow.withOpacity(0.7),
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: const Text('등록하기',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0)),
+            ))
+      ],
+    );
   }
 }

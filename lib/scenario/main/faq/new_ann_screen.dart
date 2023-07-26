@@ -1,8 +1,7 @@
 import 'dart:io';
 
-// import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:call_0953_manager/service/announcement_service.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -38,19 +37,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   @override
   Widget build(BuildContext context) {
     final img = ref.watch(imagePickerProvider);
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('공지사항 작성', style: TextStyle(color: Colors.black)),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          backgroundColor: Colors.white,
-        ),
-        body: Column(
+    return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -61,14 +48,12 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                   width: MediaQuery.of(context).size.width - 100,
                   height: 80,
                   padding: const EdgeInsets.all(10),
-                  child: TextField(
+                  child: TextFormBox(
                     controller: titleTextController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: InputBorder.none,
-                      labelText: '제목',
-                    ),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5)),
+                    placeholder: '제목',
                   ),
                 ),
                 // imageBox(img)
@@ -81,7 +66,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.grey[200]),
-              child: TextField(
+              child: TextFormBox(
                   controller: contentController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
@@ -89,27 +74,17 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                   style: const TextStyle(
                     fontSize: 14.0,
                   ),
-                  decoration: InputDecoration(
-                    focusedBorder:
-                        const UnderlineInputBorder(borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.all(16),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    hintText: '공지사항을 적어주세요',
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                      fontSize: 14.0,
-                    ),
-                  )),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey[200]),
+                  placeholder: '내용을 적어주세요'),
             )),
             GestureDetector(
                 onTap: () {
                   if (titleTextController.text.isEmpty ||
                       contentController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('제목과 내용을 입력해주세요')));
+                    showSnackbar(
+                        context, Snackbar(content: Text('내용을 입력해주세요')));
                     return;
                   }
                   final announcement = Announcement(
@@ -129,7 +104,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
 
                     await showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
+                        builder: (context) => ContentDialog(
                           title: const Text('업데이트 알림을 전송하시겠습니까?'),
                           actions: [
                             TextButton(
@@ -145,12 +120,11 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                                 child: const Text('전송'))
                           ],
                         ));
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('등록되었습니다')));
+                    showSnackbar(context, Snackbar(content: Text('등록되었습니다')));
                     Navigator.pop(context);
                   }).onError((error, stackTrace) {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('등록에 실패했습니다')));
+                    showSnackbar(context,
+                        Snackbar(content: Text('등록에 실패했습니다. 다시 시도해주세요')));
                   }).whenComplete(() {
                     titleTextController.clear();
                     contentController.clear();
@@ -169,14 +143,14 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           fontSize: 16.0)),
                 ))
           ],
-        ));
+        );
   }
 
   Widget imageBox(File? img) {
     double imgBoxSize = 60;
 
     return img == null
-        ? InkWell(
+        ? GestureDetector(
             onTap: () => ref.read(imagePickerProvider.notifier).getImage(),
             child: Container(
               margin: const EdgeInsets.all(10),
@@ -189,7 +163,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.image, color: Colors.grey[400]!),
+                  Icon(FluentIcons.image_crosshair, color: Colors.grey[400]!),
                   const SizedBox(
                     height: 5,
                   ),
@@ -228,7 +202,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                           decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(10)),
-                          child: Icon(Icons.close,
+                          child: Icon(FluentIcons.close_pane,
                               size: 15, color: Colors.grey[400])))
                 ])));
   }

@@ -41,8 +41,6 @@ class UserMileageRecordScreenState
     withdrawProvider = FutureProvider<List<Withdraw>>(
             (ref) => MileageService().getWithdrawRecordUser(widget.user));
 
-    callProvider = FutureProvider<List<Call>>(
-        (ref) => CallService().getCallForUser(widget.user));
     userProvider =
         FutureProvider<User?>((ref) => UserService().getUser(widget.user));
     tabController = TabController(length: 3, vsync: this);
@@ -122,7 +120,6 @@ class UserMileageRecordScreenState
                     tabs: const [
                       Tab(text: '입금 내역'),
                       Tab(text: '출금 내역'),
-                      Tab(text: '콜 내역'),
                     ],
                     labelColor: Colors.black,
                   ),
@@ -131,30 +128,20 @@ class UserMileageRecordScreenState
                     controller: tabController,
                     children: [
                       mileage.when(data: (data) {
-
-                        if (selectedIndex == 0) {
-                          data.sort((a, b) => a.date.compareTo(b.date));
-                        } else if (selectedIndex == 1) {
-                          data.sort((a, b) => a.type.compareTo(b.type));
-                        } else if (selectedIndex == 2) {
-                          data.sort((a, b) => a.amount.compareTo(b.amount));
-                        } else if (selectedIndex == 3) {
-                          data.sort(
-                              (a, b) => a.sumMileage.compareTo(b.sumMileage));
-                        } else {
-                          data.sort((a, b) => a.date.compareTo(b.date));
+                        if (data.isEmpty) {
+                          return const Center(
+                              child: Text('적립 내역이 없습니다.'));
                         }
                         return SfDataGrid(
                             defaultColumnWidth:
                                 MediaQuery.of(context).size.width / 6,
                             source: UserMileageDataSource(
                                 mileageData: data.reversed.toList()),
-                            onCellDoubleTap: (details) {
-                              if (details.rowColumnIndex.rowIndex == 0) {
-                                ref.read(_selectedIndex.notifier).state =
-                                    details.rowColumnIndex.columnIndex;
-                              }
-                            },
+                            sortingGestureType: SortingGestureType.doubleTap,
+                            allowSorting: true,
+                            showSortNumbers: true,
+                            shrinkWrapRows: true,
+                            shrinkWrapColumns: true,
                             columns: <GridColumn>[
                               GridColumn(
                                   columnName: 'date',
@@ -217,28 +204,19 @@ class UserMileageRecordScreenState
                         return const Text('기록을 불러오는 중...');
                       }),
                       withdraw.when(data: (data) {
-                        if (selectedIndex == 0) {
-                          data.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-                        } else if (selectedIndex == 1) {
-                          data.sort((a, b) => a.status.compareTo(b.status));
-                        } else if (selectedIndex == 2) {
-                          data.sort((a, b) => a.amount.compareTo(b.amount));
-                        } else if (selectedIndex == 3) {
-                          data.sort(
-                              (a, b) => a.sumMileage??0.compareTo(b.sumMileage??0));
-                        } else {
-                          data.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+                        if (data.isEmpty) {
+                          return const Center(
+                              child: Text('출금 내역이 없습니다.'));
                         }
                         return SfDataGrid(
                             defaultColumnWidth:
                                 MediaQuery.of(context).size.width / 6,
                             source: UserWithdrawDataSource(withdrawData: data),
-                            onCellDoubleTap: (details) {
-                              if (details.rowColumnIndex.rowIndex == 0) {
-                                ref.read(_selectedIndex.notifier).state =
-                                    details.rowColumnIndex.columnIndex;
-                              }
-                            },
+                            sortingGestureType: SortingGestureType.doubleTap,
+                            allowSorting: true,
+                            showSortNumbers: true,
+                            shrinkWrapRows: true,
+                            shrinkWrapColumns: true,
                             columns: <GridColumn>[
                               GridColumn(
                                   columnName: 'date',
@@ -300,107 +278,7 @@ class UserMileageRecordScreenState
                       }, loading: () {
                         return const Text('기록을 불러오는 중...');
                       }),
-                      call.when(data: (data) {
-                        if (data.isEmpty) return const Text('기록이 없습니다.');
 
-                        if (callSelectedIndex == 0) {
-                          data.sort((a, b) => a.date.compareTo(b.date));
-                        } else if (callSelectedIndex == 3) {
-                          data.sort((a, b) => a.price.compareTo(b.price));
-                        } else if (callSelectedIndex == 4) {
-                          data.sort((a, b) =>
-                              a.mileage ?? 0.compareTo(b.mileage ?? 0));
-                        } else if (callSelectedIndex == 5) {
-                          data.sort((a, b) =>
-                              a.bonusMileage ??
-                              0.compareTo(b.bonusMileage ?? 0));
-                        } else if (callSelectedIndex == 6) {
-                          data.sort((a, b) =>
-                              a.sumMileage ?? 0.compareTo(b.sumMileage ?? 0));
-                        } else {
-                          data.sort((a, b) => a.date.compareTo(b.date));
-                        }
-
-                        return SfDataGrid(
-                            defaultColumnWidth:
-                                MediaQuery.of(context).size.width / 7,
-                            source: UserCallDataSource(callData: data),
-                            onCellDoubleTap: (details) {
-                              if (details.rowColumnIndex.rowIndex == 0) {
-                                ref.read(_callSelectedIndex.notifier).state =
-                                    details.rowColumnIndex.columnIndex;
-                              }
-                            },
-                            columns: <GridColumn>[
-                              GridColumn(
-                                  columnName: 'date',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '일자',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'startAddress',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '출발',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'endAddress',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '도착',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'price',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '콜 금액',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'mileage',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '적립금',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'bonusMileage',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '이벤트',
-                                        overflow: TextOverflow.ellipsis,
-                                      ))),
-                              GridColumn(
-                                  columnName: 'sumMileage',
-                                  label: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        '총 적립',
-                                        overflow: TextOverflow.ellipsis,
-                                      )))
-                            ]);
-                      }, error: (error, stackTrace) {
-                        return const Text('기록을 불러오는 중 오류가 발생했습니다.');
-                      }, loading: () {
-                        return const Text('기록을 불러오는 중...');
-                      }),
                     ],
                   )),
                   InkWell(
