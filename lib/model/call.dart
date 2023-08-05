@@ -1,7 +1,7 @@
 
 class Call {
   final String orderNumber;
-  final String name;
+  String name;
   final String call;
   final String? startAddress;
   final String? endAddress;

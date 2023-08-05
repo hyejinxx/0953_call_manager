@@ -88,29 +88,6 @@ class CallService {
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
 
-            int mileage = 0;
-            int bonusMileage = 0;
-
-            User? user = await UserService().getUser(
-                data.elementAt(callIndex).toString().replaceAll('-', ''));
-            if (user != null) {
-              final num = calMileage(int.parse(
-                  data.elementAt(priceIndex).toString().replaceAll(',', '')));
-
-              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                mileage = cardStandard['a$num'];
-              } else {
-                mileage = cashStandard['a$num'];
-              }
-
-              // 보너스 마일리지 계산
-              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                bonusMileage = cardBonusStandard['a$num'];
-              } else {
-                bonusMileage = cashBonusStandard['a$num'];
-              }
-            }
-
             // 마일리지 계산
             Call call = Call(
               orderNumber: orderNumber,
@@ -123,10 +100,34 @@ class CallService {
               time: data.elementAt(timeIndex).toString(),
               startAddress: data.elementAt(startAddressIndex).toString(),
               endAddress: data.elementAt(endAddressIndex).toString(),
-              mileage: mileage,
-              bonusMileage: bonusMileage,
-              sumMileage: mileage + bonusMileage,
+              mileage: 0,
+              bonusMileage: 0,
+              sumMileage: 0,
             );
+
+            User? user = await UserService().getUser(
+                data.elementAt(callIndex).toString().replaceAll('-', ''));
+            if (user != null) {
+              final num = calMileage(int.parse(
+                  data.elementAt(priceIndex).toString().replaceAll(',', '')));
+
+              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                call.mileage = cardStandard['a$num'];
+              } else {
+                call.mileage = cashStandard['a$num'];
+              }
+
+              // 보너스 마일리지 계산
+              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                call.bonusMileage = cardBonusStandard['a$num'];
+              } else {
+                call.bonusMileage = cashBonusStandard['a$num'];
+              }
+
+              call.sumMileage = call.mileage! + call.bonusMileage!;
+
+              call.name = user.name;
+            }
 
             if (user != null) {
               await saveCall(call);

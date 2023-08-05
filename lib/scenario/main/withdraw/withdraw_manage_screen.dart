@@ -1,6 +1,7 @@
 import 'package:call_0953_manager/model/withdraw.dart';
 import 'package:call_0953_manager/scenario/main/withdraw/withdraw_screen.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -78,18 +79,17 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                                 detail.rowColumnIndex.columnIndex;
                           }
                         },
-
                         onCellTap: (value) {
-                          // if (value.rowColumnIndex.rowIndex != 0) {
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => WithdrawScreen(
-                          //                 withdraw: result.reversed.toList()[
-                          //                     value.rowColumnIndex.rowIndex -
-                          //                         1],
-                          //               )));
-                          // }
+                          if (value.rowColumnIndex.rowIndex != 0) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WithdrawScreen(
+                                          withdraw: result.reversed.toList()[
+                                              value.rowColumnIndex.rowIndex -
+                                                  1],
+                                        )));
+                          }
                         },
                         defaultColumnWidth:
                             (MediaQuery.of(context).size.width - 200) / 7,
