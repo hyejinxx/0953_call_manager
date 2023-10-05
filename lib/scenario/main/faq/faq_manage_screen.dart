@@ -1,3 +1,4 @@
+import 'package:call_0953_manager/model/announcement.dart';
 import 'package:call_0953_manager/model/faq.dart';
 import 'package:call_0953_manager/scenario/main/faq/new_ann_screen.dart';
 import 'package:call_0953_manager/scenario/main/faq/new_faq_screen.dart';
@@ -62,123 +63,123 @@ class _FAQPageState extends State<FAQPage> {
           child: FutureBuilder(
               future: AnnouncementService().getFAQ(),
               builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? ListView.separated(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    ma.MaterialPageRoute(
-                                        builder: (context) => NewFaQScreen(
-                                              faq: snapshot.data![index],
-                                            )));
-                              },
-                              child: ListTile(
-                                title: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          ma.MaterialPageRoute(
-                                              builder: (context) =>
-                                                  NewFaQScreen(
-                                                    faq: snapshot.data![index],
-                                                  )));
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 7),
-                                        child: Text(
-                                            'Q${index + 1}. ${snapshot.data![index].question}',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w600,
-                                            )))),
-                                trailing: Column(
-                                  children: [
-                                    Button(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return ContentDialog(
-                                                  content:
-                                                      const Text('삭제하시겠습니까?'),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child:
-                                                            const Text('취소')),
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context, true);
-                                                        },
-                                                        child: const Text('확인'))
-                                                  ]);
-                                            }).then((value) => {
-                                              if (value == true)
-                                                {
-                                                  AnnouncementService()
-                                                      .deleateFAQ(snapshot
-                                                          .data![index]
-                                                          .createdAt)
-                                                      .then((value) =>
-                                                          setState(() {}))
-                                                }
-                                            });
-                                        setState(() {});
-                                      },
-                                      child: const Text(
-                                        '삭제',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Button(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            ma.MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NewFaQScreen(
-                                                      faq:
-                                                          snapshot.data![index],
-                                                    )));
-                                      },
-                                      child: const Text(
-                                        '수정',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                subtitle: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
+                if (snapshot.hasData &&
+                    snapshot.data != null &&
+                    snapshot.data!.isNotEmpty) {
+                  var list = snapshot.data as List<FAQ>;
+                  list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  list = list.reversed.toList();
+                  return ListView.separated(
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                ma.MaterialPageRoute(
+                                    builder: (context) => NewFaQScreen(
+                                          faq: list[index],
+                                        )));
+                          },
+                          child: ListTile(
+                            title: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      ma.MaterialPageRoute(
+                                          builder: (context) => NewFaQScreen(
+                                                faq: list[index],
+                                              )));
+                                },
+                                child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 7),
                                     child: Text(
-                                        'A. ${snapshot.data![index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}',
+                                        'Q${index + 1}. ${list[index].question}',
                                         style: const TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 16,
                                           color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ))),
-                              ));
-                        },
-                        itemCount: snapshot.data!.length,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider();
-                        },
-                      )
-                    : const Center(
-                        child: ProgressRing(),
-                      );
+                                          fontWeight: FontWeight.w600,
+                                        )))),
+                            trailing: Column(
+                              children: [
+                                Button(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return ContentDialog(
+                                              content: const Text('삭제하시겠습니까?'),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('취소')),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context, true);
+                                                    },
+                                                    child: const Text('확인'))
+                                              ]);
+                                        }).then((value) => {
+                                          if (value == true)
+                                            {
+                                              AnnouncementService()
+                                                  .deleateFAQ(
+                                                      list[index].createdAt)
+                                                  .then((value) =>
+                                                      setState(() {}))
+                                            }
+                                        });
+                                    setState(() {});
+                                  },
+                                  child: const Text(
+                                    '삭제',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Button(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        ma.MaterialPageRoute(
+                                            builder: (context) => NewFaQScreen(
+                                                  faq: list[index],
+                                                )));
+                                  },
+                                  child: const Text(
+                                    '수정',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            subtitle: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                    'A. ${list[index].answer.replaceAll('\\n', '\n').replaceAll('\\', '')}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ))),
+                          ));
+                    },
+                    itemCount: list!.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider();
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: ProgressRing(),
+                  );
+                }
               }),
         ),
         Row(
@@ -263,122 +264,123 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           child: FutureBuilder(
               future: AnnouncementService().getAnnouncement(),
               builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? ListView.separated(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    ma.MaterialPageRoute(
-                                        builder: (context) => NewAnnoScreen(
-                                              ann: snapshot.data![index],
-                                            )));
-                              },
-                              child: ListTile(
-                                title: Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 7),
-                                    child: Row(children: [
-                                      Text(snapshot.data![index].title,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w600,
-                                          ))
-                                    ])),
-                                trailing: Column(
-                                  children: [
-                                    Button(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              ButtonState.all(Colors.yellow)),
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return ContentDialog(
-                                                  content:
-                                                      const Text('삭제하시겠습니까?'),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        child:
-                                                            const Text('취소')),
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context, true);
-                                                        },
-                                                        child: const Text('확인'))
-                                                  ]);
-                                            }).then((value) => {
-                                              if (value == true)
-                                                {
-                                                  AnnouncementService()
-                                                      .deleateAnn(snapshot
-                                                          .data![index]
-                                                          .createdAt)
-                                                      .then((value) =>
-                                                          setState(() {}))
-                                                }
-                                            });
-                                        setState(() {});
-                                      },
-                                      child: const Text(
-                                        '삭제',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Button(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              ButtonState.all(Colors.yellow)),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            ma.MaterialPageRoute(
-                                                builder: (context) =>
-                                                    NewAnnoScreen(
-                                                      ann:
-                                                          snapshot.data![index],
-                                                    )));
-                                      },
-                                      child: const Text(
-                                        '수정',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
+                if (snapshot.hasData &&
+                    snapshot.data != null &&
+                    snapshot.data!.isNotEmpty) {
+                  var list = snapshot.data as List<Announcement>;
+                  list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  list = list.reversed.toList();
+                  return ListView.separated(
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                ma.MaterialPageRoute(
+                                    builder: (context) => NewAnnoScreen(
+                                          ann: list[index],
+                                        )));
+                          },
+                          child: ListTile(
+                            title: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 7),
+                                child: Row(children: [
+                                  Text(list![index].title,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ))
+                                ])),
+                            trailing: Column(
+                              children: [
+                                Button(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          ButtonState.all(Colors.yellow)),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return ContentDialog(
+                                              content: const Text('삭제하시겠습니까?'),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('취소')),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(
+                                                          context, true);
+                                                    },
+                                                    child: const Text('확인'))
+                                              ]);
+                                        }).then((value) => {
+                                          if (value == true)
+                                            {
+                                              AnnouncementService()
+                                                  .deleateAnn(snapshot
+                                                      .data![index].createdAt)
+                                                  .then((value) =>
+                                                      setState(() {}))
+                                            }
+                                        });
+                                    setState(() {});
+                                  },
+                                  child: const Text(
+                                    '삭제',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
-                                subtitle: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: Text(
-                                        snapshot.data![index].content
-                                            .replaceAll('\\n', '\n')
-                                            .replaceAll('\\', ''),
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ))),
-                              ));
-                        },
-                        itemCount: snapshot.data!.length,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider();
-                        },
-                      )
-                    : const Center(
-                        child: ProgressRing(),
-                      );
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Button(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          ButtonState.all(Colors.yellow)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        ma.MaterialPageRoute(
+                                            builder: (context) => NewAnnoScreen(
+                                                  ann: list![index],
+                                                )));
+                                  },
+                                  child: const Text(
+                                    '수정',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            subtitle: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                    list![index].content
+                                        .replaceAll('\\n', '\n')
+                                        .replaceAll('\\', ''),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ))),
+                          ));
+                    },
+                    itemCount: list.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider();
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: ProgressRing(),
+                  );
+                }
               }),
         ),
         Row(

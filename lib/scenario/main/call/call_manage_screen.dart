@@ -1,9 +1,12 @@
 import 'package:call_0953_manager/model/call.dart';
 import 'package:call_0953_manager/service/call_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' as ma;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+import '../mileage/mileage_add_screen.dart';
 
 class CallManageScreen extends ConsumerStatefulWidget {
   const CallManageScreen({super.key});
@@ -173,7 +176,7 @@ class CallListWidget extends ConsumerStatefulWidget {
 
 class _CallListWidgetState extends ConsumerState<CallListWidget> {
   final indexProvider = StateProvider<int>((ref) => 0);
-
+  final controller = DataGridController();
   List<Call> result = [];
 
   @override
@@ -186,12 +189,40 @@ class _CallListWidgetState extends ConsumerState<CallListWidget> {
   Widget build(BuildContext context) {
     return result.isNotEmpty
         ? SfDataGrid(
+            controller: controller,
             defaultColumnWidth: MediaQuery.of(context).size.width / 7,
             source: CallDataSource(callData: result),
             onCellDoubleTap: (details) {
               if (details.rowColumnIndex.rowIndex == 0) {
                 ref.read(indexProvider.notifier).state =
                     details.rowColumnIndex.columnIndex;
+                final a = controller.selectedRow;
+                final b = a?.getCells();
+                var call = '';
+                var name = '';
+                b?.forEach((element) {
+                  if (element.columnName == 'call') {
+                    call = element.value.toString();
+                  } else if (element.columnName == 'name') {
+                    name = element.value.toString();
+                  }
+                });
+                Navigator.push(
+                    context,
+                    ma.MaterialPageRoute(
+                        builder: (context) => MileageAddScreen(
+                              call: call,
+                              name: name,
+                            )));
+                // Navigator.push(
+                //     context,
+                //     ma.MaterialPageRoute(
+                //         builder: (context) => MileageAddScreen(
+                //               call: result[details.rowColumnIndex.rowIndex - 1]
+                //                   .call,
+                //               name: result[details.rowColumnIndex.rowIndex - 1]
+                //                   .name,
+                //             )));
               }
             },
             sortingGestureType: SortingGestureType.doubleTap,

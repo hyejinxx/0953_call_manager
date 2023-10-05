@@ -2,7 +2,7 @@ import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.da
 import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart'as ma;
+import 'package:flutter/material.dart' as ma;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -17,6 +17,8 @@ class UserManageScreen extends ConsumerStatefulWidget {
 
 class _UserManageScreenState extends ConsumerState<UserManageScreen> {
   final phoneTextController = TextEditingController();
+  final nameTextController = TextEditingController();
+  final controller = DataGridController();
 
   @override
   void initState() {
@@ -50,17 +52,30 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                   return const Text('로딩중...');
                 }
               }),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: TextFormBox(
-              controller: phoneTextController,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5)),
-              placeholder: '전화번호 검색',
-              obscureText: false,
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: TextFormBox(
+                controller: phoneTextController,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5)),
+                placeholder: '전화번호 검색',
+                obscureText: false,
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: TextFormBox(
+                controller: nameTextController,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5)),
+                placeholder: '닉네임 검색',
+                obscureText: false,
+              ),
+            ),
+          ]),
           Expanded(
               child: userList.when(
             data: (data) {
@@ -70,16 +85,22 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                 );
               } else {
                 List<User> list = data
-                   .where((element) =>
-                   element.call.contains(phoneTextController.text) == true)
-                   .toList() ;
+                    .where((element) =>
+                        element.call.contains(phoneTextController.text) == true)
+                    .toList();
+                list
+                    .where((element) =>
+                        element.name.contains(nameTextController.text) == true)
+                    .toList();
                 return SfDataGrid(
+                    controller: controller,
                     source: UserDataSource(userData: list),
                     allowSorting: true,
                     columnWidthMode: ColumnWidthMode.fill,
                     sortingGestureType: SortingGestureType.doubleTap,
                     // showCheckboxColumn: true,
-                    defaultColumnWidth: (MediaQuery.of(context).size.width-200) / 8,
+                    defaultColumnWidth:
+                        (MediaQuery.of(context).size.width - 200) / 8,
                     showSortNumbers: true,
                     showHorizontalScrollbar: true,
                     showVerticalScrollbar: true,
@@ -87,14 +108,19 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     shrinkWrapColumns: true,
                     onCellTap: (value) {
                       if (value.rowColumnIndex.rowIndex != 0) {
-                        Navigator.push(
-                            context,
-                            ma.MaterialPageRoute(
-                                builder: (context) => UserMileageRecordScreen(
-                                      user: list[
-                                              value.rowColumnIndex.rowIndex - 1]
-                                          .call,
-                                    )));
+                        final a = controller.selectedRow;
+                        final b = a?.getCells();
+                        b?.forEach((element) {
+                          if (element.columnName == 'call') {
+                            Navigator.push(
+                                context,
+                                ma.MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserMileageRecordScreen(
+                                          user: element.value,
+                                        )));
+                          }
+                        });
                       }
                     },
                     columns: <GridColumn>[
@@ -190,7 +216,8 @@ class UserDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'call', value: e.call),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
-              DataGridCell(columnName: 'destination', value: e.destination??''),
+              DataGridCell(
+                  columnName: 'destination', value: e.destination ?? ''),
               DataGridCell<String>(
                   columnName: 'joinDate', value: e.createdAt.toString()),
               DataGridCell<String>(
