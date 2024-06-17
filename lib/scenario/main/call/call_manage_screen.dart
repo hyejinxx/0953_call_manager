@@ -57,12 +57,12 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                         title: const Text('회원 대리 기록 삭제'),
                         content: const Text('회원 대리 기록을 모두 삭제하시겠습니까?'),
                         actions: [
-                          TextButton(
+                          Button(
                               onPressed: () {
                                 Navigator.pop(context, false);
                               },
                               child: const Text('취소')),
-                          TextButton(
+                          Button(
                               onPressed: () {
                                 CallService().deleteAllCallUser();
                                 Navigator.pop(context, true);
@@ -92,12 +92,12 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                         title: const Text('비회원 대리 기록 삭제'),
                         content: const Text('비회원 대리 기록을 모두 삭제하시겠습니까?'),
                         actions: [
-                          TextButton(
+                          Button(
                               onPressed: () {
                                 Navigator.pop(context, false);
                               },
                               child: const Text('취소')),
-                          TextButton(
+                          Button(
                               onPressed: () {
                                 CallService().deleteAllCallNotUser();
                                 Navigator.pop(context, true);

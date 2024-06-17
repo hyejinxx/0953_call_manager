@@ -113,12 +113,12 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                         builder: (context) => ContentDialog(
                           title: const Text('업데이트 알림을 전송하시겠습니까?'),
                           actions: [
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
                                 child: const Text('닫기')),
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   AnnouncementService().pushFCM(isUpdate);
                                   Navigator.pop(context);

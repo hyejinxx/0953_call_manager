@@ -110,12 +110,12 @@ class _FAQPageState extends State<FAQPage> {
                                           return ContentDialog(
                                               content: const Text('삭제하시겠습니까?'),
                                               actions: [
-                                                TextButton(
+                                                Button(
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
                                                     child: const Text('취소')),
-                                                TextButton(
+                                                Button(
                                                     onPressed: () {
                                                       Navigator.pop(
                                                           context, true);
@@ -207,12 +207,12 @@ class _FAQPageState extends State<FAQPage> {
                           title: const Text('알림'),
                           content: const Text('업데이트 알림을 보내시겠습니까?'),
                           actions: [
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
                                 child: const Text('취소')),
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   AnnouncementService()
                                       .pushFCM(true)
@@ -306,12 +306,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                           return ContentDialog(
                                               content: const Text('삭제하시겠습니까?'),
                                               actions: [
-                                                TextButton(
+                                                Button(
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
                                                     child: const Text('취소')),
-                                                TextButton(
+                                                Button(
                                                     onPressed: () {
                                                       Navigator.pop(
                                                           context, true);
@@ -408,12 +408,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                           title: const Text('알림'),
                           content: const Text('업데이트 알림을 보내시겠습니까?'),
                           actions: [
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
                                 child: const Text('취소')),
-                            TextButton(
+                            Button(
                                 onPressed: () {
                                   AnnouncementService()
                                       .pushFCM(true)
@@ -529,12 +529,12 @@ class NewFAQPageState extends State<NewFAQPage> {
                                                 content:
                                                     const Text('삭제하시겠습니까?'),
                                                 actions: [
-                                                  TextButton(
+                                                  Button(
                                                       onPressed: () {
                                                         Navigator.pop(context);
                                                       },
                                                       child: const Text('취소')),
-                                                  TextButton(
+                                                  Button(
                                                       onPressed: () {
                                                         Navigator.pop(
                                                             context, true);

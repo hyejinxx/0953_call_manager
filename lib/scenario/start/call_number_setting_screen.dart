@@ -112,7 +112,8 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
+                    foregroundColor: const Color.fromRGBO(249, 224, 0, 1.0),
+                    minimumSize: const Size(80, 50),
                   ),
                   child:
                       const Text('수정', style: TextStyle(color: Colors.black)),
