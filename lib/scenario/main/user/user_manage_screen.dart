@@ -2,6 +2,7 @@ import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.da
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as ma;
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -37,42 +38,38 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
-
-          SizedBox(
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             height: 50,
             child: Row(children: [
               Flexible(
                 flex: 1,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextFormBox(
-                    controller: phoneTextController,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5)),
-                    placeholder: '전화번호 검색',
-                    obscureText: false,
-                  ),
+                child: TextFormBox(
+                  controller: phoneTextController,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5)),
+                  placeholder: '전화번호 검색',
+                  obscureText: false,
                 ),
+              ),
+              const SizedBox(
+                width: 10,
               ),
               Flexible(
                 flex: 1,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16),
-                  child: TextFormBox(
-                    controller: nameTextController,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5)),
-                    placeholder: '닉네임 검색',
-                    obscureText: false,
-                  ),
+                child: TextFormBox(
+                  controller: nameTextController,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5)),
+                  placeholder: '닉네임 검색',
+                  obscureText: false,
                 ),
               ),
             ]),
           ),
+          const SizedBox(height: 10,),
           userList.when(
             data: (data) {
               if (data.isEmpty) {
@@ -89,7 +86,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                         element.name.contains(nameTextController.text) == true)
                     .toList();
                 return SizedBox(
-                    height: MediaQuery.of(context).size.height - 100,
+                    height: MediaQuery.of(context).size.height - 110,
                     child: SfDataGrid(
                         controller: controller,
                         source: UserDataSource(userData: list),
@@ -107,37 +104,36 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                         shrinkWrapColumns: true,
                         onSelectionChanged: (value, a) {
                           controller.selectedRow?.getCells();
-                          print(controller.selectedRows.first.getCells().first.value);
+                          print(controller.selectedRows.first
+                              .getCells()
+                              .first
+                              .value);
                         },
                         onCellDoubleTap: (value) {
-                          if (value.rowColumnIndex.rowIndex != -1 && value.rowColumnIndex.rowIndex != 0) {
+                          if (value.rowColumnIndex.rowIndex != -1 &&
+                              value.rowColumnIndex.rowIndex != 0) {
                             Navigator.push(
-                                        context,
-                                        ma.MaterialPageRoute(
-                                            builder: (context) =>
-                                                UserMileageRecordScreen(
-                                                  user: controller.selectedRows.first.getCells().first.value,
-                                                )));
+                                context,
+                                ma.MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserMileageRecordScreen(
+                                          user: controller.selectedRows.first
+                                              .getCells()
+                                              .first
+                                              .value,
+                                        )));
                           }
                         },
-                        // onCellDoubleTap: (),
-                        onCellTap: (value) {
-                          if (value.rowColumnIndex.rowIndex != 0) {
-                            controller.selectedRow?.getCells();
-                            // print(controller.selectedRows);
-                             controller.moveCurrentCellTo(value.rowColumnIndex);
-                            // final b = controller.selectedRows
-                            // print(value.rowColumnIndex);
-                            // controller.moveCurrentCellTo(value.rowColumnIndex);
-                            // print(controller.currentCell);
-
-                            // b?.forEach((element) {
-                            //   print(element.columnName);
-                            //   if (element.columnName == 'call') {
-                            //
-                            //   }
-                            // });
-                          }
+                        onCellSecondaryTap: (value) {
+                          Clipboard.setData(ClipboardData(
+                                  text: controller.selectedRows.first
+                                      .getCells()
+                                      .first
+                                      .value
+                                      .toString()))
+                              .then((value) {
+                            print('복사되었습니다.');
+                          });
                         },
                         columns: <GridColumn>[
                           GridColumn(
@@ -215,7 +211,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                         ]));
               }
             },
-            error: (e, st) => Text('error'),
+            error: (e, st) => const Text('error'),
             loading: () => const Center(
               child: ProgressRing(),
             ),
