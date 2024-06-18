@@ -5,12 +5,7 @@ class Announcement {
   String createdAt;
   String? image;
 
-  Announcement(
-      {required this.title,
-      required this.content,
-      required this.date,
-      required this.createdAt,
-      required this.image});
+  Announcement({required this.title, required this.content, required this.date, required this.createdAt, required this.image});
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
     return Announcement(
@@ -23,10 +18,10 @@ class Announcement {
   }
 
   Map<String, dynamic> toJson() => {
-    'title': title,
-    'content': content,
-    'date': date,
-    'createdAt': createdAt,
-    'image': image,
-  };
+        'title': title,
+        'content': content,
+        'date': date,
+        'createdAt': createdAt,
+        'image': image,
+      };
 }

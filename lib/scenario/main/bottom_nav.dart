@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../service/mileage_service.dart';
 import 'faq/faq_manage_screen.dart';
+
 //
 // import '../../style/style.dart';
 // import 'faq/faq_manage_screen.dart';
@@ -150,7 +151,6 @@ class WindowView extends ConsumerStatefulWidget {
 }
 
 class _WindowViewState extends ConsumerState<WindowView> {
-
   final List<dynamic> screen = [
     const UserManageScreen(),
     const MileageManageScreen(),
@@ -159,28 +159,24 @@ class _WindowViewState extends ConsumerState<WindowView> {
     const FAQManageScreen(),
     const UpdateCallScreen(),
   ];
-  final List<String> screenTitle = [
-    '유저 목록',
-    '마일리지 관리',
-    '출금 내역 관리',
-    '대리 기록 관리',
-    '공지사항',
-    '콜 업데이트'
-  ];
+  final List<String> screenTitle = ['유저 목록', '마일리지 관리', '출금 내역 관리', '대리 기록 관리', '공지사항', '콜 업데이트'];
+
   @override
   Widget build(BuildContext context) {
     final currentPage = ref.watch(navProvider);
     return NavigationView(
-      appBar:  NavigationAppBar(
-        leading: Container(child: Image(
-          image: AssetImage('assets/image/0953_2.png'),
-        ),),
-        title:  Row(
-          children: [
-            const Text('해피해피 0953',
-                style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
-         const SizedBox(width: 10,),
-         FutureBuilder(
+      appBar: NavigationAppBar(
+        leading: Container(
+          child: Image(
+            image: AssetImage('assets/image/0953_2.png'),
+          ),
+        ),
+        title: Row(children: [
+          const Text('해피해피 0953', style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
+          const SizedBox(
+            width: 10,
+          ),
+          FutureBuilder(
               future: MileageService().getRequireMileage(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
@@ -191,10 +187,9 @@ class _WindowViewState extends ConsumerState<WindowView> {
                 } else {
                   return const Text('로딩중...');
                 }
-              }),]
-        ),
+              }),
+        ]),
       ),
-
       pane: NavigationPane(
         size: const NavigationPaneSize(
           compactWidth: 56.0,
@@ -211,7 +206,6 @@ class _WindowViewState extends ConsumerState<WindowView> {
         ],
         selected: currentPage,
         onChanged: (i) => ref.read(navProvider.notifier).state = i,
-
       ),
     );
   }

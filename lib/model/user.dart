@@ -28,19 +28,18 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-      name: json['name'],
-      call: json['call'],
-      password: json['password'],
-      destination: json['destination'],
-      createdAt: json['createdAt'],
-      store: json['store'],
-      storeCall: json['storeCall'],
-      storeAddress: json['storeAddress'],
-      mileage: json['mileage'],
-      recommendUser: json['recommendUser'],
-      memo: json['memo'],
-    );
-
+        name: json['name'],
+        call: json['call'],
+        password: json['password'],
+        destination: json['destination'],
+        createdAt: json['createdAt'],
+        store: json['store'],
+        storeCall: json['storeCall'],
+        storeAddress: json['storeAddress'],
+        mileage: json['mileage'],
+        recommendUser: json['recommendUser'],
+        memo: json['memo'],
+      );
 
   factory User.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     Map<String, dynamic> data = snapshot.data()!;
@@ -60,16 +59,16 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'call': call,
-    'password': password,
-    'destination': destination,
-    'createdAt': createdAt,
-    'store': store,
-    'storeCall': storeCall,
-    'storeAddress': storeAddress,
-    'mileage': mileage,
-    'recommendUser': recommendUser,
-    'memo': memo,
-  };
+        'name': name,
+        'call': call,
+        'password': password,
+        'destination': destination,
+        'createdAt': createdAt,
+        'store': store,
+        'storeCall': storeCall,
+        'storeAddress': storeAddress,
+        'mileage': mileage,
+        'recommendUser': recommendUser,
+        'memo': memo,
+      };
 }

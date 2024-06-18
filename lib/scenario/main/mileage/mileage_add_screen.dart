@@ -33,9 +33,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('마일리지 입력',
-              style: TextStyle(color: Colors.black),
-              textAlign: TextAlign.center),
+          title: const Text('마일리지 입력', style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
           backgroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
@@ -60,8 +58,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
             },
             child: Column(children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: TextField(
                   controller: phoneTextController,
                   decoration: const InputDecoration(
@@ -72,8 +69,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: TextField(
                   controller: amountTextController,
                   decoration: const InputDecoration(
@@ -84,8 +80,7 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
                 ),
               ),
               Padding(
-                padding:
-                const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 child: TextField(
                   controller: memoTextController,
                   decoration: const InputDecoration(
@@ -98,35 +93,32 @@ class _MileageAddScreenState extends State<MileageAddScreen> {
               ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all(const Size(80, 50)),
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromRGBO(249, 224, 0, 1.0)),
+                  backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(249, 224, 0, 1.0)),
                 ),
                 onPressed: () async {
                   if (phoneTextController.text.isEmpty) {
                     showSnackBar('전화번호를 입력해주세요.');
                     return;
                   }
-                  if (amountTextController.text.isEmpty ||
-                      amountTextController.text == '0') {
+                  if (amountTextController.text.isEmpty || amountTextController.text == '0') {
                     showSnackBar('금액을 입력해주세요.');
                     return;
                   }
-                  MileageService().saveMileage(Mileage(
-                      orderNumber:
-                          DateTime.now().millisecondsSinceEpoch.toString() +
-                              phoneTextController.text,
-                      name: widget.name ?? '',
-                      call: phoneTextController.text,
-                      type: memoTextController.text,
-                      amount: int.parse(amountTextController.text),
-                      startAddress: '',
-                      endAddress: '',
-                      sumMileage: 0,
-                      date: DateFormat('yyyy-MM-dd').format(DateTime.now()))).then((value) {
-                        showSnackBar('적립되었습니다.');
-                        Navigator.pop(context);
+                  MileageService()
+                      .saveMileage(Mileage(
+                          orderNumber: DateTime.now().millisecondsSinceEpoch.toString() + phoneTextController.text,
+                          name: widget.name ?? '',
+                          call: phoneTextController.text,
+                          type: memoTextController.text,
+                          amount: int.parse(amountTextController.text),
+                          startAddress: '',
+                          endAddress: '',
+                          sumMileage: 0,
+                          date: DateFormat('yyyy-MM-dd').format(DateTime.now())))
+                      .then((value) {
+                    showSnackBar('적립되었습니다.');
+                    Navigator.pop(context);
                   });
-
                 },
                 child: const Text('적립', style: TextStyle(color: Colors.black)),
               ),

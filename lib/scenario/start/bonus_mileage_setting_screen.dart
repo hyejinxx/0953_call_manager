@@ -5,12 +5,10 @@ class BonusMileageSettingScreen extends StatefulWidget {
   const BonusMileageSettingScreen({super.key});
 
   @override
-  State<BonusMileageSettingScreen> createState() =>
-      BonusMileageSettingScreenState();
+  State<BonusMileageSettingScreen> createState() => BonusMileageSettingScreenState();
 }
 
-class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
-    with TickerProviderStateMixin {
+class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen> with TickerProviderStateMixin {
   late TabController tabController;
   final controller = TextEditingController();
 
@@ -25,9 +23,7 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('이벤트 마일리지 설정',
-              style: const TextStyle(color: Colors.black),
-              textAlign: TextAlign.center),
+          title: const Text('이벤트 마일리지 설정', style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
@@ -69,8 +65,7 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                       if (snapshot.hasData) {
                         return ListView.separated(
                             itemCount: snapshot.data!.values.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
+                            separatorBuilder: (BuildContext context, int index) {
                               return const Divider(
                                 height: 1,
                                 thickness: 1,
@@ -78,41 +73,26 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                             },
                             itemBuilder: (context, index) {
                               return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
-                                          width: 100,
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                              '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' +
-                                                  '원')),
+                                          width: 100, padding: const EdgeInsets.only(left: 10), child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
                                       Container(
                                         width: 100,
                                         height: 30,
                                         child: TextField(
-                                          controller: TextEditingController(
-                                              text: snapshot.data!.values
-                                                  .toList()[index]
-                                                  .toString()),
+                                          controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
                                           keyboardType: TextInputType.number,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                           ),
                                           onChanged: (value) {
                                             if (value.isNotEmpty) {
-                                              final standard = snapshot
-                                                  .data!.keys
-                                                  .toList()[index]
-                                                  .toString();
-                                              print(
-                                                  {standard: value}.toString());
-                                              ManagerService()
-                                                  .updateBonusMileageStandardForCash({
-                                                standard: int.parse(value)
-                                              });
+                                              final standard = snapshot.data!.keys.toList()[index].toString();
+                                              print({standard: value}.toString());
+                                              ManagerService().updateBonusMileageStandardForCash({standard: int.parse(value)});
                                             }
                                           },
                                         ),
@@ -130,8 +110,7 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                       if (snapshot.hasData) {
                         return ListView.separated(
                             itemCount: snapshot.data!.values.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
+                            separatorBuilder: (BuildContext context, int index) {
                               return const Divider(
                                 height: 1,
                                 thickness: 1,
@@ -139,37 +118,25 @@ class BonusMileageSettingScreenState extends State<BonusMileageSettingScreen>
                             },
                             itemBuilder: (context, index) {
                               return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  padding: const EdgeInsets.symmetric(vertical: 10),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
-                                          width: 100,
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                              '${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' +
-                                                  '원')),
+                                          width: 100, padding: const EdgeInsets.only(left: 10), child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
                                       Container(
                                         width: 100,
                                         height: 30,
                                         child: TextField(
-                                          controller: TextEditingController(
-                                              text: snapshot.data!.values
-                                                  .toList()[index]
-                                                  .toString()),
+                                          controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
                                           keyboardType: TextInputType.number,
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
                                           ),
                                           onChanged: (value) {
-                                            final standard = snapshot.data!.keys
-                                                .toList()[index]
-                                                .toString();
+                                            final standard = snapshot.data!.keys.toList()[index].toString();
                                             print({standard: value}.toString());
-                                            ManagerService()
-                                                .updateBonusMileageStandardForCard(
-                                                    {standard: value});
+                                            ManagerService().updateBonusMileageStandardForCard({standard: value});
                                           },
                                         ),
                                       )

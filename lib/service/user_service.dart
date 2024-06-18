@@ -45,16 +45,11 @@ class UserService {
   Future<void> deleteUser(String userCall) async {
     try {
       await firestore.collection('user').document(userCall).delete();
-      firestore
-          .collection('user')
-          .document(userCall)
-          .collection('mileage')
-          .get()
-          .then((value) => {
-                value.forEach((element) {
-                  element.reference.delete();
-                })
-              });
+      firestore.collection('user').document(userCall).collection('mileage').get().then((value) => {
+            value.forEach((element) {
+              element.reference.delete();
+            })
+          });
     } catch (e) {
       throw Exception("deleteUser: $e");
     }

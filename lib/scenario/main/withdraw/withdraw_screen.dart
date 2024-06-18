@@ -19,9 +19,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('출금 관리',
-              style: TextStyle(color: Colors.black),
-              textAlign: TextAlign.center),
+          title: const Text('출금 관리', style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
           backgroundColor: Colors.white,
           centerTitle: true,
           elevation: 0,
@@ -52,7 +50,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                 Row(
                   children: [
                     const Text('출금 상태: '),
-                    Text(widget.withdraw.status??''),
+                    Text(widget.withdraw.status ?? ''),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -103,95 +101,93 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Expanded(child:
-                      ElevatedButton(
-                        // style: ElevatedButton.styleFrom(
-                        //   primary: Colors.grey[300],
-                        //   onPrimary: Colors.black,
-                        // ),
-                          onPressed: () async {
-                            final re = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                      title: const Text('출금 완료'),
-                                      content: const Text('출금을 완료하시겠습니까?'),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, true);
-                                            },
-                                            child: const Text('확인')),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, false);
-                                            },
-                                            child: const Text('취소')),
-                                      ],
-                                    ));
-                            if (re == true) {
-                              MileageService()
-                                  .updateWithdraw(widget.withdraw, '출금완료');
-                              setState(() {
-                                widget.withdraw.status = '출금완료';
-                              });
-                            }
-                          },
-                          child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 완료')))),
+                      Expanded(
+                          child: ElevatedButton(
+                              // style: ElevatedButton.styleFrom(
+                              //   primary: Colors.grey[300],
+                              //   onPrimary: Colors.black,
+                              // ),
+                              onPressed: () async {
+                                final re = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                          title: const Text('출금 완료'),
+                                          content: const Text('출금을 완료하시겠습니까?'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, true);
+                                                },
+                                                child: const Text('확인')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, false);
+                                                },
+                                                child: const Text('취소')),
+                                          ],
+                                        ));
+                                if (re == true) {
+                                  MileageService().updateWithdraw(widget.withdraw, '출금완료');
+                                  setState(() {
+                                    widget.withdraw.status = '출금완료';
+                                  });
+                                }
+                              },
+                              child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 완료')))),
                       const SizedBox(
                         width: 10,
                       ),
-                      Expanded(child:
-                      ElevatedButton(
-                          // style: ElevatedButton.styleFrom(
-                          //   primary: Colors.grey[300],
-                          //   onPrimary: Colors.black,
-                          // ),
-                          onPressed: () async {
-                            final re = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                      title: const Text('출금 거절'),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text('출금을 거절하시겠습니까?'),
-                                          const SizedBox(
-                                            height: 10,
+                      Expanded(
+                          child: ElevatedButton(
+                              // style: ElevatedButton.styleFrom(
+                              //   primary: Colors.grey[300],
+                              //   onPrimary: Colors.black,
+                              // ),
+                              onPressed: () async {
+                                final re = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                          title: const Text('출금 거절'),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text('출금을 거절하시겠습니까?'),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              TextField(
+                                                controller: _controller,
+                                                decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText: '거절 사유',
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          TextField(
-                                            controller: _controller,
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              labelText: '거절 사유',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, true);
-                                            },
-                                            child: const Text('확인')),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context, false);
-                                            },
-                                            child: const Text('취소')),
-                                      ],
-                                    ));
-                            if (re) {
-                              MileageService().updateWithdraw(
-                                  widget.withdraw, '출금거절: ${_controller.text}');
-                              setState(() {
-                                widget.withdraw.status = '출금거절';
-                              });
-                              setState(() {
-                                widget.withdraw.status = '출금거절';
-                              });
-                            }
-                          },
-                          child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 거절')))),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, true);
+                                                },
+                                                child: const Text('확인')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, false);
+                                                },
+                                                child: const Text('취소')),
+                                          ],
+                                        ));
+                                if (re) {
+                                  MileageService().updateWithdraw(widget.withdraw, '출금거절: ${_controller.text}');
+                                  setState(() {
+                                    widget.withdraw.status = '출금거절';
+                                  });
+                                  setState(() {
+                                    widget.withdraw.status = '출금거절';
+                                  });
+                                }
+                              },
+                              child: const Padding(padding: EdgeInsets.all(20), child: Text('출금 거절')))),
                     ],
                   ),
                 ]

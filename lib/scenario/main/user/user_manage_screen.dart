@@ -28,8 +28,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
     super.initState();
   }
 
-  final FutureProvider userListProvider =
-      FutureProvider((ref) => UserService().getAllUser());
+  final FutureProvider userListProvider = FutureProvider((ref) => UserService().getAllUser());
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +45,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                 flex: 1,
                 child: TextFormBox(
                   controller: phoneTextController,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(5)),
                   placeholder: '전화번호 검색',
                   obscureText: false,
                 ),
@@ -60,16 +57,16 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                 flex: 1,
                 child: TextFormBox(
                   controller: nameTextController,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(5)),
                   placeholder: '닉네임 검색',
                   obscureText: false,
                 ),
               ),
             ]),
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           userList.when(
             data: (data) {
               if (data.isEmpty) {
@@ -77,14 +74,8 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                   child: Text('유저가 없습니다.'),
                 );
               } else {
-                List<User> list = data
-                    .where((element) =>
-                        element.call.contains(phoneTextController.text) == true)
-                    .toList();
-                list
-                    .where((element) =>
-                        element.name.contains(nameTextController.text) == true)
-                    .toList();
+                List<User> list = data.where((element) => element.call.contains(phoneTextController.text) == true).toList();
+                list.where((element) => element.name.contains(nameTextController.text) == true).toList();
                 return SizedBox(
                     height: MediaQuery.of(context).size.height - 110,
                     child: SfDataGrid(
@@ -95,8 +86,7 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                         sortingGestureType: SortingGestureType.doubleTap,
                         selectionMode: SelectionMode.single,
                         // showCheckboxColumn: true,
-                        defaultColumnWidth:
-                            (MediaQuery.of(context).size.width - 200) / 8,
+                        defaultColumnWidth: (MediaQuery.of(context).size.width - 200) / 8,
                         showSortNumbers: true,
                         showHorizontalScrollbar: true,
                         showVerticalScrollbar: true,
@@ -104,34 +94,20 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                         shrinkWrapColumns: true,
                         onSelectionChanged: (value, a) {
                           controller.selectedRow?.getCells();
-                          print(controller.selectedRows.first
-                              .getCells()
-                              .first
-                              .value);
+                          print(controller.selectedRows.first.getCells().first.value);
                         },
                         onCellDoubleTap: (value) {
-                          if (value.rowColumnIndex.rowIndex != -1 &&
-                              value.rowColumnIndex.rowIndex != 0) {
+                          if (value.rowColumnIndex.rowIndex != -1 && value.rowColumnIndex.rowIndex != 0) {
                             Navigator.push(
                                 context,
                                 ma.MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserMileageRecordScreen(
-                                          user: controller.selectedRows.first
-                                              .getCells()
-                                              .first
-                                              .value,
+                                    builder: (context) => UserMileageRecordScreen(
+                                          user: controller.selectedRows.first.getCells().first.value,
                                         )));
                           }
                         },
                         onCellSecondaryTap: (value) {
-                          Clipboard.setData(ClipboardData(
-                                  text: controller.selectedRows.first
-                                      .getCells()
-                                      .first
-                                      .value
-                                      .toString()))
-                              .then((value) {
+                          Clipboard.setData(ClipboardData(text: controller.selectedRows.first.getCells().first.value.toString())).then((value) {
                             print('복사되었습니다.');
                           });
                         },
@@ -228,15 +204,11 @@ class UserDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'call', value: e.call),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
-              DataGridCell(
-                  columnName: 'destination', value: e.destination ?? ''),
-              DataGridCell<String>(
-                  columnName: 'joinDate', value: e.createdAt.toString()),
-              DataGridCell<String>(
-                  columnName: 'destination', value: e.destination ?? ''),
+              DataGridCell(columnName: 'destination', value: e.destination ?? ''),
+              DataGridCell<String>(columnName: 'joinDate', value: e.createdAt.toString()),
+              DataGridCell<String>(columnName: 'destination', value: e.destination ?? ''),
               DataGridCell<String>(columnName: 'store', value: e.store ?? ''),
-              DataGridCell<String>(
-                  columnName: 'storeCall', value: e.storeCall ?? ''),
+              DataGridCell<String>(columnName: 'storeCall', value: e.storeCall ?? ''),
             ]))
         .toList();
   }

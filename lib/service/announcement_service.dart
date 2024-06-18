@@ -12,10 +12,7 @@ class AnnouncementService {
 
   Future<void> saveAnnouncement(Announcement announcement) async {
     try {
-      firestore
-          .collection('announcement')
-          .document(announcement.createdAt)
-          .set(announcement.toJson());
+      firestore.collection('announcement').document(announcement.createdAt).set(announcement.toJson());
       print('saveAnnouncement: success');
     } catch (e) {
       print('saveAnnouncement: $e');
@@ -43,11 +40,7 @@ class AnnouncementService {
   Future<String> getPopUpAnnouncement() async {
     try {
       String announcement = '';
-      await firestore
-          .collection('announcement')
-          .document('popUp')
-          .get()
-          .then((value) {
+      await firestore.collection('announcement').document('popUp').get().then((value) {
         if (value.map['popUp'] != null) {
           announcement = value.map['popUp'];
         }
@@ -61,17 +54,13 @@ class AnnouncementService {
 
   Future<void> savePopUpAnnouncement(String announcement) async {
     try {
-      firestore
-          .collection('announcement')
-          .document('popUp')
-          .set({'popUp': announcement});
+      firestore.collection('announcement').document('popUp').set({'popUp': announcement});
       print('saveAnnouncement: success');
     } catch (e) {
       print('saveAnnouncement: $e');
       throw Exception("saveAnnouncement: $e");
     }
   }
-
 
   Future<void> saveFAQ(FAQ faq) async {
     try {
@@ -82,6 +71,7 @@ class AnnouncementService {
       throw Exception("saveFAQ: $e");
     }
   }
+
   Future<void> pushFCM(bool update) async {
     try {
       final http.Response response = await http.post(
@@ -137,12 +127,7 @@ class AnnouncementService {
   Future<List<FAQ>> getNewFAQ() async {
     try {
       List<FAQ> faq = [];
-      await firestore
-          .collection('faq')
-          .document('faq')
-          .collection('all')
-          .get()
-          .then((value) {
+      await firestore.collection('faq').document('faq').collection('all').get().then((value) {
         value.forEach((i) {
           faq.add(FAQ.fromJson(i.map));
         });
@@ -157,19 +142,9 @@ class AnnouncementService {
 
   deleteNewFAQ(FAQ faq) async {
     try {
-      await firestore
-          .collection('faq')
-          .document('faq')
-          .collection('all')
-          .document(faq.createdAt)
-          .delete();
+      await firestore.collection('faq').document('faq').collection('all').document(faq.createdAt).delete();
 
-      await firestore
-          .collection('faq')
-          .document('faq')
-          .collection(faq.writer)
-          .document(faq.createdAt)
-          .delete();
+      await firestore.collection('faq').document('faq').collection(faq.writer).document(faq.createdAt).delete();
       print('deleteNewFAQ: success');
     } catch (e) {
       print('deleteNewFAQ: $e');
@@ -179,19 +154,9 @@ class AnnouncementService {
 
   saveAnswerFAQ(FAQ faq) async {
     try {
-      await firestore
-          .collection('faq')
-          .document('faq')
-          .collection('all')
-          .document(faq.createdAt)
-          .update(faq.toJson());
+      await firestore.collection('faq').document('faq').collection('all').document(faq.createdAt).update(faq.toJson());
 
-      await firestore
-          .collection('faq')
-          .document('faq')
-          .collection(faq.writer)
-          .document(faq.createdAt)
-          .update(faq.toJson());
+      await firestore.collection('faq').document('faq').collection(faq.writer).document(faq.createdAt).update(faq.toJson());
       print('saveAnswerFAQ: success');
     } catch (e) {
       print('saveAnswerFAQ: $e');

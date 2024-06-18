@@ -30,7 +30,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
-          children:[
+          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -40,76 +40,69 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
                       showDialog(
                           context: context,
                           builder: (context) => ContentDialog(
-                            title: const Text('이전 화면으로 이동하시겠습니까?', style: TextStyle(fontSize: 20)),
-                            actions: [
-                              Button(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('닫기')),
-                              Button(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('이동'))
-                            ],
-                          ));
+                                title: const Text('이전 화면으로 이동하시겠습니까?', style: TextStyle(fontSize: 20)),
+                                actions: [
+                                  Button(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('닫기')),
+                                  Button(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('이동'))
+                                ],
+                              ));
                     },
-                    icon: const Icon(FluentIcons.back, size: 25)),
+                    icon: const Icon(FluentIcons.back, size: 20)),
                 const SizedBox(width: 10),
                 IconButton(
-    icon: const Icon(
-    FluentIcons.accept,
-    size: 25,
-    ),
-    onPressed: () {
-      if (questionTextController.text.isEmpty ||
-          answerTextController.text.isEmpty) {
-        showInfoBar(
-            '입력 오류', '질문과 답변을 모두 입력해주세요', InfoBarSeverity.warning);
-      } else {
-        final faq = FAQ(
-          question: questionTextController.text,
-          answer: answerTextController.text,
-          createdAt: widget.faq == null
-              ? DateTime.now().toString()
-              : widget.faq!.createdAt,
-          writer: '관리자',
-          state: '등록',
-        );
-        final isUpdate = widget.faq != null;
-        AnnouncementService().saveFAQ(faq).then((value) async {
-          await showDialog(
-              context: context,
-              builder: (context) => ContentDialog(
-                title: const Text('업데이트 알림을 전송하시겠습니까?'),
-                actions: [
-                  Button(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('닫기')),
-                  Button(
-                      onPressed: () {
-                        AnnouncementService().pushFCM(isUpdate);
-                        Navigator.pop(context);
-                      },
-                      child: const Text('전송'))
-                ],
-              ));
-          showInfoBar(
-              '등록 완료', '등록 완료되었습니다.', InfoBarSeverity.success);
-          Navigator.pop(context);
-        }).onError((error, stackTrace) {
-          showInfoBar(
-              '등록 실패', '등록에 실패했습니다.', InfoBarSeverity.error);
-        }).whenComplete(() {
-          questionTextController.clear();
-          answerTextController.clear();
-        });
-      }
-    }),
+                    icon: const Icon(
+                      FluentIcons.accept,
+                      size: 25,
+                    ),
+                    onPressed: () {
+                      if (questionTextController.text.isEmpty || answerTextController.text.isEmpty) {
+                        showInfoBar('입력 오류', '질문과 답변을 모두 입력해주세요', InfoBarSeverity.warning);
+                      } else {
+                        final faq = FAQ(
+                          question: questionTextController.text,
+                          answer: answerTextController.text,
+                          createdAt: widget.faq == null ? DateTime.now().toString() : widget.faq!.createdAt,
+                          writer: '관리자',
+                          state: '등록',
+                        );
+                        final isUpdate = widget.faq != null;
+                        AnnouncementService().saveFAQ(faq).then((value) async {
+                          await showDialog(
+                              context: context,
+                              builder: (context) => ContentDialog(
+                                    title: const Text('업데이트 알림을 전송하시겠습니까?'),
+                                    actions: [
+                                      Button(onPressed: () => Navigator.pop(context), child: const Text('닫기')),
+                                      Button(
+                                          onPressed: () {
+                                            AnnouncementService().pushFCM(isUpdate);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('전송'))
+                                    ],
+                                  ));
+                          showInfoBar('등록 완료', '등록 완료되었습니다.', InfoBarSeverity.success);
+                          Navigator.pop(context);
+                        }).onError((error, stackTrace) {
+                          showInfoBar('등록 실패', '등록에 실패했습니다.', InfoBarSeverity.error);
+                        }).whenComplete(() {
+                          questionTextController.clear();
+                          answerTextController.clear();
+                        });
+                      }
+                    }),
               ],
             ),
+            const SizedBox(height: 10),
             InfoLabel(
               label: '질문',
               child: TextBox(
@@ -137,8 +130,7 @@ class _NewFaQScreenState extends State<NewFaQScreen> {
         ));
   }
 
-  showInfoBar(
-      String title, String content, InfoBarSeverity infoBarSeverity) async {
+  showInfoBar(String title, String content, InfoBarSeverity infoBarSeverity) async {
     await displayInfoBar(context, builder: (context, close) {
       return InfoBar(
         title: Text(title),

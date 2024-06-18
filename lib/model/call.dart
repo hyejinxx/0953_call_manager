@@ -1,4 +1,3 @@
-
 class Call {
   final String orderNumber;
   String name;
@@ -45,7 +44,7 @@ class Call {
     );
   }
 
-  factory Call.fromDB(db){
+  factory Call.fromDB(db) {
     return Call(
       orderNumber: db['orderNumber'],
       name: db['name'],
@@ -63,17 +62,17 @@ class Call {
   }
 
   Map<String, dynamic> toJson() => {
-    'orderNumber': orderNumber,
-    'name': name,
-    'call': call,
-    'startAddress': startAddress,
-    'endAddress': endAddress,
-    'price': price,
-    'company': company,
-    'date': date,
-    'time': time,
-    'mileage': mileage,
-    'bonusMileage': bonusMileage,
-    'sumMileage': sumMileage,
-  };
+        'orderNumber': orderNumber,
+        'name': name,
+        'call': call,
+        'startAddress': startAddress,
+        'endAddress': endAddress,
+        'price': price,
+        'company': company,
+        'date': date,
+        'time': time,
+        'mileage': mileage,
+        'bonusMileage': bonusMileage,
+        'sumMileage': sumMileage,
+      };
 }

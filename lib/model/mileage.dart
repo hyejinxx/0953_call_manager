@@ -35,7 +35,7 @@ class Mileage {
     );
   }
 
-  factory Mileage.fromDB(db){
+  factory Mileage.fromDB(db) {
     return Mileage(
       orderNumber: db['orderNumber'],
       name: db['name'],
@@ -50,15 +50,14 @@ class Mileage {
   }
 
   Map<String, dynamic> toJson() => {
-    'orderNumber': orderNumber,
-    'name': name,
-    'call': call,
-    'type': type,
-    'amount': amount,
-    'date': date,
-    'startAddress': startAddress,
-    'endAddress': endAddress,
-    'sumMileage': sumMileage,
-  };
+        'orderNumber': orderNumber,
+        'name': name,
+        'call': call,
+        'type': type,
+        'amount': amount,
+        'date': date,
+        'startAddress': startAddress,
+        'endAddress': endAddress,
+        'sumMileage': sumMileage,
+      };
 }
-

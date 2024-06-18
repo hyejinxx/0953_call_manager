@@ -17,13 +17,11 @@ class WithdrawManageScreen extends ConsumerStatefulWidget {
 }
 
 class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
-  final firstDate = StateProvider(
-      (ref) => DateTime.now().subtract(const Duration(days: 365)));
+  final firstDate = StateProvider((ref) => DateTime.now().subtract(const Duration(days: 365)));
   final lastDate = StateProvider((ref) => DateTime.now());
 
   final indexProvider = StateProvider<int>((ref) => 0);
-  final withdrawListProvider =
-      FutureProvider((ref) => MileageService().getWithdraw());
+  final withdrawListProvider = FutureProvider((ref) => MileageService().getWithdraw());
   final _controller = TextEditingController();
 
   @override
@@ -53,128 +51,122 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
                 }
               }).toList();
 
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      child: Row(children: [
-                      for (int i = 0; i < 4; i++) ...[
-                        Padding(padding: const EdgeInsets.all(10), child: Row(children: [
+              return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SizedBox(
+                  height: 50,
+                  child: Row(children: [
+                    for (int i = 0; i < 4; i++) ...[
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(children: [
                           RadioButton(
                             checked: radioIndex == i,
                             // set onChanged to null to disable the button
-                            onChanged: (value) =>
-                                ref.read(indexProvider.notifier).state = i,
+                            onChanged: (value) => ref.read(indexProvider.notifier).state = i,
                           ),
                           const SizedBox(width: 4),
                           Text(radioButtons[i])
-                        ]),)
-                      ]]),
-                    ),
-                      SizedBox(
+                        ]),
+                      )
+                    ]
+                  ]),
+                ),
+                SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height - 100,
-                    child:
-                      SfDataGrid(
-                        onCellDoubleTap: (detail) {
-                          if (detail.rowColumnIndex.rowIndex == 0) {
-                            ref.read(indexProvider.notifier).state =
-                                detail.rowColumnIndex.columnIndex;
-                          }
-                        },
-                        onCellTap: (value) {
-                          if (value.rowColumnIndex.rowIndex != 0) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => WithdrawScreen(
-                                          withdraw: result.reversed.toList()[
-                                              value.rowColumnIndex.rowIndex -
-                                                  1],
-                                        )));
-                          }
-                        },
-                        defaultColumnWidth:
-                            (MediaQuery.of(context).size.width - 200) / 7,
-                        sortingGestureType: SortingGestureType.doubleTap,
-                        // showCheckboxColumn: true,
-                        showSortNumbers: true,
-                        showHorizontalScrollbar: true,
-                        showVerticalScrollbar: true,
-                        shrinkWrapRows: true,
-                        shrinkWrapColumns: true,
-                        allowSorting: true,
-                        source:
-                            WithdrawSource(withdraw: result.reversed.toList()),
-                        columns: <GridColumn>[
-                          GridColumn(
-                              columnName: 'call',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '전화번호',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'name',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '예금주',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'amount',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '요청금액',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'bank',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '은행',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'account',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '계좌번호',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'date',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '요청일',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'status',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '출금상태',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                        ],
-                      ))
-
-                  ]);
+                    child: SfDataGrid(
+                      onCellDoubleTap: (detail) {
+                        if (detail.rowColumnIndex.rowIndex == 0) {
+                          ref.read(indexProvider.notifier).state = detail.rowColumnIndex.columnIndex;
+                        }
+                      },
+                      onCellTap: (value) {
+                        if (value.rowColumnIndex.rowIndex != 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WithdrawScreen(
+                                        withdraw: result.reversed.toList()[value.rowColumnIndex.rowIndex - 1],
+                                      )));
+                        }
+                      },
+                      defaultColumnWidth: (MediaQuery.of(context).size.width - 200) / 7,
+                      sortingGestureType: SortingGestureType.doubleTap,
+                      // showCheckboxColumn: true,
+                      showSortNumbers: true,
+                      showHorizontalScrollbar: true,
+                      showVerticalScrollbar: true,
+                      shrinkWrapRows: true,
+                      shrinkWrapColumns: true,
+                      allowSorting: true,
+                      source: WithdrawSource(withdraw: result.reversed.toList()),
+                      columns: <GridColumn>[
+                        GridColumn(
+                            columnName: 'call',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '전화번호',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'name',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '예금주',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'amount',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '요청금액',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'bank',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '은행',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'account',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '계좌번호',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'date',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '요청일',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                        GridColumn(
+                            columnName: 'status',
+                            label: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '출금상태',
+                                  overflow: TextOverflow.ellipsis,
+                                ))),
+                      ],
+                    ))
+              ]);
             } else {
               return const Center(
                 child: Text('출금 내역이 없습니다.'),

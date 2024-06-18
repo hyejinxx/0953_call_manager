@@ -16,8 +16,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _destinationController = TextEditingController();
   final TextEditingController _storeController = TextEditingController();
-  final TextEditingController _recommendCallController =
-      TextEditingController();
+  final TextEditingController _recommendCallController = TextEditingController();
   final TextEditingController _storeCallController = TextEditingController();
   final TextEditingController _storeAddressController = TextEditingController();
   bool isTermAgreed = true;
@@ -39,9 +38,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.user.call,
-            style: const TextStyle(color: Colors.black),
-            textAlign: TextAlign.center),
+        title: Text(widget.user.call, style: const TextStyle(color: Colors.black), textAlign: TextAlign.center),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -78,17 +75,13 @@ class _UserEditScreenState extends State<UserEditScreen> {
                               onPressed: () {
                                 UserService()
                                     .deleteUser(widget.user.call)
-                                    .then((value) =>
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                    .then((value) => ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(
                                             content: Text('회원 탈퇴가 완료되었습니다.'),
                                             duration: Duration(seconds: 1),
                                           ),
                                         ))
-                                    .onError((error, stackTrace) =>
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                    .onError((error, stackTrace) => ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(
                                             content: Text('회원 탈퇴에 실패했습니다.'),
                                             duration: Duration(seconds: 1),
@@ -160,8 +153,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
               ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all(const Size(80, 50)),
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromRGBO(249, 224, 0, 1.0)),
+                  backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(249, 224, 0, 1.0)),
                 ),
                 onPressed: () {
                   if (_nameController.text.isEmpty) {
@@ -195,8 +187,7 @@ class _UserEditScreenState extends State<UserEditScreen> {
     );
   }
 
-  Widget inputContainer(
-      TextEditingController textController, String labelText) {
+  Widget inputContainer(TextEditingController textController, String labelText) {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TextField(
@@ -215,18 +206,11 @@ class _UserEditScreenState extends State<UserEditScreen> {
       'call': widget.user.call,
       'password': widget.user.password,
       'name': _nameController.text,
-      'destination': _destinationController.text == ''
-          ? null
-          : _destinationController.text,
+      'destination': _destinationController.text == '' ? null : _destinationController.text,
       'store': _storeController.text == '' ? null : _storeController.text,
-      'recommendCall': _recommendCallController.text == ''
-          ? null
-          : _recommendCallController.text,
-      'storeCall':
-          _storeCallController.text == '' ? null : _storeCallController.text,
-      'storeAddress': _storeAddressController.text == ''
-          ? null
-          : _storeAddressController.text,
+      'recommendCall': _recommendCallController.text == '' ? null : _recommendCallController.text,
+      'storeCall': _storeCallController.text == '' ? null : _storeCallController.text,
+      'storeAddress': _storeAddressController.text == '' ? null : _storeAddressController.text,
     }).then((value) {
       showSnackBar('회원정보 수정에 성공했습니다.');
       Navigator.pop(context);

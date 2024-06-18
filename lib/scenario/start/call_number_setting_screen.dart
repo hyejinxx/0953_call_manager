@@ -5,8 +5,7 @@ class CallNumberSettingScreen extends StatefulWidget {
   const CallNumberSettingScreen({super.key});
 
   @override
-  State<CallNumberSettingScreen> createState() =>
-      _CallNumberSettingScreenState();
+  State<CallNumberSettingScreen> createState() => _CallNumberSettingScreenState();
 }
 
 class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
@@ -34,9 +33,7 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('전화번호 설정',
-              style: const TextStyle(color: Colors.black),
-              textAlign: TextAlign.center),
+          title: Text('전화번호 설정', style: const TextStyle(color: Colors.black), textAlign: TextAlign.center),
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
@@ -102,21 +99,15 @@ class _CallNumberSettingScreenState extends State<CallNumberSettingScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    ManagerService().setCallNumber({
-                      'gisa': _textController1.text,
-                      'taksong': _textController2.text,
-                      'daeri': _textController3.text
-                    }).then((value) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('수정되었습니다.')));
+                    ManagerService().setCallNumber({'gisa': _textController1.text, 'taksong': _textController2.text, 'daeri': _textController3.text}).then((value) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('수정되었습니다.')));
                     });
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: const Color.fromRGBO(249, 224, 0, 1.0),
                     minimumSize: const Size(80, 50),
                   ),
-                  child:
-                      const Text('수정', style: TextStyle(color: Colors.black)),
+                  child: const Text('수정', style: TextStyle(color: Colors.black)),
                 ),
               ],
             ))));

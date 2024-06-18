@@ -13,8 +13,7 @@ import '../../../service/mileage_service.dart';
 import '../../../service/user_service.dart';
 
 class UserMileageRecordScreen extends ConsumerStatefulWidget {
-  const UserMileageRecordScreen({Key? key, required this.user})
-      : super(key: key);
+  const UserMileageRecordScreen({Key? key, required this.user}) : super(key: key);
 
   final String user;
 
@@ -22,9 +21,7 @@ class UserMileageRecordScreen extends ConsumerStatefulWidget {
   UserMileageRecordScreenState createState() => UserMileageRecordScreenState();
 }
 
-class UserMileageRecordScreenState
-    extends ConsumerState<UserMileageRecordScreen>
-    with TickerProviderStateMixin {
+class UserMileageRecordScreenState extends ConsumerState<UserMileageRecordScreen> with TickerProviderStateMixin {
   late FutureProvider<List<Mileage>> mileageProvider;
   late FutureProvider<List<Withdraw>> withdrawProvider;
   late FutureProvider<User?> userProvider;
@@ -35,13 +32,10 @@ class UserMileageRecordScreenState
 
   @override
   void initState() {
-    mileageProvider = FutureProvider<List<Mileage>>(
-        (ref) => MileageService().getMileageRecordUser(widget.user));
-    withdrawProvider = FutureProvider<List<Withdraw>>(
-            (ref) => MileageService().getWithdrawRecordUser(widget.user));
+    mileageProvider = FutureProvider<List<Mileage>>((ref) => MileageService().getMileageRecordUser(widget.user));
+    withdrawProvider = FutureProvider<List<Withdraw>>((ref) => MileageService().getWithdrawRecordUser(widget.user));
 
-    userProvider =
-        FutureProvider<User?>((ref) => UserService().getUser(widget.user));
+    userProvider = FutureProvider<User?>((ref) => UserService().getUser(widget.user));
     tabController = TabController(length: 2, vsync: this);
 
     super.initState();
@@ -60,7 +54,6 @@ class UserMileageRecordScreenState
     final selectedIndex = ref.watch(_selectedIndex);
     final callSelectedIndex = ref.watch(_callSelectedIndex);
 
-
     return user.when(
       data: (user) {
         if (user == null) {
@@ -68,9 +61,7 @@ class UserMileageRecordScreenState
         }
         return Scaffold(
             appBar: AppBar(
-              title: Text(user.call,
-                  style: const TextStyle(color: Colors.black),
-                  textAlign: TextAlign.center),
+              title: Text(user.call, style: const TextStyle(color: Colors.black), textAlign: TextAlign.center),
               backgroundColor: Colors.white,
               centerTitle: true,
               elevation: 0,
@@ -93,10 +84,7 @@ class UserMileageRecordScreenState
                 // 회원 정보 수정 아이콘
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserEditScreen(user: user)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserEditScreen(user: user)));
                   },
                   icon: Padding(
                       padding: EdgeInsets.only(right: 20),
@@ -128,14 +116,11 @@ class UserMileageRecordScreenState
                     children: [
                       mileage.when(data: (data) {
                         if (data.isEmpty) {
-                          return const Center(
-                              child: Text('적립 내역이 없습니다.'));
+                          return const Center(child: Text('적립 내역이 없습니다.'));
                         }
                         return SfDataGrid(
-                            defaultColumnWidth:
-                                MediaQuery.of(context).size.width / 6,
-                            source: UserMileageDataSource(
-                                mileageData: data.reversed.toList()),
+                            defaultColumnWidth: MediaQuery.of(context).size.width / 6,
+                            source: UserMileageDataSource(mileageData: data.reversed.toList()),
                             sortingGestureType: SortingGestureType.doubleTap,
                             // allowSorting: true,
                             showSortNumbers: true,
@@ -204,12 +189,10 @@ class UserMileageRecordScreenState
                       }),
                       withdraw.when(data: (data) {
                         if (data.isEmpty) {
-                          return const Center(
-                              child: Text('출금 내역이 없습니다.'));
+                          return const Center(child: Text('출금 내역이 없습니다.'));
                         }
                         return SfDataGrid(
-                            defaultColumnWidth:
-                                MediaQuery.of(context).size.width / 6,
+                            defaultColumnWidth: MediaQuery.of(context).size.width / 6,
                             source: UserWithdrawDataSource(withdrawData: data),
                             sortingGestureType: SortingGestureType.doubleTap,
                             allowSorting: true,
@@ -277,7 +260,6 @@ class UserMileageRecordScreenState
                       }, loading: () {
                         return const Text('기록을 불러오는 중...');
                       }),
-
                     ],
                   )),
                   InkWell(
@@ -307,23 +289,13 @@ class UserMileageRecordScreenState
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: const Center(
-                child: Text('회원 정보를 불러오는 데에 실패했습니다',
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))));
+            child: const Center(child: Text('회원 정보를 불러오는 데에 실패했습니다', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.black))));
       },
       loading: () => Container(
           color: Colors.white,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: const Center(
-              child: Text('회원 정보를 불러오고 있습니다',
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black)))),
+          child: const Center(child: Text('회원 정보를 불러오고 있습니다', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.black)))),
     );
   }
 }
@@ -337,10 +309,8 @@ class UserMileageDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'type', value: e.type),
               DataGridCell<int>(columnName: 'amount', value: e.amount),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
-              DataGridCell<String>(
-                  columnName: 'startAddress', value: e.startAddress),
-              DataGridCell<String>(
-                  columnName: 'endAddress', value: e.endAddress),
+              DataGridCell<String>(columnName: 'startAddress', value: e.startAddress),
+              DataGridCell<String>(columnName: 'endAddress', value: e.endAddress),
             ]))
         .toList();
   }
@@ -368,15 +338,13 @@ class UserWithdrawDataSource extends DataGridSource {
   UserWithdrawDataSource({required List<Withdraw> withdrawData}) {
     _withdrawData = withdrawData
         .map<DataGridRow>((e) => DataGridRow(cells: [
-      DataGridCell<String>(columnName: 'date', value: e.createdAt),
-      DataGridCell<String>(columnName: 'type', value: e.status),
-      DataGridCell<int>(columnName: 'amount', value: e.amount),
-      DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
-      DataGridCell<String>(
-          columnName: 'bank', value: e.bank),
-      DataGridCell<String>(
-          columnName: 'account', value: e.account),
-    ]))
+              DataGridCell<String>(columnName: 'date', value: e.createdAt),
+              DataGridCell<String>(columnName: 'type', value: e.status),
+              DataGridCell<int>(columnName: 'amount', value: e.amount),
+              DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
+              DataGridCell<String>(columnName: 'bank', value: e.bank),
+              DataGridCell<String>(columnName: 'account', value: e.account),
+            ]))
         .toList();
   }
 
@@ -389,12 +357,12 @@ class UserWithdrawDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-          return Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(e.value.toString()),
-          );
-        }).toList());
+      return Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(8.0),
+        child: Text(e.value.toString()),
+      );
+    }).toList());
   }
 }
 
@@ -404,14 +372,11 @@ class UserCallDataSource extends DataGridSource {
     _callData = callData
         .map<DataGridRow>((e) => DataGridRow(cells: [
               DataGridCell<String>(columnName: 'date', value: e.date),
-              DataGridCell<String>(
-                  columnName: 'startAddress', value: e.startAddress),
-              DataGridCell<String>(
-                  columnName: 'endAddress', value: e.endAddress),
+              DataGridCell<String>(columnName: 'startAddress', value: e.startAddress),
+              DataGridCell<String>(columnName: 'endAddress', value: e.endAddress),
               DataGridCell<int>(columnName: 'price', value: e.price),
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
-              DataGridCell<int>(
-                  columnName: 'bonusMileage', value: e.bonusMileage),
+              DataGridCell<int>(columnName: 'bonusMileage', value: e.bonusMileage),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
             ]))
         .toList();

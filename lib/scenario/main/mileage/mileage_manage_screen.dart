@@ -8,8 +8,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../model/mileage.dart';
 
-final firstDate =
-    StateProvider((ref) => DateTime.now().subtract(const Duration(days: 365)));
+final firstDate = StateProvider((ref) => DateTime.now().subtract(const Duration(days: 365)));
 final lastDate = StateProvider((ref) => DateTime.now());
 
 class MileageManageScreen extends ConsumerStatefulWidget {
@@ -150,14 +149,8 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                   ? data
                   : data
                       .where((element) =>
-                          DateFormat('yyyy-MM-dd')
-                              .parse(element.date)
-                              .add(const Duration(days: 1))
-                              .isAfter(startDate) &&
-                          DateFormat('yyyy-MM-dd')
-                              .parse(element.date)
-                              .subtract(const Duration(days: 1))
-                              .isBefore(endDate))
+                          DateFormat('yyyy-MM-dd').parse(element.date).add(const Duration(days: 1)).isAfter(startDate) &&
+                          DateFormat('yyyy-MM-dd').parse(element.date).subtract(const Duration(days: 1)).isBefore(endDate))
                       .toList();
 
               // if (index == 0) {
@@ -188,8 +181,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     //         details.rowColumnIndex.columnIndex;
                     //   }
                     // },
-                    defaultColumnWidth:
-                        (MediaQuery.of(context).size.width - 200) / 8,
+                    defaultColumnWidth: (MediaQuery.of(context).size.width - 200) / 8,
                     sortingGestureType: SortingGestureType.doubleTap,
                     // showCheckboxColumn: true,
                     showSortNumbers: true,
@@ -201,13 +193,7 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     selectionMode: SelectionMode.multiple,
                     source: MileageDataSource(mileageData: result),
                     onCellSecondaryTap: (value) {
-                      Clipboard.setData(ClipboardData(
-                              text: controller.selectedRows.first
-                                  .getCells()
-                                  .first
-                                  .value
-                                  .toString()))
-                          .then((value) {
+                      Clipboard.setData(ClipboardData(text: controller.selectedRows.first.getCells().first.value.toString())).then((value) {
                         print('복사되었습니다.');
                       });
                     },
@@ -304,10 +290,8 @@ class MileageDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'call', value: e.call),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<String>(columnName: 'date', value: '${e.date}'),
-              DataGridCell<String>(
-                  columnName: 'startAddress', value: e.startAddress),
-              DataGridCell<String>(
-                  columnName: 'endAddress', value: e.endAddress),
+              DataGridCell<String>(columnName: 'startAddress', value: e.startAddress),
+              DataGridCell<String>(columnName: 'endAddress', value: e.endAddress),
               DataGridCell<int>(columnName: 'amount', value: e.amount),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
               DataGridCell<String>(columnName: 'type', value: e.type),

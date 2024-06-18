@@ -8,8 +8,7 @@ class MileageSettingScreen extends StatefulWidget {
   State<MileageSettingScreen> createState() => _MileageSettingScreenState();
 }
 
-class _MileageSettingScreenState extends State<MileageSettingScreen>
-    with TickerProviderStateMixin {
+class _MileageSettingScreenState extends State<MileageSettingScreen> with TickerProviderStateMixin {
   late TabController tabController;
   final controller = TextEditingController();
 
@@ -24,9 +23,7 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('마일리지 설정',
-              style: const TextStyle(color: Colors.black),
-              textAlign: TextAlign.center),
+          title: Text('마일리지 설정', style: const TextStyle(color: Colors.black), textAlign: TextAlign.center),
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
@@ -69,43 +66,40 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
                         return ListView.separated(
                             itemCount: snapshot.data!.values.length,
                             separatorBuilder: (BuildContext context, int index) {
-                              return const Divider(height: 1, thickness: 1,);
+                              return const Divider(
+                                height: 1,
+                                thickness: 1,
+                              );
                             },
                             itemBuilder: (context, index) {
-                                return Padding(padding: EdgeInsets.symmetric(vertical: 10), child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                        padding: const EdgeInsets.only(left: 10),
-                                        child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
-                                    Container(
-                                      width: 100,
-                                      height: 30,
-                                      child: TextField(
-                                      controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      onChanged: (value) {
-                                        if(value.isNotEmpty){
-                                              final standard = snapshot
-                                                  .data!.keys
-                                                  .toList()[index]
-                                                  .toString();
-                                              print(
-                                                  {standard: value}.toString());
-                                              ManagerService()
-                                                  .updateMileageStandardForCash({
-                                                standard: int.parse(value)
-                                              });
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                          width: 100, padding: const EdgeInsets.only(left: 10), child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
+                                      Container(
+                                        width: 100,
+                                        height: 30,
+                                        child: TextField(
+                                          controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              final standard = snapshot.data!.keys.toList()[index].toString();
+                                              print({standard: value}.toString());
+                                              ManagerService().updateMileageStandardForCash({standard: int.parse(value)});
                                             }
                                           },
-                                    ),)
-                                  ],));
-                              });
-
+                                        ),
+                                      )
+                                    ],
+                                  ));
+                            });
                       } else {
                         return const Center(child: CircularProgressIndicator());
                       }
@@ -117,40 +111,37 @@ class _MileageSettingScreenState extends State<MileageSettingScreen>
                         return ListView.separated(
                             itemCount: snapshot.data!.values.length,
                             separatorBuilder: (BuildContext context, int index) {
-                              return const Divider(height: 1, thickness: 1,);
+                              return const Divider(
+                                height: 1,
+                                thickness: 1,
+                              );
                             },
                             itemBuilder: (context, index) {
-                              return Padding(padding: EdgeInsets.symmetric(vertical: 10), child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 100,
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
-                              Container(
-                              width: 100,
-                              height: 30,
-                              child: TextField(
-
-                                    controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    onChanged: (value) {
-                                      final standard = snapshot
-                                          .data!.keys
-                                          .toList()[index]
-                                          .toString();
-                                      print({standard: value}
-                                          .toString());
-                                      ManagerService()
-                                          .updateMileageStandardForCard(
-                                          {standard: value});
-                                    },
-                                  ),)
-                                ],));
-
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                          width: 100, padding: const EdgeInsets.only(left: 10), child: Text('${snapshot.data!.keys.toList()[index].replaceAll('a', '')}' + '원')),
+                                      Container(
+                                        width: 100,
+                                        height: 30,
+                                        child: TextField(
+                                          controller: TextEditingController(text: snapshot.data!.values.toList()[index].toString()),
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            final standard = snapshot.data!.keys.toList()[index].toString();
+                                            print({standard: value}.toString());
+                                            ManagerService().updateMileageStandardForCard({standard: value});
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ));
                             });
                       } else {
                         return const Center(child: CircularProgressIndicator());

@@ -14,10 +14,8 @@ import 'package:http/http.dart' as http;
 
 class CallService {
   Firestore firestore = Firestore.instance;
-  final url =
-      'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
-  final urlNotUser =
-      'https://project-568166903627460027-default-rtdb.firebaseio.com/notUser.json';
+  final url = 'https://project-568166903627460027-default-rtdb.firebaseio.com/call.json';
+  final urlNotUser = 'https://project-568166903627460027-default-rtdb.firebaseio.com/notUser.json';
 
   Future<bool> excelToCall(int type) async {
     try {
@@ -30,10 +28,8 @@ class CallService {
       // 마일리지 기준 가져오기
       final cardStandard = await ManagerService().getMileageStandardForCard();
       final cashStandard = await ManagerService().getMileageStandardForCash();
-      final cardBonusStandard =
-          await ManagerService().getBonusMileageStandardForCard();
-      final cashBonusStandard =
-          await ManagerService().getBonusMileageStandardForCash();
+      final cardBonusStandard = await ManagerService().getBonusMileageStandardForCard();
+      final cashBonusStandard = await ManagerService().getBonusMileageStandardForCash();
 
       // 엑셀 파일의 시트마다 반복
       await Future.wait(excel.tables.keys.map((e) async {
@@ -48,71 +44,23 @@ class CallService {
 
         if (type == 0) {
           // 엑셀 파일의 첫번째 행(헤더)에서 각 열의 인덱스를 가져옴
-          nameIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '고객명')
-              .elementAt(0));
-          callIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '고객전화')
-              .elementAt(0));
-          priceIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '요금')
-              .elementAt(0));
-          dateIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '날짜')
-              .elementAt(0));
-          timeIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '시간')
-              .elementAt(0));
-          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '출발지')
-              .elementAt(0));
-          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '도착지')
-              .elementAt(0));
-          cardIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '카드')
-              .elementAt(0));
+          nameIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '고객명').elementAt(0));
+          callIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '고객전화').elementAt(0));
+          priceIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '요금').elementAt(0));
+          dateIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '날짜').elementAt(0));
+          timeIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '시간').elementAt(0));
+          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '출발지').elementAt(0));
+          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '도착지').elementAt(0));
+          cardIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '카드').elementAt(0));
         } else {
-          nameIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '고객명')
-              .elementAt(0));
-          callIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '고객번호')
-              .elementAt(0));
-          priceIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '요금')
-              .elementAt(0));
-          dateIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '기준일자')
-              .elementAt(0));
-          timeIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '배차시간')
-              .elementAt(0));
-          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '출발지')
-              .elementAt(0));
-          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '도착지')
-              .elementAt(0));
-          cardIndex = excel.tables[e]!.rows.first.indexOf(excel
-              .tables[e]!.rows.first
-              .where((element) => element?.value.toString() == '결제')
-              .elementAt(0));
+          nameIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '고객명').elementAt(0));
+          callIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '고객번호').elementAt(0));
+          priceIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '요금').elementAt(0));
+          dateIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '기준일자').elementAt(0));
+          timeIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '배차시간').elementAt(0));
+          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '출발지').elementAt(0));
+          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '도착지').elementAt(0));
+          cardIndex = excel.tables[e]!.rows.first.indexOf(excel.tables[e]!.rows.first.where((element) => element?.value.toString() == '결제').elementAt(0));
         }
 
         // 엑셀 파일의 각 행(데이터)마다 반복
@@ -126,9 +74,7 @@ class CallService {
             final data = row.map((e) => e?.value);
             if (data.elementAt(nameIndex) == null) continue;
 
-            final orderNumber =
-                '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
-                    .replaceAll('/', '');
+            final orderNumber = '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'.replaceAll('/', '');
 
             print('******');
             print(data.elementAt(timeIndex).toString().substring(10));
@@ -137,19 +83,9 @@ class CallService {
                 ? Call(
                     orderNumber: orderNumber,
                     name: data.elementAt(nameIndex).toString(),
-                    call: data
-                        .elementAt(callIndex)
-                        .toString()
-                        .replaceAll('-', ''),
-                    price: int.parse(data
-                        .elementAt(priceIndex)
-                        .toString()
-                        .replaceAll(',', '')),
-                    date: DateFormat('yyyy-').format(DateTime.now()) +
-                        data
-                            .elementAt(dateIndex)
-                            .toString()
-                            .replaceAll('/', '-'),
+                    call: data.elementAt(callIndex).toString().replaceAll('-', ''),
+                    price: int.parse(data.elementAt(priceIndex).toString().replaceAll(',', '')),
+                    date: DateFormat('yyyy-').format(DateTime.now()) + data.elementAt(dateIndex).toString().replaceAll('/', '-'),
                     time: data.elementAt(timeIndex).toString(),
                     startAddress: data.elementAt(startAddressIndex).toString(),
                     endAddress: data.elementAt(endAddressIndex).toString(),
@@ -160,14 +96,8 @@ class CallService {
                 : Call(
                     orderNumber: orderNumber,
                     name: data.elementAt(nameIndex).toString(),
-                    call: data
-                        .elementAt(callIndex)
-                        .toString()
-                        .replaceAll('-', ''),
-                    price: int.parse(data
-                        .elementAt(priceIndex)
-                        .toString()
-                        .replaceAll(',', '')),
+                    call: data.elementAt(callIndex).toString().replaceAll('-', ''),
+                    price: int.parse(data.elementAt(priceIndex).toString().replaceAll(',', '')),
                     date: data.elementAt(dateIndex).toString().substring(0, 10),
                     time: data.elementAt(timeIndex).toString().substring(10),
                     startAddress: data.elementAt(startAddressIndex).toString(),
@@ -177,12 +107,10 @@ class CallService {
                     sumMileage: 0,
                   );
 
-            User? user = await UserService().getUser(
-                data.elementAt(callIndex).toString().replaceAll('-', ''));
+            User? user = await UserService().getUser(data.elementAt(callIndex).toString().replaceAll('-', ''));
 
             if (user != null) {
-              final num = calMileage(int.parse(
-                  data.elementAt(priceIndex).toString().replaceAll(',', '')));
+              final num = calMileage(int.parse(data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
               if (type == 0) {
                 if (data.elementAt(cardIndex).toString().contains('결제완료')) {
@@ -243,19 +171,9 @@ class CallService {
       final callNum = jsonDecode(a.body)['name'];
 
       // 날짜별로 콜 기록 저장
-      firestore
-          .collection('call')
-          .document(call.date.substring(0, 7))
-          .collection(call.date.substring(8, 10))
-          .document(callNum)
-          .set({'call': callNum});
+      firestore.collection('call').document(call.date.substring(0, 7)).collection(call.date.substring(8, 10)).document(callNum).set({'call': callNum});
 
-      firestore
-          .collection('user')
-          .document(call.call)
-          .collection('call')
-          .document(callNum)
-          .set(call.toJson());
+      firestore.collection('user').document(call.call).collection('call').document(callNum).set(call.toJson());
 
       saveMileage(call);
       print('saved');
@@ -298,12 +216,7 @@ class CallService {
     List<String> callNumberList = [];
     List<Call> callList = [];
     try {
-      await firestore
-          .collection('call')
-          .document('202302')
-          .collection('25')
-          .get()
-          .then((value) {
+      await firestore.collection('call').document('202302').collection('25').get().then((value) {
         for (var element in value) {
           callNumberList.add(element.map['call']);
         }
@@ -311,8 +224,7 @@ class CallService {
       await Future.wait(callNumberList.map((element) async {
         final result = await http.get(Uri.parse(url));
         if (jsonDecode(result.body) == null) return;
-        final Map<String, dynamic> data =
-            json.decode(result.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = json.decode(result.body) as Map<String, dynamic>;
         callList.add(Call.fromJson(data[element]));
       }));
       return callList;
@@ -326,8 +238,7 @@ class CallService {
     try {
       await http.get(Uri.parse(url)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<String, dynamic> data =
-            json.decode(value.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -335,8 +246,7 @@ class CallService {
 
       await http.get(Uri.parse(urlNotUser)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<String, dynamic> data =
-            json.decode(value.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -353,8 +263,7 @@ class CallService {
     try {
       await http.get(Uri.parse(url)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<String, dynamic> data =
-            json.decode(value.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -368,14 +277,9 @@ class CallService {
   Future<List<Call>> getCallForUser(String userCall) async {
     List<Call> callList = [];
     try {
-      await firestore
-          .collection('user')
-          .document(userCall)
-          .collection('call')
-          .get()
-          .then((value) => value.forEach((element) {
-                callList.add(Call.fromJson(element.map));
-              }));
+      await firestore.collection('user').document(userCall).collection('call').get().then((value) => value.forEach((element) {
+            callList.add(Call.fromJson(element.map));
+          }));
       print(callList.length);
       return callList;
     } catch (e) {
@@ -410,8 +314,7 @@ class CallService {
     try {
       await http.get(Uri.parse(urlNotUser)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        final Map<String, dynamic> data =
-            json.decode(value.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = json.decode(value.body) as Map<String, dynamic>;
         data.forEach((key, value) {
           callList.add(Call.fromJson(value));
         });
@@ -450,14 +353,7 @@ class CallService {
     cellStyle.underline = Underline.Single;
 
     for (var call in callList) {
-      sheetObject.appendRow([
-        call.date,
-        call.name,
-        call.call,
-        call.startAddress,
-        call.endAddress,
-        call.price
-      ]);
+      sheetObject.appendRow([call.date, call.name, call.call, call.startAddress, call.endAddress, call.price]);
     }
   }
 }

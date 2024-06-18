@@ -21,10 +21,8 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
   late List<bool> isSelected;
 
   final tabIndexProvider = StateProvider<int>((ref) => 0);
-  final FutureProvider callProvider =
-      FutureProvider((ref) => CallService().getAllCallUser());
-  final FutureProvider callNotUserProvider =
-      FutureProvider((ref) => CallService().getAllCallNotUser());
+  final FutureProvider callProvider = FutureProvider((ref) => CallService().getAllCallUser());
+  final FutureProvider callNotUserProvider = FutureProvider((ref) => CallService().getAllCallNotUser());
   final FutureProvider callAllProvider = FutureProvider((ref) async {
     final call = await CallService().getAllCallUser();
     final callNotUser = await CallService().getAllCallNotUser();
@@ -48,7 +46,9 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
           Row(children: [
-            Button(child: Text('회원 대리 기록 삭제'), onPressed: () {
+            Button(
+              child: const Text('회원 대리 기록 삭제'),
+              onPressed: () {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -72,7 +72,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                     });
               },
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Button(
               onPressed: () {
                 showDialog(
@@ -97,7 +97,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                       );
                     });
               },
-              child: Text('비회원 대리 기록 삭제'),
+              child: const Text('비회원 대리 기록 삭제'),
             ),
           ]),
           SizedBox(
@@ -114,8 +114,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                             data: (data) {
                               return CallListWidget(callData: data);
                             },
-                            error: (e, st) =>
-                                const Center(child: Text('기록을 불러오지 못했습니다')),
+                            error: (e, st) => const Center(child: Text('기록을 불러오지 못했습니다')),
                             loading: () {
                               return const Center(child: ProgressRing());
                             })),
@@ -125,8 +124,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                             data: (data) {
                               return CallListWidget(callData: data);
                             },
-                            error: (e, st) =>
-                                const Center(child: Text('기록을 불러오지 못했습니다')),
+                            error: (e, st) => const Center(child: Text('기록을 불러오지 못했습니다')),
                             loading: () {
                               return const Center(child: ProgressRing());
                             })),
@@ -136,8 +134,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                             data: (data) {
                               return CallListWidget(callData: data);
                             },
-                            error: (e, st) =>
-                                const Center(child: Text('기록을 불러오지 못했습니다')),
+                            error: (e, st) => const Center(child: Text('기록을 불러오지 못했습니다')),
                             loading: () {
                               return const Center(child: ProgressRing());
                             })),
@@ -175,8 +172,7 @@ class _CallListWidgetState extends ConsumerState<CallListWidget> {
             source: CallDataSource(callData: result),
             onCellDoubleTap: (details) {
               if (details.rowColumnIndex.rowIndex == 0) {
-                ref.read(indexProvider.notifier).state =
-                    details.rowColumnIndex.columnIndex;
+                ref.read(indexProvider.notifier).state = details.rowColumnIndex.columnIndex;
                 final a = controller.selectedRow;
                 final b = a?.getCells();
                 var call = '';
@@ -213,8 +209,7 @@ class _CallListWidgetState extends ConsumerState<CallListWidget> {
             selectionManager: RowSelectionManager(),
             shrinkWrapRows: true,
             shrinkWrapColumns: true,
-            checkboxColumnSettings: const DataGridCheckboxColumnSettings(
-                showCheckboxOnHeader: false),
+            checkboxColumnSettings: const DataGridCheckboxColumnSettings(showCheckboxOnHeader: false),
             columns: <GridColumn>[
                 GridColumn(
                     columnName: 'call',
@@ -294,11 +289,9 @@ class CallDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'call', value: e.call),
               DataGridCell<String>(columnName: 'name', value: e.name),
               DataGridCell<int>(columnName: 'mileage', value: e.mileage),
-              DataGridCell<int>(
-                  columnName: 'bonusMileage', value: e.bonusMileage),
+              DataGridCell<int>(columnName: 'bonusMileage', value: e.bonusMileage),
               DataGridCell<int>(columnName: 'sumMileage', value: e.sumMileage),
-              DataGridCell<String>(
-                  columnName: 'date', value: '${e.date} ${e.time}'),
+              DataGridCell<String>(columnName: 'date', value: '${e.date} ${e.time}'),
               DataGridCell<int>(columnName: 'price', value: e.price),
             ]))
         .toList();

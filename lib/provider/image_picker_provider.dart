@@ -18,10 +18,9 @@ class ImageState extends StateNotifier<File?> {
 
   Future getImage() async {
     picker.pickImageFile().then((value) {
-      if(value != null) {
+      if (value != null) {
         state = value;
       }
-    }).catchError((onError) {
-    });
+    }).catchError((onError) {});
   }
 }

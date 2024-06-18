@@ -33,24 +33,24 @@ class Withdraw {
   }
 
   factory Withdraw.fromDB(db) => Withdraw(
-    userCall: db['userCall'],
-    amount: db['amount'],
-    bank: db['bank'],
-    account: db['account'],
-    name: db['name'],
-    status: db['status'],
-    createdAt: db['createdAt'],
-    sumMileage: db['sumMileage'],
-  );
+        userCall: db['userCall'],
+        amount: db['amount'],
+        bank: db['bank'],
+        account: db['account'],
+        name: db['name'],
+        status: db['status'],
+        createdAt: db['createdAt'],
+        sumMileage: db['sumMileage'],
+      );
 
   Map<String, dynamic> toJson() => {
-    'userCall': userCall,
-    'amount': amount,
-    'bank': bank,
-    'account': account,
-    'name': name,
-    'status': status,
-    'createdAt': createdAt,
-    'sumMileage': sumMileage,
-  };
+        'userCall': userCall,
+        'amount': amount,
+        'bank': bank,
+        'account': account,
+        'name': name,
+        'status': status,
+        'createdAt': createdAt,
+        'sumMileage': sumMileage,
+      };
 }

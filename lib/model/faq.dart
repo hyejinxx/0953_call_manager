@@ -1,4 +1,4 @@
-class FAQ{
+class FAQ {
   final String question;
   String answer;
   final String createdAt;
@@ -27,11 +27,11 @@ class FAQ{
   }
 
   Map<String, dynamic> toJson() => {
-    'question': question,
-    'answer': answer,
-    'createdAt': createdAt,
-    'writer': writer,
-    'state': state,
-    'image': image,
-  };
+        'question': question,
+        'answer': answer,
+        'createdAt': createdAt,
+        'writer': writer,
+        'state': state,
+        'image': image,
+      };
 }

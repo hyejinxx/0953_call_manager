@@ -22,9 +22,7 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
     setState(() {
       _saveState = SaveState.saving;
     });
-    final result = await CallService()
-        .excelToCall(type)
-        .onError((error, stackTrace) => false);
+    final result = await CallService().excelToCall(type).onError((error, stackTrace) => false);
     if (result) {
       setState(() {
         _saveState = SaveState.success;
@@ -35,12 +33,10 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
         _saveState = SaveState.fail;
       });
       showInfoBar('저장 실패', '콜 저장에 실패하였습니다.', InfoBarSeverity.error);
-
     }
   }
 
-  showInfoBar(
-      String title, String content, InfoBarSeverity infoBarSeverity) async {
+  showInfoBar(String title, String content, InfoBarSeverity infoBarSeverity) async {
     await displayInfoBar(context, builder: (context, close) {
       return InfoBar(
         title: Text(title),
