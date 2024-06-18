@@ -172,7 +172,9 @@ class _WindowViewState extends ConsumerState<WindowView> {
     final currentPage = ref.watch(navProvider);
     return NavigationView(
       appBar:  NavigationAppBar(
-        leading: const SizedBox(width: 0,),
+        leading: Container(child: Image(
+          image: AssetImage('assets/image/0953_2.png'),
+        ),),
         title:  Row(
           children: [
             const Text('해피해피 0953',

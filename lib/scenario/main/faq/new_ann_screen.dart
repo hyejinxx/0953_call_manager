@@ -69,7 +69,7 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
                                 ],
                               ));
                     },
-                    icon: const Icon(FluentIcons.receipt_check, size: 25)),
+                    icon: const Icon(FluentIcons.back, size: 25)),
                 const SizedBox(width: 10),
                 IconButton(
                     icon: const Icon(
