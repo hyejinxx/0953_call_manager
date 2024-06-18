@@ -175,100 +175,103 @@ class _MileageManageScreenState extends ConsumerState<MileageManageScreen> {
                     //   result.sort((a, b) => a.date.compareTo(b.date));
                     // }
 
-                    return SfDataGrid(
-                      allowSorting: true,
-                        // onCellDoubleTap: (details) {
-                        //   if (details.rowColumnIndex.rowIndex == 0) {
-                        //     ref.read(indexProvider.notifier).state =
-                        //         details.rowColumnIndex.columnIndex;
-                        //   }
-                        // },
-                        defaultColumnWidth:
-                            (MediaQuery.of(context).size.width -200) / 8,
-                        sortingGestureType: SortingGestureType.doubleTap,
-                        // showCheckboxColumn: true,
-                        showSortNumbers: true,
-                        showHorizontalScrollbar: true,
-                        showVerticalScrollbar: true,
-                        shrinkWrapRows: true,
-                        shrinkWrapColumns: true,
-                        selectionManager: RowSelectionManager(),
-                        selectionMode: SelectionMode.multiple,
-                        source: MileageDataSource(mileageData: result),
-                        columns: <GridColumn>[
-                          GridColumn(
-                              columnName: 'call',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '전화번호',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'name',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '이름',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'date',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '일자',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'startAddress',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '출발지',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'endAddress',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '도착지',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'amount',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '적립',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'sumMileage',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '누적 적립금',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                          GridColumn(
-                              columnName: 'type',
-                              label: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  alignment: Alignment.center,
-                                  child: const Text(
-                                    '적립 타입',
-                                    overflow: TextOverflow.ellipsis,
-                                  ))),
-                        ]);
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height - 100,
+                      child: SfDataGrid(
+                        allowSorting: true,
+                          // onCellDoubleTap: (details) {
+                          //   if (details.rowColumnIndex.rowIndex == 0) {
+                          //     ref.read(indexProvider.notifier).state =
+                          //         details.rowColumnIndex.columnIndex;
+                          //   }
+                          // },
+                          defaultColumnWidth:
+                              (MediaQuery.of(context).size.width -200) / 8,
+                          sortingGestureType: SortingGestureType.doubleTap,
+                          // showCheckboxColumn: true,
+                          showSortNumbers: true,
+                          showHorizontalScrollbar: true,
+                          showVerticalScrollbar: true,
+                          shrinkWrapRows: true,
+                          shrinkWrapColumns: true,
+                          selectionManager: RowSelectionManager(),
+                          selectionMode: SelectionMode.multiple,
+                          source: MileageDataSource(mileageData: result),
+                          columns: <GridColumn>[
+                            GridColumn(
+                                columnName: 'call',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '전화번호',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'name',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '이름',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'date',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '일자',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'startAddress',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '출발지',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'endAddress',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '도착지',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'amount',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '적립',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'sumMileage',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '누적 적립금',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'type',
+                                label: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      '적립 타입',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                          ]),
+                    );
                   } else {
                     return const Center(child: Text('데이터가 없습니다.'));
                   }

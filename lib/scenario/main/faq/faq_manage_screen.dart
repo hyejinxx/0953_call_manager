@@ -216,10 +216,14 @@ class _FAQPageState extends State<FAQPage> {
                                 onPressed: () {
                                   AnnouncementService()
                                       .pushFCM(true)
-                                      .then((value) =>
-                                          showToast('업데이트 알림을 보냈습니다.'))
-                                      .catchError((e) =>
-                                          showToast('업데이트 알림을 보내는데 실패했습니다.'));
+                                      .then((value) => showInfoBar(
+                                          '전송 완료',
+                                          '업데이트 알림을 보냈습니다.',
+                                          InfoBarSeverity.info))
+                                      .catchError((e) => showInfoBar(
+                                          '전송 실패',
+                                          '업데이트 알림을 전송에 실패했습니다.',
+                                          InfoBarSeverity.error));
                                   Navigator.pop(context);
                                 },
                                 child: const Text('확인')),
@@ -243,8 +247,19 @@ class _FAQPageState extends State<FAQPage> {
     );
   }
 
-  showToast(String msg) {
-    showSnackbar(context, Snackbar(content: Text(msg)));
+  showInfoBar(
+      String title, String content, InfoBarSeverity infoBarSeverity) async {
+    await displayInfoBar(context, builder: (context, close) {
+      return InfoBar(
+        title: Text(title),
+        content: Text(content),
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear),
+          onPressed: close,
+        ),
+        severity: infoBarSeverity,
+      );
+    });
   }
 }
 
@@ -295,10 +310,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                 ])),
                             trailing: Column(
                               children: [
-                                Button(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          ButtonState.all(Colors.yellow)),
+                                FilledButton(
                                   onPressed: () {
                                     showDialog(
                                         context: context,
@@ -332,16 +344,13 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                   },
                                   child: const Text(
                                     '삭제',
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
-                                Button(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          ButtonState.all(Colors.yellow)),
+                                FilledButton(
                                   onPressed: () {
                                     Navigator.push(
                                         context,
@@ -352,7 +361,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                   },
                                   child: const Text(
                                     '수정',
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -361,7 +370,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
-                                    list![index].content
+                                    list![index]
+                                        .content
                                         .replaceAll('\\n', '\n')
                                         .replaceAll('\\', ''),
                                     style: const TextStyle(
@@ -417,10 +427,14 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                                 onPressed: () {
                                   AnnouncementService()
                                       .pushFCM(true)
-                                      .then((value) =>
-                                          showToast('업데이트 알림을 보냈습니다.'))
-                                      .catchError((e) =>
-                                          showToast('업데이트 알림을 보내는데 실패했습니다.'));
+                                      .then((value) => showInfoBar(
+                                          '전송 완료',
+                                          '업데이트 알림을 보냈습니다.',
+                                          InfoBarSeverity.info))
+                                      .catchError((e) => showInfoBar(
+                                          '전송 실패',
+                                          '업데이트 알림을 전송에 실패했습니다.',
+                                          InfoBarSeverity.error));
                                   Navigator.pop(context);
                                 },
                                 child: const Text('확인')),
@@ -466,8 +480,19 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     );
   }
 
-  showToast(String msg) {
-    showSnackbar(context, Snackbar(content: Text(msg)));
+  showInfoBar(
+      String title, String content, InfoBarSeverity infoBarSeverity) async {
+    await displayInfoBar(context, builder: (context, close) {
+      return InfoBar(
+        title: Text(title),
+        content: Text(content),
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear),
+          onPressed: close,
+        ),
+        severity: infoBarSeverity,
+      );
+    });
   }
 }
 
@@ -491,7 +516,7 @@ class NewFAQPageState extends State<NewFAQPage> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                               onTap: () {
-                                showBottomSheet(
+                                ma.showBottomSheet(
                                     context: context,
                                     builder: (context) => AnswerScreen(
                                           faq: snapshot.data![index],
@@ -596,6 +621,21 @@ class _PopUpScreenState extends State<PopUpScreen> {
     super.initState();
   }
 
+  showInfoBar(
+      String title, String content, InfoBarSeverity infoBarSeverity) async {
+    await displayInfoBar(context, builder: (context, close) {
+      return InfoBar(
+        title: Text(title),
+        content: Text(content),
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear),
+          onPressed: close,
+        ),
+        severity: infoBarSeverity,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -635,20 +675,20 @@ class _PopUpScreenState extends State<PopUpScreen> {
               GestureDetector(
                   onTap: () {
                     if (contentController.text.isEmpty) {
-                      showSnackbar(
-                          context, const Snackbar(content: Text('내용을 입력해주세요')));
+                      showInfoBar(
+                          '입력 오류', '내용을 입력해주세요', InfoBarSeverity.warning);
                       return;
                     }
 
                     AnnouncementService()
                         .savePopUpAnnouncement(contentController.text)
                         .then((value) {
-                      showSnackbar(
-                          context, const Snackbar(content: Text('등록되었습니다')));
+                      showInfoBar(
+                          '등록 완료', '등록가 완료되었습니다.', InfoBarSeverity.warning);
+
                       Navigator.pop(context);
                     }).onError((error, stackTrace) {
-                      showSnackbar(
-                          context, const Snackbar(content: Text('오류가 발생했습니다')));
+                      showInfoBar('오류', '오류가 발생했습니다', InfoBarSeverity.error);
                     });
                   },
                   child: Container(
@@ -710,10 +750,21 @@ class AnswerScreenState extends State<AnswerScreen> {
             GestureDetector(
                 onTap: () {
                   widget.faq.answer = controller.text;
-                  AnnouncementService().saveAnswerFAQ(widget.faq).then((value) {
+                  AnnouncementService()
+                      .saveAnswerFAQ(widget.faq)
+                      .then((value) async {
                     AnnouncementService().pushAnswer(widget.faq.writer);
-                    showSnackbar(
-                        context, const Snackbar(content: Text('답변이 저장되었습니다')));
+                    await displayInfoBar(context, builder: (context, close) {
+                      return InfoBar(
+                        title: const Text('등록 완료'),
+                        content: const Text('답변 등록이 완료되었습니다'),
+                        action: IconButton(
+                          icon: const Icon(FluentIcons.clear),
+                          onPressed: close,
+                        ),
+                        severity: InfoBarSeverity.success,
+                      );
+                    });
                   });
                   Navigator.pop(context);
                 },

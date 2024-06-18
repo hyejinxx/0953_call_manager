@@ -20,106 +20,77 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        color: Colors.white,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-            child: Stack(children: [
-          SingleChildScrollView(
-              child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Center(
-                child: Image(
-                  image: AssetImage('assets/image/0953.gif'),
-                  width: 250,
-                  height: 250,
-                ),
-              ),
-              Button(
-                  style: ButtonStyle(
-                    backgroundColor: ButtonState.all(
-                      Colors.yellow,
-                    ),
-
-                    foregroundColor: ButtonState.all(Colors.black),
-                  ),
-                  child: const Text(
-                    '콜 저장',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      _saveState = SaveState.saving;
-                    });
-                    final result = await CallService()
-                        .excelToCall()
-                        .onError((error, stackTrace) => false);
-                    if (result) {
-                      setState(() {
-                        _saveState = SaveState.success;
-                      });
-                      ma.ScaffoldMessenger.of(context)
-                          .showSnackBar(const ma.SnackBar(
-                        content: Text('콜 저장이 완료되었습니다.'),
-                        duration: Duration(seconds: 1),
-                      ));
-                    } else {
-                      setState(() {
-                        _saveState = SaveState.fail;
-                      });
-                      ma.ScaffoldMessenger.of(context)
-                          .showSnackBar(const ma.SnackBar(
-                        content: Text('콜 저장에 실패하였습니다.'),
-                        duration: Duration(seconds: 1),
-                      ));
-                    }
-                  }),
-              const SizedBox(
-                height: 20,
-              ),
-              mainBotton(
-                  '전화번호 설정',
-                  () => Navigator.push(
-                      context,
-                      ma.MaterialPageRoute(
-                        builder: (context) => const CallNumberSettingScreen(),
-                      ))),
-              const SizedBox(
-                height: 20,
-              ),
-              mainBotton('마일리지 설정', () {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('콜 관리'),
+          const SizedBox(height: 10),
+          Button(
+              child: const Text('콜 저장(구)'),
+              onPressed: () async {
+                setState(() {
+                  _saveState = SaveState.saving;
+                });
+                final result = await CallService()
+                    .excelToCall()
+                    .onError((error, stackTrace) => false);
+                if (result) {
+                  setState(() {
+                    _saveState = SaveState.success;
+                  });
+                  ma.ScaffoldMessenger.of(context).showSnackBar(const ma.SnackBar(
+                    content: Text('콜 저장이 완료되었습니다.'),
+                    duration: Duration(seconds: 1),
+                  ));
+                } else {
+                  setState(() {
+                    _saveState = SaveState.fail;
+                  });
+                  ma.ScaffoldMessenger.of(context).showSnackBar(const ma.SnackBar(
+                    content: Text('콜 저장에 실패하였습니다.'),
+                    duration: Duration(seconds: 1),
+                  ));
+                }
+              }),
+          const SizedBox(height: 10),
+          Button(child: const Text('콜 저장(신)'), onPressed: () {}),
+          const SizedBox(height: 20),
+          const Text('마일리지 설정'),
+          const SizedBox(height: 10),
+          Button(
+              child: const Text('마일리지 설정'),
+              onPressed: () {
                 Navigator.push(
                     context,
                     ma.MaterialPageRoute(
                       builder: (context) => const MileageSettingScreen(),
                     ));
               }),
-              const SizedBox(
-                height: 20,
-              ),
-              mainBotton('이벤트 마일리지 설정', () {
+          const SizedBox(height: 10),
+          Button(
+              child: const Text('이벤트 마일리지 설정'),
+              onPressed: () {
                 Navigator.push(
                     context,
                     ma.MaterialPageRoute(
                       builder: (context) => const BonusMileageSettingScreen(),
                     ));
               }),
-            ],
-          )),
-          if (_saveState == SaveState.saving)
-            const Positioned(
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: SizedBox(width: 70, height: 70, child: ProgressRing()),
-              ),
-            ),
-        ])));
+          const SizedBox(height: 20),
+          const Text('기타 설정'),
+          Button(
+              child: const Text('전화번호 설정'),
+              onPressed: () => Navigator.push(
+                  context,
+                  ma.MaterialPageRoute(
+                    builder: (context) => const CallNumberSettingScreen(),
+                  ))),
+          const SizedBox(height: 10),
+        ],
+      ),
+    );
   }
 
   Widget mainBotton(String text, Function() onTap) {
@@ -128,7 +99,6 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
           backgroundColor: ButtonState.all(
             Colors.yellow,
           ),
-
           foregroundColor: ButtonState.all(Colors.black),
         ),
         onPressed: onTap,

@@ -49,7 +49,6 @@ class UserMileageRecordScreenState
 
   @override
   void dispose() {
-    ref.invalidate(mileageProvider);
     super.dispose();
   }
 
@@ -138,7 +137,7 @@ class UserMileageRecordScreenState
                             source: UserMileageDataSource(
                                 mileageData: data.reversed.toList()),
                             sortingGestureType: SortingGestureType.doubleTap,
-                            allowSorting: true,
+                            // allowSorting: true,
                             showSortNumbers: true,
                             shrinkWrapRows: true,
                             shrinkWrapColumns: true,

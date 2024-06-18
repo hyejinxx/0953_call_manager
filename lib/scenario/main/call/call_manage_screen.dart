@@ -48,8 +48,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
           Row(children: [
-            GestureDetector(
-              onTap: () {
+            Button(child: Text('회원 대리 기록 삭제'), onPressed: () {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -72,19 +71,10 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                       );
                     });
               },
-              child: Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  width: (MediaQuery.of(context).size.width - 200) / 2,
-                  color: Colors.yellow,
-                  child: const Text(
-                    '회원 대리 기록 삭제하기',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17),
-                  )),
             ),
-            GestureDetector(
-              onTap: () {
+            SizedBox(width: 10),
+            Button(
+              onPressed: () {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -107,16 +97,7 @@ class CallManageScreenState extends ConsumerState<CallManageScreen> {
                       );
                     });
               },
-              child: Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  width: (MediaQuery.of(context).size.width - 200) / 2,
-                  color: Colors.white,
-                  child: const Text(
-                    '비회원 대리 기록 삭제하기',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17),
-                  )),
+              child: Text('비회원 대리 기록 삭제'),
             ),
           ]),
           SizedBox(

@@ -66,10 +66,10 @@ class MileageService {
             .collection('user')
             .document(withdraw.userCall)
             .update({'mileage': updatedMileage});
-
       }
-      final withdrawMileage = status == "출금완료" ? userData.map['mileage'] -
-          withdraw.amount - 500 : userData.map['mileage'];
+      final withdrawMileage = status == "출금완료"
+          ? userData.map['mileage'] - withdraw.amount - 500
+          : userData.map['mileage'];
 
       await firestore
           .collection('user')
@@ -133,6 +133,7 @@ class MileageService {
       throw Exception("getMileageRecord: error");
     }
   }
+
   Future<List<Withdraw>> getWithdrawRecordUser(String userCall) async {
     List<Withdraw> withdrawList = [];
     try {
@@ -142,8 +143,8 @@ class MileageService {
           .collection('withdraw')
           .get()
           .then((value) => value.forEach((element) {
-        withdrawList.add(Withdraw.fromJson(element.map));
-      }));
+                withdrawList.add(Withdraw.fromJson(element.map));
+              }));
       return withdrawList;
     } catch (e) {
       throw Exception("getMileageRecord: error");
@@ -184,7 +185,6 @@ class MileageService {
     try {
       await http.get(Uri.parse(mileageUrl)).then((value) {
         if (jsonDecode(value.body) == null) return;
-        print(value.body);
 
         final Map<dynamic, dynamic> data =
             jsonDecode(value.body) as Map<dynamic, dynamic>;

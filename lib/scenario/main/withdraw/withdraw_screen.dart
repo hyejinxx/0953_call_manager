@@ -105,10 +105,10 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     children: [
                       Expanded(child:
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.grey[300],
-                          onPrimary: Colors.black,
-                        ),
+                        // style: ElevatedButton.styleFrom(
+                        //   primary: Colors.grey[300],
+                        //   onPrimary: Colors.black,
+                        // ),
                           onPressed: () async {
                             final re = await showDialog(
                                 context: context,
@@ -142,10 +142,10 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       ),
                       Expanded(child:
                       ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
-                            onPrimary: Colors.black,
-                          ),
+                          // style: ElevatedButton.styleFrom(
+                          //   primary: Colors.grey[300],
+                          //   onPrimary: Colors.black,
+                          // ),
                           onPressed: () async {
                             final re = await showDialog(
                                 context: context,

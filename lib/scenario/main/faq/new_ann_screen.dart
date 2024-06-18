@@ -37,119 +37,138 @@ class _NewAnnoScreenState extends ConsumerState<NewAnnoScreen> {
   @override
   Widget build(BuildContext context) {
     final img = ref.watch(imagePickerProvider);
-    return Container(color: Colors.white, child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(FluentIcons.back)),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width - 100,
-                  height: 80,
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormBox(
-                    controller: titleTextController,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5)),
-                    placeholder: '제목',
-                  ),
-                ),
-                // imageBox(img)
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => ContentDialog(
+                                title: const Text('이전 화면으로 이동하시겠습니까?', style: TextStyle(fontSize: 20)),
+                                actions: [
+                                  Button(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('닫기')),
+                                  Button(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('이동'))
+                                ],
+                              ));
+                    },
+                    icon: const Icon(FluentIcons.receipt_check, size: 25)),
+                const SizedBox(width: 10),
+                IconButton(
+                    icon: const Icon(
+                      FluentIcons.accept,
+                      size: 25,
+                    ),
+                    onPressed: () {
+                      if (titleTextController.text.isEmpty ||
+                          contentController.text.isEmpty) {
+                        showInfoBar(
+                            '입력 오류', '내용을 입력해주세요', InfoBarSeverity.warning);
+                        return;
+                      }
+                      final announcement = Announcement(
+                          title: titleTextController.text,
+                          content: contentController.text,
+                          createdAt: widget.ann == null
+                              ? DateTime.now().toString()
+                              : widget.ann!.createdAt,
+                          date: widget.ann == null
+                              ? DateFormat('yyyy-MM-dd').format(DateTime.now())
+                              : widget.ann!.date,
+                          image: null);
+                      final isUpdate = widget.ann != null;
+                      AnnouncementService()
+                          .saveAnnouncement(announcement)
+                          .then((value) async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) => ContentDialog(
+                                  title: const Text('업데이트 알림을 전송하시겠습니까?'),
+                                  actions: [
+                                    Button(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('닫기')),
+                                    Button(
+                                        onPressed: () {
+                                          AnnouncementService()
+                                              .pushFCM(isUpdate);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('전송'))
+                                  ],
+                                ));
+                        showInfoBar(
+                            '등록 완료', '등록 완료되었습니다.', InfoBarSeverity.success);
+                        Navigator.pop(context);
+                      }).onError((error, stackTrace) {
+                        showInfoBar(
+                            '등록 실패', '등록에 실패했습니다.', InfoBarSeverity.error);
+                      }).whenComplete(() {
+                        titleTextController.clear();
+                        contentController.clear();
+                      });
+                    })
               ],
             ),
-            Expanded(
-                child: Container(
+            InfoLabel(
+              label: '제목',
+              child: TextBox(
+                placeholder: '제목입력',
+                expands: false,
+                controller: titleTextController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                maxLength: 10000,
+              ),
+            ),
+            const SizedBox(height: 10),
+            InfoLabel(
+              label: '내용',
+              child: TextBox(
+                placeholder: '내용입력',
+                expands: true,
+                controller: contentController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                maxLength: 10000,
+              ),
+            ),
+          ]),
+    );
+  }
 
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white),
-              child: TextFormBox(
-                  controller: contentController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 10000,
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white),
-                  placeholder: '내용을 적어주세요'),
-            )),
-            GestureDetector(
-                onTap: () {
-                  if (titleTextController.text.isEmpty ||
-                      contentController.text.isEmpty) {
-                    showSnackbar(
-                        context, Snackbar(content: Text('내용을 입력해주세요')));
-                    return;
-                  }
-                  final announcement = Announcement(
-                      title: titleTextController.text,
-                      content: contentController.text,
-                      createdAt: widget.ann == null
-                          ? DateTime.now().toString()
-                          : widget.ann!.createdAt,
-                      date: widget.ann == null
-                          ? DateFormat('yyyy-MM-dd').format(DateTime.now())
-                          : widget.ann!.date,
-                      image: null);
-                  final isUpdate = widget.ann != null;
-                  AnnouncementService()
-                      .saveAnnouncement(announcement)
-                      .then((value) async{
-
-                    await showDialog(
-                        context: context,
-                        builder: (context) => ContentDialog(
-                          title: const Text('업데이트 알림을 전송하시겠습니까?'),
-                          actions: [
-                            Button(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('닫기')),
-                            Button(
-                                onPressed: () {
-                                  AnnouncementService().pushFCM(isUpdate);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('전송'))
-                          ],
-                        ));
-                    showSnackbar(context, Snackbar(content: Text('등록되었습니다')));
-                    Navigator.pop(context);
-                  }).onError((error, stackTrace) {
-                    showSnackbar(context,
-                        Snackbar(content: Text('등록에 실패했습니다. 다시 시도해주세요')));
-                  }).whenComplete(() {
-                    titleTextController.clear();
-                    contentController.clear();
-                  });
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  color: Colors.yellow.withOpacity(0.7),
-                  width: MediaQuery.of(context).size.width,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text('등록하기',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0)),
-                ))
-          ],
-        ));
+  showInfoBar(
+      String title, String content, InfoBarSeverity infoBarSeverity) async {
+    await displayInfoBar(context, builder: (context, close) {
+      return InfoBar(
+        title: Text(title),
+        content: Text(content),
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear),
+          onPressed: close,
+        ),
+        severity: infoBarSeverity,
+      );
+    });
   }
 
   Widget imageBox(File? img) {

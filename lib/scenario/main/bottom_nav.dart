@@ -6,6 +6,7 @@ import 'package:call_0953_manager/scenario/main/user/user_manage_screen.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../service/mileage_service.dart';
 import 'faq/faq_manage_screen.dart';
 //
 // import '../../style/style.dart';
@@ -170,10 +171,26 @@ class _WindowViewState extends ConsumerState<WindowView> {
   Widget build(BuildContext context) {
     final currentPage = ref.watch(navProvider);
     return NavigationView(
-
-      appBar: NavigationAppBar(
-        title: Text('해피해피 0953',
-            style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
+      appBar:  NavigationAppBar(
+        leading: const SizedBox(width: 0,),
+        title:  Row(
+          children: [
+            const Text('해피해피 0953',
+                style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
+         const SizedBox(width: 10,),
+         FutureBuilder(
+              future: MileageService().getRequireMileage(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    '유저가 보유한 총 마일리지: ${snapshot.data![0]}  관리자 보유 필요 마일리지: ${snapshot.data![1]}  총 유저 수: ${snapshot.data![2]}',
+                    style: const TextStyle(fontSize: 12),
+                  );
+                } else {
+                  return const Text('로딩중...');
+                }
+              }),]
+        ),
       ),
 
       pane: NavigationPane(
@@ -182,12 +199,6 @@ class _WindowViewState extends ConsumerState<WindowView> {
           openMaxWidth: 200.0,
         ),
         displayMode: PaneDisplayMode.auto,
-        menuButton: IconButton(
-          icon: const Icon(FluentIcons.collapse_menu),
-          onPressed: () {
-
-          },
-        ),
         items: <NavigationPaneItem>[
           PaneItem(icon: const Icon(FluentIcons.account_management), title: Text(screenTitle.elementAt(0)), body: screen.elementAt(0)),
           PaneItem(icon: const Icon(FluentIcons.folder_list), title: Text(screenTitle.elementAt(1)), body: screen.elementAt(1)),

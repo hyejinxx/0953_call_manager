@@ -237,7 +237,6 @@ class CallService {
     List<Call> callList = [];
     try {
       await http.get(Uri.parse(url)).then((value) {
-        print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;
@@ -247,7 +246,6 @@ class CallService {
       });
 
       await http.get(Uri.parse(urlNotUser)).then((value) {
-        print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;
@@ -266,7 +264,6 @@ class CallService {
     List<Call> callList = [];
     try {
       await http.get(Uri.parse(url)).then((value) {
-        print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;
@@ -324,7 +321,6 @@ class CallService {
     List<Call> callList = [];
     try {
       await http.get(Uri.parse(urlNotUser)).then((value) {
-        print(value.body);
         if (jsonDecode(value.body) == null) return;
         final Map<String, dynamic> data =
             json.decode(value.body) as Map<String, dynamic>;

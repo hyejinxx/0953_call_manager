@@ -56,21 +56,25 @@ class _WithdrawManageScreenState extends ConsumerState<WithdrawManageScreen> {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(children: [
-                    for (int i = 0; i < 4; i++) ...[
-                      Padding(padding: const EdgeInsets.all(10), child: Row(children: [
-                        RadioButton(
-                          checked: radioIndex == i,
-                          // set onChanged to null to disable the button
-                          onChanged: (value) =>
-                              ref.read(indexProvider.notifier).state = i,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(radioButtons[i])
-                      ]),)
-                    ]]),
+                    SizedBox(
+                      height: 50,
+                      child: Row(children: [
+                      for (int i = 0; i < 4; i++) ...[
+                        Padding(padding: const EdgeInsets.all(10), child: Row(children: [
+                          RadioButton(
+                            checked: radioIndex == i,
+                            // set onChanged to null to disable the button
+                            onChanged: (value) =>
+                                ref.read(indexProvider.notifier).state = i,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(radioButtons[i])
+                        ]),)
+                      ]]),
+                    ),
                       SizedBox(
                     width: double.infinity,
+                    height: MediaQuery.of(context).size.height - 100,
                     child:
                       SfDataGrid(
                         onCellDoubleTap: (detail) {
