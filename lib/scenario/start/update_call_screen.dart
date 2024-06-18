@@ -18,6 +18,42 @@ class UpdateCallScreen extends StatefulWidget {
 class _UpdateCallScreenState extends State<UpdateCallScreen> {
   SaveState _saveState = SaveState.init;
 
+  saveCall(int type) async {
+    setState(() {
+      _saveState = SaveState.saving;
+    });
+    final result = await CallService()
+        .excelToCall(type)
+        .onError((error, stackTrace) => false);
+    if (result) {
+      setState(() {
+        _saveState = SaveState.success;
+      });
+      showInfoBar('저장 성공', '콜 저장에 성공하였습니다.', InfoBarSeverity.success);
+    } else {
+      setState(() {
+        _saveState = SaveState.fail;
+      });
+      showInfoBar('저장 실패', '콜 저장에 실패하였습니다.', InfoBarSeverity.error);
+
+    }
+  }
+
+  showInfoBar(
+      String title, String content, InfoBarSeverity infoBarSeverity) async {
+    await displayInfoBar(context, builder: (context, close) {
+      return InfoBar(
+        title: Text(title),
+        content: Text(content),
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear),
+          onPressed: close,
+        ),
+        severity: infoBarSeverity,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,35 +63,9 @@ class _UpdateCallScreenState extends State<UpdateCallScreen> {
         children: [
           const Text('콜 관리'),
           const SizedBox(height: 10),
-          Button(
-              child: const Text('콜 저장(구)'),
-              onPressed: () async {
-                setState(() {
-                  _saveState = SaveState.saving;
-                });
-                final result = await CallService()
-                    .excelToCall()
-                    .onError((error, stackTrace) => false);
-                if (result) {
-                  setState(() {
-                    _saveState = SaveState.success;
-                  });
-                  ma.ScaffoldMessenger.of(context).showSnackBar(const ma.SnackBar(
-                    content: Text('콜 저장이 완료되었습니다.'),
-                    duration: Duration(seconds: 1),
-                  ));
-                } else {
-                  setState(() {
-                    _saveState = SaveState.fail;
-                  });
-                  ma.ScaffoldMessenger.of(context).showSnackBar(const ma.SnackBar(
-                    content: Text('콜 저장에 실패하였습니다.'),
-                    duration: Duration(seconds: 1),
-                  ));
-                }
-              }),
+          Button(child: const Text('콜 저장(구)'), onPressed: () => saveCall(0)),
           const SizedBox(height: 10),
-          Button(child: const Text('콜 저장(신)'), onPressed: () {}),
+          Button(child: const Text('콜 저장(신)'), onPressed: () => saveCall(1)),
           const SizedBox(height: 20),
           const Text('마일리지 설정'),
           const SizedBox(height: 10),

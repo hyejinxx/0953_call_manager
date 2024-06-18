@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:call_0953_manager/service/file_picker_service.dart';
 import 'package:call_0953_manager/service/manager_service.dart';
 import 'package:call_0953_manager/service/mileage_service.dart';
@@ -21,7 +19,7 @@ class CallService {
   final urlNotUser =
       'https://project-568166903627460027-default-rtdb.firebaseio.com/notUser.json';
 
-  Future<bool> excelToCall() async {
+  Future<bool> excelToCall(int type) async {
     try {
       final file = await FilePickerService().pickFile();
       if (file == null) return false;
@@ -39,39 +37,83 @@ class CallService {
 
       // 엑셀 파일의 시트마다 반복
       await Future.wait(excel.tables.keys.map((e) async {
-        // 엑셀 파일의 첫번째 행(헤더)에서 각 열의 인덱스를 가져옴
-        final nameIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '고객명')
-            .elementAt(0));
-        final callIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '고객전화')
-            .elementAt(0));
-        final priceIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '요금')
-            .elementAt(0));
-        final dateIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '날짜')
-            .elementAt(0));
-        final timeIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '시간')
-            .elementAt(0));
-        final startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '출발지')
-            .elementAt(0));
-        final endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '도착지')
-            .elementAt(0));
-        final cardIndex = excel.tables[e]!.rows.first.indexOf(excel
-            .tables[e]!.rows.first
-            .where((element) => element?.value.toString() == '카드')
-            .elementAt(0));
+        int nameIndex = 0;
+        int callIndex = 0;
+        int priceIndex = 0;
+        int dateIndex = 0;
+        int timeIndex = 0;
+        int startAddressIndex = 0;
+        int endAddressIndex = 0;
+        int cardIndex = 0;
+
+        if (type == 0) {
+          // 엑셀 파일의 첫번째 행(헤더)에서 각 열의 인덱스를 가져옴
+          nameIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '고객명')
+              .elementAt(0));
+          callIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '고객전화')
+              .elementAt(0));
+          priceIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '요금')
+              .elementAt(0));
+          dateIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '날짜')
+              .elementAt(0));
+          timeIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '시간')
+              .elementAt(0));
+          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '출발지')
+              .elementAt(0));
+          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '도착지')
+              .elementAt(0));
+          cardIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '카드')
+              .elementAt(0));
+        } else {
+          nameIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '고객명')
+              .elementAt(0));
+          callIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '고객번호')
+              .elementAt(0));
+          priceIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '요금')
+              .elementAt(0));
+          dateIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '기준일자')
+              .elementAt(0));
+          timeIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '배차시간')
+              .elementAt(0));
+          startAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '출발지')
+              .elementAt(0));
+          endAddressIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '도착지')
+              .elementAt(0));
+          cardIndex = excel.tables[e]!.rows.first.indexOf(excel
+              .tables[e]!.rows.first
+              .where((element) => element?.value.toString() == '결제')
+              .elementAt(0));
+        }
 
         // 엑셀 파일의 각 행(데이터)마다 반복
         for (var row in excel.tables[e]!.rows) {
@@ -88,40 +130,86 @@ class CallService {
                 '${data.elementAt(dateIndex)}${data.elementAt(timeIndex)}${data.elementAt(callIndex)}'
                     .replaceAll('/', '');
 
+            print('******');
+            print(data.elementAt(timeIndex).toString().substring(10));
             // 마일리지 계산
-            Call call = Call(
-              orderNumber: orderNumber,
-              name: data.elementAt(nameIndex).toString(),
-              call: data.elementAt(callIndex).toString().replaceAll('-', ''),
-              price: int.parse(
-                  data.elementAt(priceIndex).toString().replaceAll(',', '')),
-              date: DateFormat('yyyy-').format(DateTime.now()) +
-                  data.elementAt(dateIndex).toString().replaceAll('/', '-'),
-              time: data.elementAt(timeIndex).toString(),
-              startAddress: data.elementAt(startAddressIndex).toString(),
-              endAddress: data.elementAt(endAddressIndex).toString(),
-              mileage: 0,
-              bonusMileage: 0,
-              sumMileage: 0,
-            );
+            Call call = type == 0
+                ? Call(
+                    orderNumber: orderNumber,
+                    name: data.elementAt(nameIndex).toString(),
+                    call: data
+                        .elementAt(callIndex)
+                        .toString()
+                        .replaceAll('-', ''),
+                    price: int.parse(data
+                        .elementAt(priceIndex)
+                        .toString()
+                        .replaceAll(',', '')),
+                    date: DateFormat('yyyy-').format(DateTime.now()) +
+                        data
+                            .elementAt(dateIndex)
+                            .toString()
+                            .replaceAll('/', '-'),
+                    time: data.elementAt(timeIndex).toString(),
+                    startAddress: data.elementAt(startAddressIndex).toString(),
+                    endAddress: data.elementAt(endAddressIndex).toString(),
+                    mileage: 0,
+                    bonusMileage: 0,
+                    sumMileage: 0,
+                  )
+                : Call(
+                    orderNumber: orderNumber,
+                    name: data.elementAt(nameIndex).toString(),
+                    call: data
+                        .elementAt(callIndex)
+                        .toString()
+                        .replaceAll('-', ''),
+                    price: int.parse(data
+                        .elementAt(priceIndex)
+                        .toString()
+                        .replaceAll(',', '')),
+                    date: data.elementAt(dateIndex).toString().substring(0, 10),
+                    time: data.elementAt(timeIndex).toString().substring(10),
+                    startAddress: data.elementAt(startAddressIndex).toString(),
+                    endAddress: data.elementAt(endAddressIndex).toString(),
+                    mileage: 0,
+                    bonusMileage: 0,
+                    sumMileage: 0,
+                  );
 
             User? user = await UserService().getUser(
                 data.elementAt(callIndex).toString().replaceAll('-', ''));
+
             if (user != null) {
               final num = calMileage(int.parse(
                   data.elementAt(priceIndex).toString().replaceAll(',', '')));
 
-              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                call.mileage = cardStandard['a$num'];
-              } else {
-                call.mileage = cashStandard['a$num'];
-              }
+              if (type == 0) {
+                if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                  call.mileage = cardStandard['a$num'];
+                } else {
+                  call.mileage = cashStandard['a$num'];
+                }
 
-              // 보너스 마일리지 계산
-              if (data.elementAt(cardIndex).toString().contains('결제완료')) {
-                call.bonusMileage = cardBonusStandard['a$num'];
+                // 보너스 마일리지 계산
+                if (data.elementAt(cardIndex).toString().contains('결제완료')) {
+                  call.bonusMileage = cardBonusStandard['a$num'];
+                } else {
+                  call.bonusMileage = cashBonusStandard['a$num'];
+                }
               } else {
-                call.bonusMileage = cashBonusStandard['a$num'];
+                if (data.elementAt(cardIndex).toString().contains('현금')) {
+                  call.mileage = cashStandard['a$num'];
+                } else {
+                  call.mileage = cardStandard['a$num'];
+                }
+
+                // 보너스 마일리지 계산
+                if (data.elementAt(cardIndex).toString().contains('현금')) {
+                  call.bonusMileage = cashBonusStandard['a$num'];
+                } else {
+                  call.bonusMileage = cardBonusStandard['a$num'];
+                }
               }
 
               call.sumMileage = call.mileage! + call.bonusMileage!;
