@@ -1,5 +1,4 @@
 import 'package:call_0953_manager/scenario/main/user/user_mileage_list_screen.dart';
-import 'package:call_0953_manager/service/mileage_service.dart';
 import 'package:call_0953_manager/service/user_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as ma;
@@ -34,50 +33,47 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
   @override
   Widget build(BuildContext context) {
     final userList = ref.watch(userListProvider);
-    return Container(
+    return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
-          FutureBuilder(
-              future: MileageService().getRequireMileage(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        '유저가 보유한 총 마일리지: ${snapshot.data![0]}  관리자 보유 필요 마일리지: ${snapshot.data![1]}  총 유저 수: ${snapshot.data![2]}',
-                        style: const TextStyle(fontSize: 15),
-                      ));
-                } else {
-                  return const Text('로딩중...');
-                }
-              }),
-          Row(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: TextFormBox(
-                controller: phoneTextController,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5)),
-                placeholder: '전화번호 검색',
-                obscureText: false,
+
+          SizedBox(
+            height: 50,
+            child: Row(children: [
+              Flexible(
+                flex: 1,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormBox(
+                    controller: phoneTextController,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5)),
+                    placeholder: '전화번호 검색',
+                    obscureText: false,
+                  ),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: TextFormBox(
-                controller: nameTextController,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(5)),
-                placeholder: '닉네임 검색',
-                obscureText: false,
+              Flexible(
+                flex: 1,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormBox(
+                    controller: nameTextController,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5)),
+                    placeholder: '닉네임 검색',
+                    obscureText: false,
+                  ),
+                ),
               ),
-            ),
-          ]),
-          Expanded(
-              child: userList.when(
+            ]),
+          ),
+          userList.when(
             data: (data) {
               if (data.isEmpty) {
                 return const Center(
@@ -92,118 +88,138 @@ class _UserManageScreenState extends ConsumerState<UserManageScreen> {
                     .where((element) =>
                         element.name.contains(nameTextController.text) == true)
                     .toList();
-                return SfDataGrid(
-                    controller: controller,
-                    source: UserDataSource(userData: list),
-                    allowSorting: true,
-                    columnWidthMode: ColumnWidthMode.fill,
-                    sortingGestureType: SortingGestureType.doubleTap,
-                    // showCheckboxColumn: true,
-                    defaultColumnWidth:
-                        (MediaQuery.of(context).size.width - 200) / 8,
-                    showSortNumbers: true,
-                    showHorizontalScrollbar: true,
-                    showVerticalScrollbar: true,
-                    shrinkWrapRows: true,
-                    shrinkWrapColumns: true,
-                    onCellTap: (value) {
-                      if (value.rowColumnIndex.rowIndex != 0) {
-                        final a = controller.selectedRow;
-                        final b = a?.getCells();
-                        b?.forEach((element) {
-                          if (element.columnName == 'call') {
+                return SizedBox(
+                    height: MediaQuery.of(context).size.height - 100,
+                    child: SfDataGrid(
+                        controller: controller,
+                        source: UserDataSource(userData: list),
+                        allowSorting: true,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        sortingGestureType: SortingGestureType.doubleTap,
+                        selectionMode: SelectionMode.single,
+                        // showCheckboxColumn: true,
+                        defaultColumnWidth:
+                            (MediaQuery.of(context).size.width - 200) / 8,
+                        showSortNumbers: true,
+                        showHorizontalScrollbar: true,
+                        showVerticalScrollbar: true,
+                        shrinkWrapRows: true,
+                        shrinkWrapColumns: true,
+                        onSelectionChanged: (value, a) {
+                          controller.selectedRow?.getCells();
+                          print(controller.selectedRows.first.getCells().first.value);
+                        },
+                        onCellDoubleTap: (value) {
+                          if (value.rowColumnIndex.rowIndex != -1 && value.rowColumnIndex.rowIndex != 0) {
                             Navigator.push(
-                                context,
-                                ma.MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserMileageRecordScreen(
-                                          user: element.value,
-                                        )));
+                                        context,
+                                        ma.MaterialPageRoute(
+                                            builder: (context) =>
+                                                UserMileageRecordScreen(
+                                                  user: controller.selectedRows.first.getCells().first.value,
+                                                )));
                           }
-                        });
-                      }
-                    },
-                    columns: <GridColumn>[
-                      GridColumn(
-                          columnName: 'call',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '전화번호',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'name',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '닉네임',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'mileage',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '마일리지',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'destination',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '목적지',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'joinDate',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '가입일',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'destination',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '주 목적지',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'store',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '가맹점',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                      GridColumn(
-                          columnName: 'storeCall',
-                          label: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                '가맹점 번호',
-                                overflow: TextOverflow.ellipsis,
-                              ))),
-                    ]);
+                        },
+                        // onCellDoubleTap: (),
+                        onCellTap: (value) {
+                          if (value.rowColumnIndex.rowIndex != 0) {
+                            controller.selectedRow?.getCells();
+                            // print(controller.selectedRows);
+                             controller.moveCurrentCellTo(value.rowColumnIndex);
+                            // final b = controller.selectedRows
+                            // print(value.rowColumnIndex);
+                            // controller.moveCurrentCellTo(value.rowColumnIndex);
+                            // print(controller.currentCell);
+
+                            // b?.forEach((element) {
+                            //   print(element.columnName);
+                            //   if (element.columnName == 'call') {
+                            //
+                            //   }
+                            // });
+                          }
+                        },
+                        columns: <GridColumn>[
+                          GridColumn(
+                              columnName: 'call',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '전화번호',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'name',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '닉네임',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'mileage',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '마일리지',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'destination',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '목적지',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'joinDate',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '가입일',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'destination',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '주 목적지',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'store',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '가맹점',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                          GridColumn(
+                              columnName: 'storeCall',
+                              label: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    '가맹점 번호',
+                                    overflow: TextOverflow.ellipsis,
+                                  ))),
+                        ]));
               }
             },
             error: (e, st) => Text('error'),
             loading: () => const Center(
               child: ProgressRing(),
             ),
-          ))
+          )
         ]));
   }
 }
